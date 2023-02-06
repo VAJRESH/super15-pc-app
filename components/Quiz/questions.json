@@ -1,0 +1,125 @@
+{
+    "quizDate": "22-05-2022",
+    "quizQuestions": [
+      {
+        "question": "What is the capital of India?",
+        "questionSequence": "1",
+        "answers": ["Noida", "Delhi", "Mumbai", "Paris"],
+        "correctAnswer": "Delhi",
+        "maxTimeToSolve": 15,
+        "questionUploadedDate": "23/05/2022"
+      },
+      {
+        "question": "What is the closest planet to the Sun?",
+        "questionSequence": "2",
+        "answers": ["Mercury", "Venus", "Earth", "Mars"],
+        "correctAnswer": "Mercury",
+        "maxTimeToSolve": 15,
+        "questionUploadedDate": "23/05/2022"
+      },
+      {
+        "question": "How many muscicians in a quartet?",
+        "questionSequence": "3",
+        "answers": ["1", "2", "3", "4"],
+        "correctAnswer": "4",
+        "maxTimeToSolve": 15,
+        "questionUploadedDate": "23/05/2022"
+      },
+      {
+        "question": "What language is spoken in Brazil?",
+        "questionSequence": "4",
+        "answers": ["English", "Hindi", "Braizilian", "Portuguese"],
+        "correctAnswer": "Portuguese",
+        "maxTimeToSolve": 15,
+        "questionUploadedDate": "23/05/2022"
+      },
+      {
+        "question": "What does a thermometer measure?",
+        "questionSequence": "5",
+        "answers": ["Humidity", "Temperature", "Height", "Weight"],
+        "correctAnswer": "Temperature",
+        "maxTimeToSolve": 15,
+        "questionUploadedDate": "23/05/2022"
+      },
+      {
+        "question": "What is the hardest natural substance in the world?",
+        "questionSequence": "6",
+        "answers": ["Gold", "Steel", "Diamond", "Titanium"],
+        "correctAnswer": "Diamond",
+        "maxTimeToSolve": 15,
+        "questionUploadedDate": "23/05/2022"
+      },
+      {
+        "question": "Where is the Eiffel Tower?",
+        "questionSequence": "7",
+        "answers": ["London", "Paris", "New York", "Delhi"],
+        "correctAnswer": "Paris",
+        "maxTimeToSolve": 15,
+        "questionUploadedDate": "23/05/2022"
+      },
+      {
+        "question": "What is the largest living animal?",
+        "questionSequence": "8",
+        "answers": ["African Elephant", "Blue Whale", "Giraffe", "Anaconda"],
+        "correctAnswer": "Blue Whale",
+        "maxTimeToSolve": 15,
+        "questionUploadedDate": "23/05/2022"
+      },
+      {
+        "question": "How many legs does a spider have?",
+        "questionSequence": "9",
+        "answers": ["5", "6", "7", "8"],
+        "correctAnswer": "8",
+        "maxTimeToSolve": 15,
+        "questionUploadedDate": "23/05/2022"
+      },
+      {
+        "question": "What is the largest bird?",
+        "questionSequence": "10",
+        "answers": ["Eagle", "Peacock", "Ostrich", "Vulture"],
+        "correctAnswer": "Ostrich",
+        "maxTimeToSolve": 15,
+        "questionUploadedDate": "23/05/2022"
+      },
+      {
+        "question": "When did the titanic sank?",
+        "questionSequence": "11",
+        "answers": ["1900", "1998", "1919", "1912"],
+        "correctAnswer": "1912",
+        "maxTimeToSolve": 15,
+        "questionUploadedDate": "23/05/2022"
+      },
+      {
+        "question": "Which bones are babies born without?",
+        "questionSequence": "12",
+        "answers": ["Kneecap", "Ulna", "Radius", "Pelvis"],
+        "correctAnswer": "Kneecap",
+        "maxTimeToSolve": 15,
+        "questionUploadedDate": "23/05/2022"
+      },
+      {
+        "question": "Pyramids are in?",
+        "questionSequence": "13",
+        "answers": ["Africa", "Indonesia", "Japan", "Egypt"],
+        "correctAnswer": "Egypt",
+        "maxTimeToSolve": 15,
+        "questionUploadedDate": "23/05/2022"
+      },
+      {
+        "question": "Who painted the Mona Lisa?",
+        "questionSequence": "14",
+        "answers": ["Leonardo da Vinci", "Leonardo Di Caprio", "Vincent van Gogh", "Michelangelo"],
+        "correctAnswer": "Leonardo da Vinci",
+        "maxTimeToSolve": 15,
+        "questionUploadedDate": "23/05/2022"
+      },
+      {
+        "question": "In what year did World War II start?",
+        "questionSequence": "15",
+        "answers": ["1919", "1939", "1945", "1947"],
+        "correctAnswer": "1939",
+        "maxTimeToSolve": 15,
+        "questionUploadedDate": "23/05/2022"
+      }
+    ]
+}
