@@ -15,22 +15,37 @@ import {
   IonSplitPane,
   IonTitle,
   IonToolbar,
+  useIonToast,
 } from "@ionic/react";
 import { menu } from "ionicons/icons";
+import { useRouter } from "next/router";
 import { useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import FormInput from "../../components/FormInput";
 import SideMenu from "../../components/SideMenu";
+
 import { signUp } from "../../helper/firebase.helper";
 import { logo } from "./register.module.css";
 
-export default function Register() {
+export default function Register({ history }) {
   const [isTouched, setIsTouched] = useState(false);
   const [isValid, setIsValid] = useState();
+
+  const router = useRouter();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+
+  const [present] = useIonToast();
+
+  const Toaster = (message) => {
+    present({
+      message: message,
+      duration: 1500,
+      position: "bottom",
+    });
+  };
 
   const validateEmail = (email) => {
     return email.match(
@@ -53,15 +68,14 @@ export default function Register() {
     const email = e.target.value;
     if (email === "") return;
     console.log(email);
-    validateEmail(email) !== null
-      ? setEmail(email)
-      : console.log("invalid email");
+    validateEmail(email) !== null ? setEmail(email) : Toaster("Invalid Email");
   };
 
   const onSubmit = async (e) => {
     e.preventDefault();
     if (password !== confirmPassword) {
       console.log("Passwords did not match!");
+      Toaster("Passwords did not match!");
       return;
     }
     console.log(email, password);
@@ -69,10 +83,12 @@ export default function Register() {
     try {
       let signUpResponse = await signUp(email, password);
       console.log(signUpResponse);
-
+      Toaster("Registration Successful.");
     } catch (error) {
       console.log(error);
+      Toaster("Registration Failed.");
     }
+    router.push('/login');
   };
 
   return (
