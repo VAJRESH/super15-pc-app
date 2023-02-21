@@ -37,6 +37,7 @@ export default function Dashboard() {
           </IonToolbar>
         </IonHeader>
         <IonContent className="ion-padding">
+          <h2 className="text-2xl font-semibold">You are logged in!</h2>
           Tap the button in the toolbar to open the menu.
         </IonContent>
       </IonPage>

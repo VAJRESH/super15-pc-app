@@ -8,19 +8,19 @@ export const SidebarMenu = [
         link: '/dashboard'
     },
     {
-        id: 1,
+        id: 2,
         label: 'Login',
         icon: key,
         link: '/login'
     },
     {
-        id: 1,
+        id: 3,
         label: 'Register',
         icon: lockOpen,
         link: '/register'
     },
     {
-        id: 1,
+        id: 4,
         label: 'Profile',
         icon: person,
         link: '/profile'
