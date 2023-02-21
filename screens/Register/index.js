@@ -19,12 +19,18 @@ import {
 import { menu } from "ionicons/icons";
 import { useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
+import FormInput from "../../components/FormInput";
 import SideMenu from "../../components/SideMenu";
+import { signUp } from "../../helper/firebase.helper";
 import { logo } from "./register.module.css";
 
 export default function Register() {
   const [isTouched, setIsTouched] = useState(false);
   const [isValid, setIsValid] = useState();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   const validateEmail = (email) => {
     return email.match(
@@ -43,8 +49,30 @@ export default function Register() {
     setIsTouched(true);
   };
 
-  const onSubmit = async (data) => {
-    console.log(data);
+  const setEmailFn = (e) => {
+    const email = e.target.value;
+    if (email === "") return;
+    console.log(email);
+    validateEmail(email) !== null
+      ? setEmail(email)
+      : console.log("invalid email");
+  };
+
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    if (password !== confirmPassword) {
+      console.log("Passwords did not match!");
+      return;
+    }
+    console.log(email, password);
+
+    try {
+      let signUpResponse = await signUp(email, password);
+      console.log(signUpResponse);
+
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -78,21 +106,26 @@ export default function Register() {
             <h4 style={{ textAlign: "center" }}>Register on Super 15</h4>
             <form onSubmit={onSubmit}>
               <IonList>
-                <IonItem>
-                  <IonLabel position="floating">Email Id : </IonLabel>
-                  <IonInput placeholder="Email Id"></IonInput>
-                </IonItem>
-                <IonItem>
-                  <IonLabel position="floating">Enter Password : </IonLabel>
-                  <IonInput placeholder="Enter Password"></IonInput>
-                </IonItem>
-                <IonItem>
-                  <IonLabel position="floating">Confirm Password : </IonLabel>
-                  <IonInput placeholder="Confirm Password"></IonInput>
-                </IonItem>
+                <FormInput
+                  label="Email Id : "
+                  placeholder="Email Id"
+                  onIonBlur={setEmailFn}
+                />
+                <FormInput
+                  type="password"
+                  label="Enter Password : "
+                  placeholder="Enter Password"
+                  onIonBlur={(e) => setPassword(e.target.value)}
+                />
+                <FormInput
+                  type="password"
+                  label="Confirm Password : "
+                  placeholder="Confirm Password"
+                  onIonBlur={(e) => setConfirmPassword(e.target.value)}
+                />
               </IonList>
               <br />
-              <ion-button expand="full" shape="round">
+              <ion-button type="submit" expand="full" shape="round">
                 Submit
               </ion-button>
             </form>
