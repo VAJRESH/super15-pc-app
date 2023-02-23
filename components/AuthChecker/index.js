@@ -7,7 +7,7 @@ import { auth } from "../../helper/firebase.helper";
 export default function AuthChecker({ children }) {
   const [user, setUser] = useRecoilState(currentUserAtom);
   const [loading, setLoading] = useState(true);
-  console.log("Authchecker", user);
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {

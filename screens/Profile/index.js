@@ -3,20 +3,37 @@ import {
   IonButtons,
   IonContent,
   IonHeader,
-  IonIcon, IonMenuToggle,
+  IonIcon,
+  IonMenuToggle,
   IonPage,
   IonSplitPane,
   IonTitle,
-  IonToolbar
+  IonToolbar,
 } from "@ionic/react";
+import { collection, getDocs } from "firebase/firestore";
 import { menu } from "ionicons/icons";
+import { useEffect } from "react";
 import { useRecoilValue } from "recoil";
 import { currentUserAtom } from "../../atom/user.atom";
 import SideMenu from "../../components/SideMenu";
+import { db } from "../../helper/firebase.helper";
 
 export default function Profile() {
   const user = useRecoilValue(currentUserAtom);
-  console.log("profile screen", user);
+
+  const qCollectionRef = collection(db, "questions");
+
+  const getAllQuestions = () => {
+    return getDocs(qCollectionRef);
+  };
+
+  useEffect(async () => {
+    let res = await getDocs(qCollectionRef);
+    res.forEach((doc) => {
+      console.log(doc.id, " => ", doc.data());
+    });
+  }, []);
+
   return (
     <>
       <IonSplitPane when="sm" contentId="main-content">
@@ -40,7 +57,7 @@ export default function Profile() {
             </IonToolbar>
           </IonHeader>
           <IonContent className="ion-padding">
-            {user.uid} <br/>
+            {user.uid} <br />
             Not compatible with firebase 9. Please update your app.
           </IonContent>
         </IonPage>

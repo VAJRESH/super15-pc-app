@@ -6,7 +6,7 @@ import { currentUserAtom } from "../../atom/user.atom";
 export default function ProtectedRoute({ children }) {
   const router = useRouter();
   const user = useRecoilValue(currentUserAtom);
-    console.log('protected route', user);
+
   useEffect(() => {
     if (!user.uid) {
       router.push("/login");
