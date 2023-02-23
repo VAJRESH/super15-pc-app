@@ -84,35 +84,17 @@ export default function Register({ history }) {
       let signUpResponse = await signUp(email, password);
       console.log(signUpResponse);
       Toaster("Registration Successful.");
+      router.push('/login');
     } catch (error) {
       console.log(error);
       Toaster("Registration Failed.");
     }
-    router.push('/login');
   };
 
   return (
     <>
       <IonSplitPane when="sm" contentId="main-content">
-        <SideMenu />
         <IonPage id="main-content">
-          <IonHeader>
-            <IonToolbar>
-              {/* <IonButtons slot="start">
-                <IonMenuButton></IonMenuButton>
-              </IonButtons> */}
-
-              <IonButtons slot="start">
-                <IonMenuToggle>
-                  <IonButton>
-                    <IonIcon slot="icon-only" icon={menu}></IonIcon>
-                  </IonButton>
-                </IonMenuToggle>
-              </IonButtons>
-
-              <IonTitle>Register</IonTitle>
-            </IonToolbar>
-          </IonHeader>
           <IonContent className="ion-padding">
             <IonImg
               src="/images/Super15 Logo.png"
@@ -145,6 +127,10 @@ export default function Register({ history }) {
                 Submit
               </ion-button>
             </form>
+            <p style={{ margin: "20px", textAlign: "center" }}>
+              Already have an account?{" "}
+              <button onClick={() => router.push("/login")}>LOGIN</button>
+            </p>
           </IonContent>
         </IonPage>
       </IonSplitPane>

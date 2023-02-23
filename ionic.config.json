@@ -1,5 +1,7 @@
 {
   "name": "Super15",
-  "integrations": {},
+  "integrations": {
+    "capacitor": {}
+  },
   "type": "custom"
 }

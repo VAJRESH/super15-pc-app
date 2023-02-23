@@ -8,6 +8,7 @@ import {
   IonList,
   IonMenuButton,
   IonMenuToggle,
+  IonNavLink,
   IonPage,
   IonProgressBar,
   IonSplitPane,
@@ -18,15 +19,20 @@ import {
 import { menu } from "ionicons/icons";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import { useRecoilState } from "recoil";
+import { currentUserAtom } from "../../atom/user.atom";
 import FormInput from "../../components/FormInput";
 import SideMenu from "../../components/SideMenu";
 import { signIn } from "../../helper/firebase.helper";
+import Register from "../Register";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  
+
   const router = useRouter();
+  const [user, setUser] = useRecoilState(currentUserAtom);
+
   const [present] = useIonToast();
 
   const Toaster = (message) => {
@@ -51,8 +57,12 @@ export default function Login() {
     e.preventDefault();
     try {
       let signUpResponse = await signIn(email, password);
-      console.log(signUpResponse);
+      console.log(signUpResponse?.user?.uid);
       Toaster("Login Successful.");
+      setUser({
+        email: signUpResponse?.user?.email,
+        uid: signUpResponse?.user?.uid,
+      });
       router.push("/dashboard");
     } catch (error) {
       console.log(error);
@@ -62,55 +72,42 @@ export default function Login() {
 
   return (
     <>
-      <IonSplitPane when="sm" contentId="main-content">
-        <SideMenu />
-        <IonPage id="main-content">
-          <IonHeader>
-            <IonToolbar>
-              {/* <IonButtons slot="start">
-                <IonMenuButton></IonMenuButton>
-              </IonButtons> */}
+      <IonPage id="main-content">
+        <IonContent className="ion-padding">
+          <IonImg
+            src="/images/Super15 Logo.png"
+            alt="Logo"
+            className="logo"
+          ></IonImg>
+          <h4 style={{ textAlign: "center" }}>Login to Super 15</h4>
+          <form
+            onSubmit={onSubmit}
+            style={{ maxWidth: "350px", margin: "20px auto" }}
+          >
+            <IonList>
+              <FormInput
+                label="Email Id : "
+                placeholder="Email Id"
+                onIonBlur={setEmailFn}
+              />
+              <FormInput
+                type="password"
+                label="Enter Password : "
+                placeholder="Enter Password"
+                onIonBlur={(e) => setPassword(e.target.value)}
+              />
+            </IonList>
 
-              <IonButtons slot="start">
-                <IonMenuToggle>
-                  <IonButton>
-                    <IonIcon slot="icon-only" icon={menu}></IonIcon>
-                  </IonButton>
-                </IonMenuToggle>
-              </IonButtons>
-
-              <IonTitle>Login</IonTitle>
-            </IonToolbar>
-          </IonHeader>
-          <IonContent className="ion-padding">
-            <IonImg
-              src="/images/Super15 Logo.png"
-              alt="Logo"
-              className="logo"
-            ></IonImg>
-            <h4 style={{ textAlign: "center" }}>Login to Super 15</h4>
-            <form onSubmit={onSubmit}>
-              <IonList>
-                <FormInput
-                  label="Email Id : "
-                  placeholder="Email Id"
-                  onIonBlur={setEmailFn}
-                />
-                <FormInput
-                  type="password"
-                  label="Enter Password : "
-                  placeholder="Enter Password"
-                  onIonBlur={(e) => setPassword(e.target.value)}
-                />
-              </IonList>
-              <br />
-              <ion-button type="submit" expand="full" shape="round">
-                Submit
-              </ion-button>
-            </form>
-          </IonContent>
-        </IonPage>
-      </IonSplitPane>
+            <ion-button type="submit" expand="full" shape="round">
+              Login
+            </ion-button>
+          </form>
+          <p style={{ margin: "20px", textAlign: "center" }}>
+            Don't have an account?{" "}
+            <button onClick={() => router.push("/register")}>REGISTER</button>
+          </p>
+        </IonContent>
+      </IonPage>
     </>
   );
 }

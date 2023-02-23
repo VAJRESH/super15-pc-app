@@ -12,9 +12,11 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { home, key, lockOpen, person } from "ionicons/icons";
+import { useRouter } from "next/router";
 import { SidebarMenu } from "../../helper/menu.helper";
 
 export default function SideMenu() {
+  const router = useRouter();
   return (
     <>
       <IonMenu contentId="main-content">
@@ -26,13 +28,18 @@ export default function SideMenu() {
 
         <IonContent>
           <IonList>
-            <IonListHeader>
+            {/* <IonListHeader>
               <p>Go to any screen</p>
-            </IonListHeader>
+            </IonListHeader> */}
             <IonMenuToggle autoHide={false}>
               {SidebarMenu.map((menu) => {
                 return (
-                  <IonItem button key={menu.id} routerLink={menu.link}>
+                  <IonItem
+                    button
+                    key={menu.id}
+                    // routerLink={menu.link}
+                    onClick={() => router.push(menu.link)}
+                  >
                     <IonIcon slot="start" icon={menu.icon}></IonIcon>
                     <IonLabel>{menu.label}</IonLabel>
                   </IonItem>

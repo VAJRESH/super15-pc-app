@@ -3,23 +3,20 @@ import {
   IonButtons,
   IonContent,
   IonHeader,
-  IonIcon,
-  IonItem,
-  IonLabel,
-  IonList,
-  IonListHeader,
-  IonMenu,
-  IonMenuButton,
-  IonMenuToggle,
+  IonIcon, IonMenuToggle,
   IonPage,
   IonSplitPane,
   IonTitle,
-  IonToolbar,
+  IonToolbar
 } from "@ionic/react";
-import { home, key, lockOpen, menu, person } from "ionicons/icons";
+import { menu } from "ionicons/icons";
+import { useRecoilValue } from "recoil";
+import { currentUserAtom } from "../../atom/user.atom";
 import SideMenu from "../../components/SideMenu";
 
 export default function Profile() {
+  const user = useRecoilValue(currentUserAtom);
+  console.log("profile screen", user);
   return (
     <>
       <IonSplitPane when="sm" contentId="main-content">
@@ -43,7 +40,8 @@ export default function Profile() {
             </IonToolbar>
           </IonHeader>
           <IonContent className="ion-padding">
-            Tap the button in the toolbar to open the menu.
+            {user.uid} <br/>
+            Not compatible with firebase 9. Please update your app.
           </IonContent>
         </IonPage>
       </IonSplitPane>

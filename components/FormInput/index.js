@@ -9,7 +9,7 @@ export default function FormInput({
   onIonBlur = () => {},
 }) {
   return (
-    <IonItem>
+    <IonItem style={{ margin: "20px auto" }}>
       <IonLabel position="floating">{label}</IonLabel>
       <IonInput
         type={type}

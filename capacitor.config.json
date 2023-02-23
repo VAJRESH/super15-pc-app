@@ -1,0 +1,11 @@
+{
+  "appId": "com.super15",
+  "appName": "Super15",
+  "webDir": "out",
+  "bundledWebRuntime": false,
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 3000
+    }
+  }
+}

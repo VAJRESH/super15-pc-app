@@ -1,0 +1,23 @@
+.dashboardBody{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 80vh;
+}
+.dashboardKpis{
+    height: 20vh;
+    background-color: #D5D5FF;
+    border-radius: 10px;
+    margin-bottom: 40px;
+}
+.dashboardBtns{
+    display: flex;
+    flex-direction: column;
+}
+.dashboardBtns button{
+    padding: 20px;
+    border: 1px solid grey;
+    border-radius: 5px;
+
+    margin-bottom: 20px;
+}

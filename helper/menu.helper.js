@@ -1,4 +1,4 @@
-import { home, key, lockOpen, person } from "ionicons/icons";
+import { ellipsisVertical, home, key, libraryOutline, lockOpen, logOut, person } from "ionicons/icons";
 
 export const SidebarMenu = [
     {
@@ -25,4 +25,16 @@ export const SidebarMenu = [
         icon: person,
         link: '/profile'
     },
+    {
+        id: 5,
+        label: 'Create Quiz',
+        icon: libraryOutline,
+        link: '/create-quiz'
+    },
+    {
+        id: 6,
+        label: 'Logout',
+        icon: logOut,
+        link: '/login'
+    }
 ]

@@ -1,6 +1,50 @@
+:root{
+    --primary: #9900FF
+}
+
 .logo {
     width: 300px;
     height: 300px;
     margin: auto;
     padding: 30px 50px;
+}
+.list-md{
+    background-color: transparent;
+}
+ion-content::part(background) {
+    background: linear-gradient(171.66deg, #F0F0F0 2.34%, #FBFBFB 21.14%, #FFFFFF 41.42%, #FFF3F3 65.67%, #D8C0FF 97.33%);
+}
+ion-radio {
+    width: 20px;
+    height: 20px;
+    margin: 5px;
+    margin-bottom: -5px;
+}
+
+ion-radio::part(container) {
+    border-radius: 2px;
+    border: 1px solid #000000;
+}
+
+ion-radio::part(mark) {
+    background: none;
+    transition: none;
+    transform: none;
+    border-radius: 0;
+}
+
+ion-radio.radio-checked::part(container) {
+    background: #ab81ee;
+    border-color: transparent;
+}
+
+ion-radio.radio-checked::part(mark) {
+    width: 6px;
+    height: 10px;
+
+    border-width: 0px 2px 2px 0px;
+    border-style: solid;
+    border-color: #fff;
+
+    transform: rotate(45deg);
 }

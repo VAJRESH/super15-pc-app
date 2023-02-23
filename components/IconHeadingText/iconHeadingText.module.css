@@ -1,0 +1,31 @@
+.wrapper {
+    background: linear-gradient(180deg, #D5D5FF 0%, #9999FF 100%);
+    border-radius: 10px;
+
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+
+    margin-bottom: 20px;
+}
+.iconWrapper {
+    height: 50px;
+    width: 50px;
+    background-color: white;
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.textWrapper {
+    margin-left: 20px;
+}
+
+.textWrapper h4, 
+.textWrapper p{
+    margin: 5px 0;
+}
+.textWrapper p {
+    color: #333;
+}
