@@ -10,9 +10,9 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, onSnapshot } from "firebase/firestore";
 import { menu } from "ionicons/icons";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRecoilValue } from "recoil";
 import { currentUserAtom } from "../../atom/user.atom";
 import SideMenu from "../../components/SideMenu";
@@ -21,17 +21,25 @@ import { db } from "../../helper/firebase.helper";
 export default function Profile() {
   const user = useRecoilValue(currentUserAtom);
 
+  console.log(user);
   const qCollectionRef = collection(db, "questions");
 
   const getAllQuestions = () => {
     return getDocs(qCollectionRef);
   };
 
-  useEffect(async () => {
-    let res = await getDocs(qCollectionRef);
-    res.forEach((doc) => {
-      console.log(doc.id, " => ", doc.data());
+  const [dbQuestions, setDbQuestions] = useState([]);
+  
+  useEffect(() => {
+    const unsub = onSnapshot(qCollectionRef, (querySnapshot) => {
+      let qarray = [];
+      querySnapshot.forEach((docu) => {
+        qarray.push(docu.data().qText);
+        console.log(docu.id, " => ", docu.data().qText);
+      });
+      setDbQuestions(qarray);
     });
+    unsub();
   }, []);
 
   return (
@@ -56,10 +64,7 @@ export default function Profile() {
               <IonTitle>Profile</IonTitle>
             </IonToolbar>
           </IonHeader>
-          <IonContent className="ion-padding">
-            {user.uid} <br />
-            Not compatible with firebase 9. Please update your app.
-          </IonContent>
+          <IonContent className="ion-padding">{dbQuestions.map(q => { return <>{q} <br /></> })}</IonContent>
         </IonPage>
       </IonSplitPane>
     </>

@@ -36,12 +36,16 @@ import {
   doc,
   query,
   where,
+  getCountFromServer,
+  Timestamp,
 } from "firebase/firestore";
 
 import styles from "./createQuiz.module.css";
+import { currentUserAtom } from "../../atom/user.atom";
 
 export default function CreateQuiz() {
-  const [createQuizState, setCreateQuizState] = useState(0);
+    const [createQuizState, setCreateQuizState] = useState(0);
+      const [user, setUser] = useRecoilState(currentUserAtom);
   const [question, setQuestion] = useRecoilState(questionAtom);
   const router = useRouter();
   const [presentAlert] = useIonAlert();
@@ -60,7 +64,8 @@ export default function CreateQuiz() {
       date: e.detail?.value?.split("T")[0],
     });
     setCreateQuizState(1);
-  }
+    }
+    
   function hasDuplicates(array) {
     return new Set(array).size !== array.length;
   }
@@ -72,18 +77,34 @@ export default function CreateQuiz() {
   };
 
   async function saveQuestionToFirestore() {
-    if (
-      question.qSeq === null ||
-      question.qText === null ||
-      question.qOpt1 === null ||
-      question.qOpt2 === null ||
-      question.qOpt3 === null ||
-      question.qOpt4 === null ||
-      question.qOptCorrect === null
-    ) {
-      console.log("some data null");
+    if (!question.qText) {
+      presentAlert({
+        header: "Alert",
+        subHeader: "Question is empty",
+        message: "Quiz must have some question texts.",
+        buttons: ["OK"],
+      });
       return;
     }
+    if (!question.qOpt1 || !question.qOpt2 || !question.qOpt3 || !question.qOpt4  ) {
+      presentAlert({
+        header: "Alert",
+        subHeader: "Option is empty",
+        message: "Quiz must have 4 options",
+        buttons: ["OK"],
+      });
+      return;
+    }
+    if (!question.qOptCorrect) {
+      presentAlert({
+        header: "Alert",
+        subHeader: "Choose Correct Option",
+        message: "Quiz must have one correct option",
+        buttons: ["OK"],
+      });
+      return;
+    }
+
     let optionArr = [
       question.qOpt1,
       question.qOpt2,
@@ -100,31 +121,73 @@ export default function CreateQuiz() {
       return;
     }
     if (!optionArr.includes(question.qOptCorrect)) {
-      console.log("Correct answer does not match any of the options");
+        presentAlert({
+          header: "Alert",
+          subHeader: "Reselect Options Again",
+          message: "Correct answer does not match any of the options",
+          buttons: ["OK"],
+        });
       return;
     }
 
     const { qId, ...sendToStore } = question;
 
     try {
-      let response = await addQuestion(sendToStore);
-      presentAlert({
-        header: "Alert",
-        subHeader: "Saved in database",
-        message: "This question has been saved in the database.",
-        buttons: ["OK"],
-      });
+        await addQuestion({
+          ...sendToStore,
+          createdAt: Timestamp.fromDate(new Date()),
+          createdBy: user?.uid,
+        });
+
+        presentAlert({
+          header: "Alert",
+          subHeader: "Saved in database",
+          message: "This question has been saved in the database.",
+          buttons: ["OK"],
+        });
     } catch (error) {
       console.log(error);
     }
+
+    const localFn = () => {
+      console.log('function called!')
+      setQuestion({
+        qId: "",
+        date: "",
+        qSeq: "",
+        qText: "",
+        qOpt1: "",
+        qOpt2: "",
+        qOpt3: "",
+        qOpt4: "",
+        qOptCorrect: false,
+        createdAt: "",
+        createdBy: "",
+        updatedAt: "",
+        updatedBy: "",
+        status: "",
+      });
+    };
+    localFn();
+    console.log(question);
   }
 
   useEffect(() => {
     if (!question?.date) {
       setCreateQuizState(0);
-    }
+    } 
     console.log(question);
   }, [question]);
+
+  useEffect(async () => {
+    const q = query(qCollectionRef, where("date", "==", question.date));
+    const snapshot = await getCountFromServer(q);
+    const currentQcount = snapshot.data().count;
+    setQuestion({
+      ...question,
+      qSeq: ++currentQcount,
+    });
+  }, [createQuizState]);
 
   return (
     <>
@@ -165,11 +228,21 @@ export default function CreateQuiz() {
                 <div className={styles.createQuizHeader}>
                   <div>
                     <h4>Quiz Date</h4>
-                    <p>{question.date}</p>
+                    <p>
+                      {question.date}{" "}
+                      <img
+                        src="/images/carbon_edit (1).png"
+                        alt=""
+                        onClick={() => {
+                          setCreateQuizState(0);
+                        }}
+                      />
+                    </p>
                   </div>
                   <div>
                     <h4>Question Number</h4>
-                    <IonList>
+                    <p>{question.qSeq}</p>
+                    {/* <IonList>
                       <IonItem>
                         <IonSelect
                           placeholder="Select Q. No."
@@ -197,7 +270,7 @@ export default function CreateQuiz() {
                           <IonSelectOption value="15">15</IonSelectOption>
                         </IonSelect>
                       </IonItem>
-                    </IonList>
+                    </IonList> */}
                   </div>
                 </div>
                 <h4>Add Question</h4>
@@ -218,6 +291,8 @@ export default function CreateQuiz() {
                 </IonItem>
                 <h4>Enter options and choose correct answer</h4>
                 <IonRadioGroup
+                  value={question?.qOptCorrect}
+                  //   allowEmptySelection={true}
                   onIonChange={(e) => {
                     if (e.target?.value === null) {
                       presentAlert({
@@ -226,6 +301,7 @@ export default function CreateQuiz() {
                         message: "Please add all four options!",
                         buttons: ["OK"],
                       });
+                      e.target.attributes("checked", false);
                       return;
                     }
                     setQuestion({
@@ -238,6 +314,7 @@ export default function CreateQuiz() {
                     Option 1{" "}
                     <input
                       type="text"
+                      value={question?.qOpt1}
                       onChange={(e) => {
                         setQuestion({
                           ...question,
@@ -249,12 +326,14 @@ export default function CreateQuiz() {
                       mode="md"
                       slot="end"
                       value={question?.qOpt1}
+                      disabled={!question?.qOpt1}
                     ></IonRadio>
                   </div>
                   <div>
                     Option 2{" "}
                     <input
                       type="text"
+                      value={question?.qOpt2}
                       onChange={(e) => {
                         setQuestion({
                           ...question,
@@ -266,12 +345,14 @@ export default function CreateQuiz() {
                       mode="md"
                       slot="end"
                       value={question?.qOpt2}
+                      disabled={!question?.qOpt2}
                     ></IonRadio>
                   </div>
                   <div>
                     Option 3{" "}
                     <input
                       type="text"
+                      value={question?.qOpt3}
                       onChange={(e) => {
                         setQuestion({
                           ...question,
@@ -283,12 +364,14 @@ export default function CreateQuiz() {
                       mode="md"
                       slot="end"
                       value={question?.qOpt3}
+                      disabled={!question?.qOpt3}
                     ></IonRadio>
                   </div>
                   <div>
                     Option 4{" "}
                     <input
                       type="text"
+                      value={question?.qOpt4}
                       onChange={(e) => {
                         setQuestion({
                           ...question,
@@ -300,6 +383,7 @@ export default function CreateQuiz() {
                       mode="md"
                       slot="end"
                       value={question?.qOpt4}
+                      disabled={!question?.qOpt4}
                     ></IonRadio>
                   </div>
                 </IonRadioGroup>
@@ -308,9 +392,9 @@ export default function CreateQuiz() {
                     className={styles.save}
                     onClick={saveQuestionToFirestore}
                   >
-                    Save
+                    Save & Next
                   </button>
-                  <button className={styles.next}>Next</button>
+                  {/* <button className={styles.next}>Next</button> */}
                 </div>
               </>
             )}

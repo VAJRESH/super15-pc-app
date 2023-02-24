@@ -3,14 +3,19 @@ import { atom } from "recoil";
 export const questionAtom = atom({
   key: "questionAtom",
   default: {
-    qId: null,
-    date: null,
-    qSeq: null,
-    qText: null,
-    qOpt1: null,
-    qOpt2: null,
-    qOpt3: null,
-    qOpt4: null,
-    qOptCorrect: null,
+    qId: '',
+    date: '',
+    qSeq: '',
+    qText: '',
+    qOpt1: '',
+    qOpt2: '',
+    qOpt3: '',
+    qOpt4: '',
+    qOptCorrect: false,
+    createdAt: '',
+    createdBy: '',
+    updatedAt: '',
+    updatedBy: '',
+    status: ''
   },
 });
