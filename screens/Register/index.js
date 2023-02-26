@@ -33,6 +33,7 @@ export default function Register({ history }) {
 
   const router = useRouter();
 
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -64,15 +65,24 @@ export default function Register({ history }) {
     setIsTouched(true);
   };
 
+  const setNameFn = (e) => {
+    setName(e.target.value);
+  };
+
   const setEmailFn = (e) => {
     const email = e.target.value;
     if (email === "") return;
-    console.log(email);
+    // console.log(email);
     validateEmail(email) !== null ? setEmail(email) : Toaster("Invalid Email");
   };
 
   const onSubmit = async (e) => {
     e.preventDefault();
+    if (!name) {
+      console.log("username is required!");
+      Toaster("Username is required!");
+      return;
+    }
     if (password !== confirmPassword) {
       console.log("Passwords did not match!");
       Toaster("Passwords did not match!");
@@ -81,10 +91,9 @@ export default function Register({ history }) {
     console.log(email, password);
 
     try {
-      let signUpResponse = await signUp(email, password);
-      console.log(signUpResponse);
+      await signUp(email, password, name);
       Toaster("Registration Successful.");
-      router.push('/login');
+      router.push("/login");
     } catch (error) {
       console.log(error);
       Toaster("Registration Failed.");
@@ -105,21 +114,30 @@ export default function Register({ history }) {
             <form onSubmit={onSubmit}>
               <IonList>
                 <FormInput
+                  label="Username : "
+                  placeholder="username"
+                  onIonBlur={setNameFn}
+                  value={name}
+                />
+                <FormInput
                   label="Email Id : "
                   placeholder="Email Id"
                   onIonBlur={setEmailFn}
+                  value={email}
                 />
                 <FormInput
                   type="password"
                   label="Enter Password : "
                   placeholder="Enter Password"
                   onIonBlur={(e) => setPassword(e.target.value)}
+                  value={password}
                 />
                 <FormInput
                   type="password"
                   label="Confirm Password : "
                   placeholder="Confirm Password"
                   onIonBlur={(e) => setConfirmPassword(e.target.value)}
+                  value={confirmPassword}
                 />
               </IonList>
               <br />

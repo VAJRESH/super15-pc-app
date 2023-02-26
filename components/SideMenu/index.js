@@ -13,6 +13,7 @@ import {
 } from "@ionic/react";
 import { home, key, lockOpen, person } from "ionicons/icons";
 import { useRouter } from "next/router";
+import { logOut } from "../../helper/firebase.helper";
 import { SidebarMenu } from "../../helper/menu.helper";
 
 export default function SideMenu() {
@@ -28,17 +29,19 @@ export default function SideMenu() {
 
         <IonContent>
           <IonList>
-            {/* <IonListHeader>
-              <p>Go to any screen</p>
-            </IonListHeader> */}
             <IonMenuToggle autoHide={false}>
               {SidebarMenu.map((menu) => {
                 return (
                   <IonItem
                     button
                     key={menu.id}
-                    // routerLink={menu.link}
-                    onClick={() => router.push(menu.link)}
+                    onClick={() => {
+                      if (menu.label === 'Logout') {
+                        logOut();
+                      }
+                      router.push(menu.link)
+                    }
+                    }
                   >
                     <IonIcon slot="start" icon={menu.icon}></IonIcon>
                     <IonLabel>{menu.label}</IonLabel>

@@ -1,12 +1,12 @@
 import { IonApp } from "@ionic/react";
-import Profile from "../screens/Profile";
+import PlayQuiz from "../screens/PlayQuiz";
 
 export default function Home() {
 
   return (
     <>
       <IonApp>
-        <Profile />
+        <PlayQuiz />
       </IonApp>
     </>
   );

@@ -1,0 +1,14 @@
+.iconsrow{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 10px 0;
+}
+.iconsrow .circle {
+    height: 4vw;
+    width: 4vw;
+}
+.iconsrow .star {
+    height: 5vw;
+    width: 5vw;
+}

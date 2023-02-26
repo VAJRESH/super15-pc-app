@@ -42,11 +42,15 @@ import {
 
 import styles from "./createQuiz.module.css";
 import { currentUserAtom } from "../../atom/user.atom";
+import SuperIcons from "../../components/SuperIcons";
 
 export default function CreateQuiz() {
-    const [createQuizState, setCreateQuizState] = useState(0);
-      const [user, setUser] = useRecoilState(currentUserAtom);
+  const [createQuizState, setCreateQuizState] = useState(0);
+  const [user, setUser] = useRecoilState(currentUserAtom);
   const [question, setQuestion] = useRecoilState(questionAtom);
+
+  const [loading, setloading] = useState(true);
+
   const router = useRouter();
   const [presentAlert] = useIonAlert();
   const datetime = useRef(null);
@@ -64,12 +68,30 @@ export default function CreateQuiz() {
       date: e.detail?.value?.split("T")[0],
     });
     setCreateQuizState(1);
-    }
-    
+  }
+
   function hasDuplicates(array) {
     return new Set(array).size !== array.length;
   }
-
+  const clearQuestionRecoil = () => {
+    console.log('function called!')
+    setQuestion({
+      qId: "",
+      date: "",
+      qSeq: "",
+      qText: "",
+      qOpt1: "",
+      qOpt2: "",
+      qOpt3: "",
+      qOpt4: "",
+      qOptCorrect: false,
+      createdAt: "",
+      createdBy: "",
+      updatedAt: "",
+      updatedBy: "",
+      status: "",
+    });
+  };
   const qCollectionRef = collection(db, "questions");
 
   const addQuestion = (newQuestion) => {
@@ -86,7 +108,12 @@ export default function CreateQuiz() {
       });
       return;
     }
-    if (!question.qOpt1 || !question.qOpt2 || !question.qOpt3 || !question.qOpt4  ) {
+    if (
+      !question.qOpt1 ||
+      !question.qOpt2 ||
+      !question.qOpt3 ||
+      !question.qOpt4
+    ) {
       presentAlert({
         header: "Alert",
         subHeader: "Option is empty",
@@ -121,61 +148,39 @@ export default function CreateQuiz() {
       return;
     }
     if (!optionArr.includes(question.qOptCorrect)) {
-        presentAlert({
-          header: "Alert",
-          subHeader: "Reselect Options Again",
-          message: "Correct answer does not match any of the options",
-          buttons: ["OK"],
-        });
+      presentAlert({
+        header: "Alert",
+        subHeader: "Reselect Options Again",
+        message: "Correct answer does not match any of the options",
+        buttons: ["OK"],
+      });
       return;
     }
 
     const { qId, ...sendToStore } = question;
 
     try {
-        await addQuestion({
-          ...sendToStore,
-          createdAt: Timestamp.fromDate(new Date()),
-          createdBy: user?.uid,
-        });
-
-        presentAlert({
-          header: "Alert",
-          subHeader: "Saved in database",
-          message: "This question has been saved in the database.",
-          buttons: ["OK"],
-        });
+      await addQuestion({
+        ...sendToStore,
+        createdAt: Timestamp.fromDate(new Date()),
+        createdBy: user?.uid,
+      });
+      presentAlert({
+        header: "Alert",
+        subHeader: "Saved in database",
+        message: "This question has been saved in the database.",
+        buttons: ["OK"],
+      });
     } catch (error) {
       console.log(error);
     }
-
-    const localFn = () => {
-      console.log('function called!')
-      setQuestion({
-        qId: "",
-        date: "",
-        qSeq: "",
-        qText: "",
-        qOpt1: "",
-        qOpt2: "",
-        qOpt3: "",
-        qOpt4: "",
-        qOptCorrect: false,
-        createdAt: "",
-        createdBy: "",
-        updatedAt: "",
-        updatedBy: "",
-        status: "",
-      });
-    };
-    localFn();
     console.log(question);
   }
 
   useEffect(() => {
     if (!question?.date) {
       setCreateQuizState(0);
-    } 
+    }
     console.log(question);
   }, [question]);
 
@@ -183,6 +188,14 @@ export default function CreateQuiz() {
     const q = query(qCollectionRef, where("date", "==", question.date));
     const snapshot = await getCountFromServer(q);
     const currentQcount = snapshot.data().count;
+    if (currentQcount === 15) {
+      setCreateQuizState(2);
+      // setloading(false);
+      return;
+    } 
+    
+    // setloading(false);
+
     setQuestion({
       ...question,
       qSeq: ++currentQcount,
@@ -208,7 +221,7 @@ export default function CreateQuiz() {
             </IonToolbar>
           </IonHeader>
           <IonContent className="ion-padding">
-            {createQuizState === 0 && (
+            {!loading && createQuizState === 0 && (
               <>
                 <h4>Select Quiz Date</h4>
                 <IonDatetime ref={datetime} onIonChange={onConfirm}>
@@ -223,8 +236,9 @@ export default function CreateQuiz() {
                 </IonDatetime>
               </>
             )}
-            {createQuizState === 1 && (
+            {!loading && createQuizState === 1 && (
               <>
+                <SuperIcons qSeq={question?.qSeq} />
                 <div className={styles.createQuizHeader}>
                   <div>
                     <h4>Quiz Date</h4>
@@ -396,6 +410,25 @@ export default function CreateQuiz() {
                   </button>
                   {/* <button className={styles.next}>Next</button> */}
                 </div>
+              </>
+            )}
+            {!loading && createQuizState === 2 && (
+              <>
+                <h4>Date : {question.date}</h4>
+                <h4>15 Questions already added for this date.</h4>
+                <IonButton
+                  color="danger"
+                  onClick={() => {
+                    // setQuestion({
+                    //   ...question,
+                    //   date: "",
+                    // });
+                    clearQuestionRecoil();
+                    setCreateQuizState(0);
+                  }}
+                >
+                  Select a new date
+                </IonButton>
               </>
             )}
           </IonContent>

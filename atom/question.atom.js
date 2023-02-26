@@ -19,3 +19,8 @@ export const questionAtom = atom({
     status: ''
   },
 });
+
+export const quizAtom = atom({
+  key: "quizAtom",
+  default: [],
+});

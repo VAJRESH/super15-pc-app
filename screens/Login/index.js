@@ -56,12 +56,17 @@ export default function Login() {
   const onSubmit = async (e) => {
     e.preventDefault();
     try {
-      let signUpResponse = await signIn(email, password);
-      console.log(signUpResponse?.user?.uid);
+      let signInResponse = await signIn(email, password);
+      // console.log(signInResponse);
       Toaster("Login Successful.");
       setUser({
-        email: signUpResponse?.user?.email,
-        uid: signUpResponse?.user?.uid,
+        uid: signInResponse?.user.uid,
+        email: signInResponse?.user.email,
+        photoURL: signInResponse?.user.photoURL,
+        accessToken: signInResponse?.user.accessToken,
+        refreshToken: signInResponse?.user?.refreshToken,
+        email: signInResponse?.user?.email,
+        uid: signInResponse?.user?.uid,
       });
       router.push("/dashboard");
     } catch (error) {
@@ -88,12 +93,14 @@ export default function Login() {
               <FormInput
                 label="Email Id : "
                 placeholder="Email Id"
+                value={email}
                 onIonBlur={setEmailFn}
               />
               <FormInput
                 type="password"
                 label="Enter Password : "
                 placeholder="Enter Password"
+                value={password}
                 onIonBlur={(e) => setPassword(e.target.value)}
               />
             </IonList>

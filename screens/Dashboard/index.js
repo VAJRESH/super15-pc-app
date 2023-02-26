@@ -1,26 +1,27 @@
 import {
+  IonAvatar,
   IonButton,
   IonButtons,
   IonContent,
-  IonFooter,
   IonHeader,
   IonIcon,
+  IonItem,
+  IonLabel,
   IonMenuToggle,
   IonPage,
   IonSplitPane,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { ellipsisVertical, ellipsisVerticalOutline, menu } from "ionicons/icons";
+import { ellipsisVertical } from "ionicons/icons";
 import { useRouter } from "next/router";
-import { useRecoilState } from "recoil";
-import { currentUserAtom } from "../../atom/user.atom";
 import IconHeadingText from "../../components/IconHeadingText";
 import SideMenu from "../../components/SideMenu";
+import { useAuth } from "../../helper/firebase.helper";
 import styles from "./dashboard.module.css";
 
 export default function Dashboard() {
-  const [user, setUser] = useRecoilState(currentUserAtom);
+  const user = useAuth();
   const router = useRouter();
 
   return (
@@ -32,11 +33,24 @@ export default function Dashboard() {
             <IonButtons slot="end">
               <IonMenuToggle>
                 <IonButton>
-                  <IonIcon slot="icon-only" icon={ellipsisVertical} color="black"></IonIcon>
+                  <IonIcon slot="icon-only" icon={ellipsisVertical}></IonIcon>
                 </IonButton>
               </IonMenuToggle>
             </IonButtons>
-            <IonTitle>Hello, Joy</IonTitle>
+
+            <IonItem lines="none" onClick={() => router.push('/profile')}>
+              <IonAvatar slot="start">
+                <img
+                  src={
+                    user?.photoURL ||
+                    "https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png"
+                  }
+                />
+              </IonAvatar>
+              <IonLabel>
+                Hello, <b>{user?.displayName?.split(" ")[0] || "username"}</b>
+              </IonLabel>
+            </IonItem>
           </IonToolbar>
         </IonHeader>
         <IonContent className="ion-padding">
@@ -44,14 +58,18 @@ export default function Dashboard() {
           <div className={styles.dashboardBody}>
             <div className={styles.dashboardKpis}></div>
             <div className={styles.dashboardBtns}>
-              <button>Play Demo</button>
-              <button>Play Quiz</button>
+              <button onClick={() => router.push("/play-quiz")}>
+                Play Demo
+              </button>
+              <button onClick={() => router.push("/play-quiz")}>
+                Play Quiz
+              </button>
             </div>
             <div className={styles.dashboardEdits}>
               <IconHeadingText
                 img="/images/dashicons_email-alt2.png"
-                heading="Update Email Address"
-                data={user.email}
+                heading="Your Email Address"
+                data={user?.email}
               />
               <IconHeadingText
                 img="/images/carbon_password.png"

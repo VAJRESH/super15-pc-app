@@ -1,7 +1,16 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
-import { createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
+import {
+  createUserWithEmailAndPassword,
+  getAuth,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  updateProfile,
+  signOut,
+} from "firebase/auth";
+import { useEffect, useState } from "react";
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -20,10 +29,54 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 export const auth = getAuth();
+export const storage = getStorage();
 
-export const signUp = async (email, password) => {
-  return createUserWithEmailAndPassword(auth, email, password);
+export const signUp = async (email, password, name) => {
+  try {
+    await createUserWithEmailAndPassword(auth, email, password).catch((err) =>
+      console.log(err)
+    );
+    // await sendEmailVerification(auth.currentUser).catch((err) =>
+    //   console.log(err)
+    // );
+    await updateProfile(auth.currentUser, { displayName: name }).catch((err) =>
+      console.log(err)
+    );
+  } catch (err) {
+    console.log(err);
+  }
 };
 export const signIn = (email, password) => {
   return signInWithEmailAndPassword(auth, email, password);
 };
+export const logOut = () => {
+  signOut(auth)
+    .then(() => {
+      console.log("Sign-out successful.");
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
+
+export function useAuth() {
+  const [currentUser, setCurrentUser] = useState();
+
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, (user) => setCurrentUser(user));
+    return unsub;
+  }, []);
+
+  return currentUser;
+}
+
+export async function upload(file, currentUser, setLoading, setAvatar) {
+  const fileRef = ref(storage, currentUser.uid + ".png");
+  setLoading(true);
+  const snapshot = await uploadBytes(fileRef, file);
+  const photoURL = await getDownloadURL(fileRef);
+  updateProfile(currentUser, { photoURL });
+  setAvatar(photoURL);
+  setLoading(false);
+  return photoURL;
+}

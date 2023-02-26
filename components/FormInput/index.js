@@ -7,6 +7,8 @@ export default function FormInput({
   placeholder = "",
   onIonInput = () => {},
   onIonBlur = () => {},
+  disabled = false,
+  value = "",
 }) {
   return (
     <IonItem style={{ margin: "20px auto" }}>
@@ -14,9 +16,11 @@ export default function FormInput({
       <IonInput
         type={type}
         name={name}
+        value={value}
         placeholder={placeholder}
         onIonInput={onIonInput}
         onIonBlur={onIonBlur}
+        disabled={disabled}
       ></IonInput>
     </IonItem>
   );
