@@ -16,7 +16,7 @@ import { collection, getDocs, onSnapshot } from "firebase/firestore";
 import { ellipsisVertical, menu } from "ionicons/icons";
 import { useEffect, useState } from "react";
 import { useRecoilValue } from "recoil";
-import { currentUserAtom } from "../../atom/user.atom";
+import { CurrentUserAtom } from "../../atom/user.atom";
 import Leaderboard from "../../components/Leaderboard";
 import QuestionBlock from "../../components/QuestionBlock";
 import SideMenu from "../../components/SideMenu";
@@ -24,7 +24,7 @@ import SuperIcons from "../../components/SuperIcons";
 import { db } from "../../helper/firebase.helper";
 
 export default function PlayQuiz() {
-  const user = useRecoilValue(currentUserAtom);
+  const user = useRecoilValue(CurrentUserAtom);
 
   const qCollectionRef = collection(db, "questions");
 
@@ -45,7 +45,6 @@ export default function PlayQuiz() {
 
     console.log(dbQuestions);
   }, []);
-
 
   return (
     <>

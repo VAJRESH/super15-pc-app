@@ -41,12 +41,12 @@ import {
 } from "firebase/firestore";
 
 import styles from "./createQuiz.module.css";
-import { currentUserAtom } from "../../atom/user.atom";
+import { CurrentUserAtom } from "../../atom/user.atom";
 import SuperIcons from "../../components/SuperIcons";
 
 export default function CreateQuiz() {
   const [createQuizState, setCreateQuizState] = useState(0);
-  const [user, setUser] = useRecoilState(currentUserAtom);
+  const [user, setUser] = useRecoilState(CurrentUserAtom);
   const [question, setQuestion] = useRecoilState(questionAtom);
 
   const [loading, setloading] = useState(true);
@@ -74,7 +74,7 @@ export default function CreateQuiz() {
     return new Set(array).size !== array.length;
   }
   const clearQuestionRecoil = () => {
-    console.log('function called!')
+    console.log("function called!");
     setQuestion({
       qId: "",
       date: "",
@@ -192,8 +192,8 @@ export default function CreateQuiz() {
       setCreateQuizState(2);
       // setloading(false);
       return;
-    } 
-    
+    }
+
     // setloading(false);
 
     setQuestion({

@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["./*"],
+      "@/atom/*": ["./atom/*"],
+      "@/component/*": ["./components/*"],
+      "@/helper/*": ["./helper/*"],
+      "@/hooks/*": ["./hooks/*"],
+      "@/screens/*": ["./screens/*"],
+      "@/pages/*": ["./pages/*"],
+      "@/styles/*": ["./styles/*"],
+      "@/services/*": ["./services/*"]
+    },
+    "baseUrl": "./"
+  }
+}

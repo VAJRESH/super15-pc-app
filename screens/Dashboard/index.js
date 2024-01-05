@@ -1,3 +1,4 @@
+import { DEFAULT_PROFILE_PIC } from "@/helper/constants.helper";
 import {
   IonAvatar,
   IonButton,
@@ -10,18 +11,18 @@ import {
   IonMenuToggle,
   IonPage,
   IonSplitPane,
-  IonTitle,
   IonToolbar,
 } from "@ionic/react";
 import { ellipsisVertical } from "ionicons/icons";
 import { useRouter } from "next/router";
+import { useRecoilValue } from "recoil";
 import IconHeadingText from "../../components/IconHeadingText";
 import SideMenu from "../../components/SideMenu";
-import { useAuth } from "../../helper/firebase.helper";
 import styles from "./dashboard.module.css";
+import { CurrentUserAtom } from "@/atom/user.atom";
 
 export default function Dashboard() {
-  const user = useAuth();
+  const user = useRecoilValue(CurrentUserAtom);
   const router = useRouter();
 
   return (
@@ -38,17 +39,12 @@ export default function Dashboard() {
               </IonMenuToggle>
             </IonButtons>
 
-            <IonItem lines="none" onClick={() => router.push('/profile')}>
+            <IonItem lines="none" onClick={() => router.push("/profile")}>
               <IonAvatar slot="start">
-                <img
-                  src={
-                    user?.photoURL ||
-                    "https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png"
-                  }
-                />
+                <img src={user?.photoURL || DEFAULT_PROFILE_PIC} />
               </IonAvatar>
               <IonLabel>
-                Hello, <b>{user?.displayName?.split(" ")[0] || "username"}</b>
+                Hello, <b>{user?.displayName?.split(" ")[0] || ""}</b>
               </IonLabel>
             </IonItem>
           </IonToolbar>

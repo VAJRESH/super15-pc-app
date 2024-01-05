@@ -1,16 +1,19 @@
 // Import the functions you need from the SDKs you need
+import { CurrentUserAtom, getUserDataObj } from "@/atom/user.atom";
 import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
-import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 import {
   createUserWithEmailAndPassword,
   getAuth,
   onAuthStateChanged,
   signInWithEmailAndPassword,
-  updateProfile,
   signOut,
+  updateProfile,
 } from "firebase/auth";
-import { useEffect, useState } from "react";
+import { getFirestore } from "firebase/firestore";
+import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
+import { useRecoilState } from "recoil";
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -34,13 +37,13 @@ export const storage = getStorage();
 export const signUp = async (email, password, name) => {
   try {
     await createUserWithEmailAndPassword(auth, email, password).catch((err) =>
-      console.log(err)
+      console.log(err),
     );
     // await sendEmailVerification(auth.currentUser).catch((err) =>
     //   console.log(err)
     // );
     await updateProfile(auth.currentUser, { displayName: name }).catch((err) =>
-      console.log(err)
+      console.log(err),
     );
   } catch (err) {
     console.log(err);
@@ -58,17 +61,6 @@ export const logOut = () => {
       console.log(error);
     });
 };
-
-export function useAuth() {
-  const [currentUser, setCurrentUser] = useState();
-
-  useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (user) => setCurrentUser(user));
-    return unsub;
-  }, []);
-
-  return currentUser;
-}
 
 export async function upload(file, currentUser, setLoading, setAvatar) {
   const fileRef = ref(storage, currentUser.uid + ".png");

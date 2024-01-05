@@ -1,37 +1,24 @@
+import { ERROR_MSG } from "@/helper/constants.helper";
 import {
-  IonButton,
-  IonButtons,
   IonContent,
-  IonHeader,
-  IonIcon,
   IonImg,
   IonList,
-  IonMenuButton,
-  IonMenuToggle,
-  IonNavLink,
   IonPage,
-  IonProgressBar,
-  IonSplitPane,
-  IonTitle,
-  IonToolbar,
   useIonToast,
 } from "@ionic/react";
-import { menu } from "ionicons/icons";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { useRecoilState } from "recoil";
-import { currentUserAtom } from "../../atom/user.atom";
+import { CurrentUserAtom } from "../../atom/user.atom";
 import FormInput from "../../components/FormInput";
-import SideMenu from "../../components/SideMenu";
 import { signIn } from "../../helper/firebase.helper";
-import Register from "../Register";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const router = useRouter();
-  const [user, setUser] = useRecoilState(currentUserAtom);
+  const [user, setUser] = useRecoilState(CurrentUserAtom);
 
   const [present] = useIonToast();
 
@@ -45,7 +32,7 @@ export default function Login() {
 
   const validateEmail = (email) => {
     return email.match(
-      /^(?=.{1,254}$)(?=.{1,64}@)[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/
+      /^(?=.{1,254}$)(?=.{1,64}@)[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/,
     );
   };
   const setEmailFn = (e) => {
@@ -57,7 +44,6 @@ export default function Login() {
     e.preventDefault();
     try {
       let signInResponse = await signIn(email, password);
-      // console.log(signInResponse);
       Toaster("Login Successful.");
       setUser({
         uid: signInResponse?.user.uid,
@@ -70,7 +56,10 @@ export default function Login() {
       });
       router.push("/dashboard");
     } catch (error) {
-      console.log(error);
+      console.log(error, error?.message);
+      if (error?.message?.includes("wrong-password"))
+        return Toaster(ERROR_MSG?.wrongPassword);
+
       Toaster("Login Failed.");
     }
   };
@@ -91,10 +80,12 @@ export default function Login() {
           >
             <IonList>
               <FormInput
+                type="email"
                 label="Email Id : "
                 placeholder="Email Id"
                 value={email}
                 onIonBlur={setEmailFn}
+                onIonInput={setEmailFn}
               />
               <FormInput
                 type="password"
@@ -102,6 +93,7 @@ export default function Login() {
                 placeholder="Enter Password"
                 value={password}
                 onIonBlur={(e) => setPassword(e.target.value)}
+                onIonInput={(e) => setPassword(e.target.value)}
               />
             </IonList>
 
