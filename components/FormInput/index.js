@@ -12,8 +12,9 @@ export default function FormInput({
 }) {
   return (
     <IonItem style={{ margin: "20px auto" }}>
-      <IonLabel position="floating">{label}</IonLabel>
       <IonInput
+        label={label}
+        labelPlacement="floating"
         type={type}
         name={name}
         value={value}

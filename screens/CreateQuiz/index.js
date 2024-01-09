@@ -1,3 +1,4 @@
+import { DEFAULTS } from "@/helper/constants.helper";
 import {
   IonButton,
   IonButtons,
@@ -17,190 +18,26 @@ import {
   IonTextarea,
   IonTitle,
   IonToolbar,
-  useIonAlert,
 } from "@ionic/react";
-import { ellipsisVertical, logIn } from "ionicons/icons";
-import { useRouter } from "next/router";
-import { useEffect, useRef, useState } from "react";
-import { useRecoilState } from "recoil";
-import { questionAtom } from "../../atom/question.atom";
+import { ellipsisVertical } from "ionicons/icons";
+import { getQuestionObj } from "../../atom/quiz.atom";
 import SideMenu from "../../components/SideMenu";
-import { db } from "../../helper/firebase.helper";
-import {
-  collection,
-  getDoc,
-  getDocs,
-  addDoc,
-  updateDoc,
-  deleteDoc,
-  doc,
-  query,
-  where,
-  getCountFromServer,
-  Timestamp,
-} from "firebase/firestore";
-
-import styles from "./createQuiz.module.css";
-import { CurrentUserAtom } from "../../atom/user.atom";
 import SuperIcons from "../../components/SuperIcons";
+import styles from "./createQuiz.module.css";
+import useHandleCreatQuiz from "@/hooks/useHandleCreatQuiz";
 
 export default function CreateQuiz() {
-  const [createQuizState, setCreateQuizState] = useState(0);
-  const [user, setUser] = useRecoilState(CurrentUserAtom);
-  const [question, setQuestion] = useRecoilState(questionAtom);
+  const {
+    ionDatetimePickerRef,
+    monthlyQuizDataArr,
+    quizData,
+    handleQuizDataUpdate,
+    handleDateConfirm,
 
-  const [loading, setloading] = useState(true);
-
-  const router = useRouter();
-  const [presentAlert] = useIonAlert();
-  const datetime = useRef(null);
-
-  const reset = () => {
-    datetime.current?.reset();
-  };
-  const confirm = () => {
-    datetime.current?.confirm();
-  };
-
-  function onConfirm(e) {
-    setQuestion({
-      ...question,
-      date: e.detail?.value?.split("T")[0],
-    });
-    setCreateQuizState(1);
-  }
-
-  function hasDuplicates(array) {
-    return new Set(array).size !== array.length;
-  }
-  const clearQuestionRecoil = () => {
-    console.log("function called!");
-    setQuestion({
-      qId: "",
-      date: "",
-      qSeq: "",
-      qText: "",
-      qOpt1: "",
-      qOpt2: "",
-      qOpt3: "",
-      qOpt4: "",
-      qOptCorrect: false,
-      createdAt: "",
-      createdBy: "",
-      updatedAt: "",
-      updatedBy: "",
-      status: "",
-    });
-  };
-  const qCollectionRef = collection(db, "questions");
-
-  const addQuestion = (newQuestion) => {
-    return addDoc(qCollectionRef, newQuestion);
-  };
-
-  async function saveQuestionToFirestore() {
-    if (!question.qText) {
-      presentAlert({
-        header: "Alert",
-        subHeader: "Question is empty",
-        message: "Quiz must have some question texts.",
-        buttons: ["OK"],
-      });
-      return;
-    }
-    if (
-      !question.qOpt1 ||
-      !question.qOpt2 ||
-      !question.qOpt3 ||
-      !question.qOpt4
-    ) {
-      presentAlert({
-        header: "Alert",
-        subHeader: "Option is empty",
-        message: "Quiz must have 4 options",
-        buttons: ["OK"],
-      });
-      return;
-    }
-    if (!question.qOptCorrect) {
-      presentAlert({
-        header: "Alert",
-        subHeader: "Choose Correct Option",
-        message: "Quiz must have one correct option",
-        buttons: ["OK"],
-      });
-      return;
-    }
-
-    let optionArr = [
-      question.qOpt1,
-      question.qOpt2,
-      question.qOpt3,
-      question.qOpt4,
-    ];
-    if (hasDuplicates(optionArr)) {
-      presentAlert({
-        header: "Alert",
-        subHeader: "Duplicate Options",
-        message: "Cannot have same option more than once.",
-        buttons: ["OK"],
-      });
-      return;
-    }
-    if (!optionArr.includes(question.qOptCorrect)) {
-      presentAlert({
-        header: "Alert",
-        subHeader: "Reselect Options Again",
-        message: "Correct answer does not match any of the options",
-        buttons: ["OK"],
-      });
-      return;
-    }
-
-    const { qId, ...sendToStore } = question;
-
-    try {
-      await addQuestion({
-        ...sendToStore,
-        createdAt: Timestamp.fromDate(new Date()),
-        createdBy: user?.uid,
-      });
-      presentAlert({
-        header: "Alert",
-        subHeader: "Saved in database",
-        message: "This question has been saved in the database.",
-        buttons: ["OK"],
-      });
-    } catch (error) {
-      console.log(error);
-    }
-    console.log(question);
-  }
-
-  useEffect(() => {
-    if (!question?.date) {
-      setCreateQuizState(0);
-    }
-    console.log(question);
-  }, [question]);
-
-  useEffect(async () => {
-    const q = query(qCollectionRef, where("date", "==", question.date));
-    const snapshot = await getCountFromServer(q);
-    const currentQcount = snapshot.data().count;
-    if (currentQcount === 15) {
-      setCreateQuizState(2);
-      // setloading(false);
-      return;
-    }
-
-    // setloading(false);
-
-    setQuestion({
-      ...question,
-      qSeq: ++currentQcount,
-    });
-  }, [createQuizState]);
+    questionData,
+    handleQuestionDataUpdate,
+    handleSaveQuestion,
+  } = useHandleCreatQuiz();
 
   return (
     <>
@@ -220,215 +57,244 @@ export default function CreateQuiz() {
               <IonTitle>Create Quiz</IonTitle>
             </IonToolbar>
           </IonHeader>
+
           <IonContent className="ion-padding">
-            {!loading && createQuizState === 0 && (
+            {quizData?.date == null && (
               <>
-                <h4>Select Quiz Date</h4>
-                <IonDatetime ref={datetime} onIonChange={onConfirm}>
-                  <IonButtons slot="buttons">
-                    <IonButton color="danger" onClick={reset}>
-                      Reset
-                    </IonButton>
-                    <IonButton color="primary" onClick={confirm}>
-                      Confirm
-                    </IonButton>
-                  </IonButtons>
-                </IonDatetime>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    gap: "1em",
+                  }}
+                >
+                  <h4>Select Quiz Date</h4>
+                  <IonDatetime
+                    ref={ionDatetimePickerRef}
+                    id="calendar"
+                    presentation="date"
+                    highlightedDates={monthlyQuizDataArr?.map((quiz) => {
+                      const isQuizComplete =
+                        quiz?.totalQuestions === DEFAULTS?.totalQuestions;
+
+                      return {
+                        date: quiz?.date,
+                        textColor: isQuizComplete ? "#09721b" : "#800080",
+                        backgroundColor: isQuizComplete ? "#c8e5d0" : "#ffc0cb",
+                      };
+                    })}
+                    onIonChange={(e) =>
+                      handleDateConfirm(e?.detail?.value?.split("T")?.[0])
+                    }
+                  >
+                    <IonButtons slot="buttons">
+                      <IonButton
+                        color="danger"
+                        onClick={() => ionDatetimePickerRef?.current?.reset()}
+                      >
+                        Reset
+                      </IonButton>
+                      <IonButton
+                        color="primary"
+                        onClick={() => ionDatetimePickerRef?.current?.confirm()}
+                      >
+                        Confirm
+                      </IonButton>
+                    </IonButtons>
+                  </IonDatetime>
+                </div>
               </>
             )}
-            {!loading && createQuizState === 1 && (
+
+            {quizData?.date != null && (
               <>
-                <SuperIcons qSeq={question?.qSeq} />
-                <div className={styles.createQuizHeader}>
-                  <div>
-                    <h4>Quiz Date</h4>
-                    <p>
-                      {question.date}{" "}
-                      <img
-                        src="/images/carbon_edit (1).png"
-                        alt=""
-                        onClick={() => {
-                          setCreateQuizState(0);
-                        }}
-                      />
-                    </p>
-                  </div>
-                  <div>
-                    <h4>Question Number</h4>
-                    <p>{question.qSeq}</p>
-                    {/* <IonList>
+                {questionData?.qSeq != null && (
+                  <>
+                    <SuperIcons qSeq={questionData?.qSeq} />
+                    <div className={styles.createQuizHeader}>
+                      <div>
+                        <h4>Quiz Date</h4>
+                        <p>
+                          {new Date(quizData?.date)?.toDateString()}{" "}
+                          <img
+                            src="/images/carbon_edit (1).png"
+                            alt=""
+                            onClick={() => handleQuizDataUpdate({ date: null })}
+                          />
+                        </p>
+                      </div>
+
+                      <div>
+                        <h4>Question Number</h4>
+                        <p>{questionData.qSeq}</p>
+                      </div>
+                    </div>
+
+                    <IonList>
                       <IonItem>
                         <IonSelect
-                          placeholder="Select Q. No."
+                          selectedText={`Select Question Number: ${questionData?.qSeq}`}
+                          value={questionData?.qSeq}
                           onIonChange={(e) => {
-                            setQuestion({
-                              ...question,
-                              qSeq: e.target?.value,
-                            });
+                            const qSeq = e.target?.value;
+                            const questionData =
+                              quizData?.questions?.[qSeq - 1];
+
+                            handleQuestionDataUpdate(
+                              getQuestionObj({
+                                ...(questionData || {}),
+                                qSeq,
+                              }),
+                            );
                           }}
                         >
-                          <IonSelectOption value="1">1</IonSelectOption>
-                          <IonSelectOption value="2">2</IonSelectOption>
-                          <IonSelectOption value="3">3</IonSelectOption>
-                          <IonSelectOption value="4">4</IonSelectOption>
-                          <IonSelectOption value="5">5</IonSelectOption>
-                          <IonSelectOption value="6">6</IonSelectOption>
-                          <IonSelectOption value="7">7</IonSelectOption>
-                          <IonSelectOption value="8">8</IonSelectOption>
-                          <IonSelectOption value="9">9</IonSelectOption>
-                          <IonSelectOption value="10">10</IonSelectOption>
-                          <IonSelectOption value="11">11</IonSelectOption>
-                          <IonSelectOption value="12">12</IonSelectOption>
-                          <IonSelectOption value="13">13</IonSelectOption>
-                          <IonSelectOption value="14">14</IonSelectOption>
-                          <IonSelectOption value="15">15</IonSelectOption>
+                          {Array(DEFAULTS?.totalQuestions)
+                            .fill()
+                            .map((_, index) => (
+                              <IonSelectOption
+                                key={index}
+                                value={index + 1}
+                                disabled={quizData?.totalQuestions < index}
+                              >
+                                {index + 1}
+                              </IonSelectOption>
+                            ))}
                         </IonSelect>
                       </IonItem>
-                    </IonList> */}
-                  </div>
-                </div>
-                <h4>Add Question</h4>
-                <IonItem>
-                  <IonTextarea
-                    placeholder="Add question here"
-                    autoGrow={true}
-                    spellcheck={true}
-                    rows={4}
-                    value={question.qText}
-                    onIonBlur={(e) =>
-                      setQuestion({
-                        ...question,
-                        qText: e.target?.value,
-                      })
-                    }
-                  ></IonTextarea>
-                </IonItem>
-                <h4>Enter options and choose correct answer</h4>
-                <IonRadioGroup
-                  value={question?.qOptCorrect}
-                  //   allowEmptySelection={true}
-                  onIonChange={(e) => {
-                    if (e.target?.value === null) {
-                      presentAlert({
-                        header: "Alert",
-                        subHeader: "Option is empty",
-                        message: "Please add all four options!",
-                        buttons: ["OK"],
-                      });
-                      e.target.attributes("checked", false);
-                      return;
-                    }
-                    setQuestion({
-                      ...question,
-                      qOptCorrect: e.target?.value,
-                    });
-                  }}
-                >
-                  <div>
-                    Option 1{" "}
-                    <input
-                      type="text"
-                      value={question?.qOpt1}
-                      onChange={(e) => {
-                        setQuestion({
-                          ...question,
-                          qOpt1: e.target?.value,
-                        });
-                      }}
-                    />
-                    <IonRadio
-                      mode="md"
-                      slot="end"
-                      value={question?.qOpt1}
-                      disabled={!question?.qOpt1}
-                    ></IonRadio>
-                  </div>
-                  <div>
-                    Option 2{" "}
-                    <input
-                      type="text"
-                      value={question?.qOpt2}
-                      onChange={(e) => {
-                        setQuestion({
-                          ...question,
-                          qOpt2: e.target?.value,
-                        });
-                      }}
-                    />
-                    <IonRadio
-                      mode="md"
-                      slot="end"
-                      value={question?.qOpt2}
-                      disabled={!question?.qOpt2}
-                    ></IonRadio>
-                  </div>
-                  <div>
-                    Option 3{" "}
-                    <input
-                      type="text"
-                      value={question?.qOpt3}
-                      onChange={(e) => {
-                        setQuestion({
-                          ...question,
-                          qOpt3: e.target?.value,
-                        });
-                      }}
-                    />
-                    <IonRadio
-                      mode="md"
-                      slot="end"
-                      value={question?.qOpt3}
-                      disabled={!question?.qOpt3}
-                    ></IonRadio>
-                  </div>
-                  <div>
-                    Option 4{" "}
-                    <input
-                      type="text"
-                      value={question?.qOpt4}
-                      onChange={(e) => {
-                        setQuestion({
-                          ...question,
-                          qOpt4: e.target?.value,
-                        });
-                      }}
-                    />
-                    <IonRadio
-                      mode="md"
-                      slot="end"
-                      value={question?.qOpt4}
-                      disabled={!question?.qOpt4}
-                    ></IonRadio>
-                  </div>
-                </IonRadioGroup>
-                <div className={styles.buttonGrp}>
-                  <button
-                    className={styles.save}
-                    onClick={saveQuestionToFirestore}
-                  >
-                    Save & Next
-                  </button>
-                  {/* <button className={styles.next}>Next</button> */}
-                </div>
-              </>
-            )}
-            {!loading && createQuizState === 2 && (
-              <>
-                <h4>Date : {question.date}</h4>
-                <h4>15 Questions already added for this date.</h4>
-                <IonButton
-                  color="danger"
-                  onClick={() => {
-                    // setQuestion({
-                    //   ...question,
-                    //   date: "",
-                    // });
-                    clearQuestionRecoil();
-                    setCreateQuizState(0);
-                  }}
-                >
-                  Select a new date
-                </IonButton>
+                    </IonList>
+
+                    <h4>Add Question</h4>
+                    <IonItem>
+                      <IonTextarea
+                        placeholder="Add question here"
+                        autoGrow={true}
+                        spellcheck={true}
+                        rows={4}
+                        class={styles.textarea}
+                        value={questionData.qText}
+                        onIonChange={(e) =>
+                          handleQuestionDataUpdate({ qText: e.target?.value })
+                        }
+                      ></IonTextarea>
+                    </IonItem>
+
+                    <h4>Enter options and choose correct answer</h4>
+                    <IonRadioGroup
+                      value={questionData?.qOptCorrectIndex}
+                      onIonChange={(e) =>
+                        handleQuestionDataUpdate({
+                          qOptCorrectIndex: e.target?.value,
+                        })
+                      }
+                    >
+                      {Array(4)
+                        .fill()
+                        .map((_, index) => (
+                          <div key={index}>
+                            Option {index + 1}{" "}
+                            <input
+                              type="text"
+                              value={questionData?.[`qOpt${index + 1}`]}
+                              onChange={(e) =>
+                                handleQuestionDataUpdate({
+                                  [`qOpt${index + 1}`]: e.target?.value,
+                                })
+                              }
+                            />
+                            <IonRadio
+                              mode="md"
+                              slot="end"
+                              value={index + 1}
+                              disabled={!questionData?.[`qOpt${index + 1}`]}
+                            ></IonRadio>
+                          </div>
+                        ))}
+                    </IonRadioGroup>
+
+                    <div className={styles.buttonGrp}>
+                      <button
+                        className={styles.back}
+                        onClick={() => handleQuizDataUpdate({ date: null })}
+                      >
+                        Back
+                      </button>
+
+                      <button
+                        className={styles.save}
+                        disabled={
+                          !quizData?.quizId ||
+                          !questionData?.qSeq ||
+                          !questionData?.qText ||
+                          !questionData?.qOpt1 ||
+                          !questionData?.qOpt2 ||
+                          !questionData?.qOpt3 ||
+                          !questionData?.qOpt4 ||
+                          !questionData?.qOptCorrectIndex
+                        }
+                        onClick={handleSaveQuestion}
+                      >
+                        {questionData?.qSeq <= quizData?.totalQuestions
+                          ? "Update"
+                          : "Save & Next"}
+                      </button>
+                    </div>
+                  </>
+                )}
+
+                {quizData?.totalQuestions === DEFAULTS?.totalQuestions &&
+                  questionData?.qSeq == null && (
+                    <>
+                      <h4>Date : {new Date(quizData?.date)?.toDateString()}</h4>
+                      <h4>
+                        {DEFAULTS?.totalQuestions} Questions already added for
+                        this date.
+                      </h4>
+
+                      <IonList>
+                        <IonItem>
+                          <IonSelect
+                            selectedText={`Select Question Number: ${
+                              questionData?.qSeq || ""
+                            }`}
+                            value={questionData?.qSeq}
+                            onIonChange={(e) => {
+                              const qSeq = e.target?.value;
+                              const questionData =
+                                quizData?.questions?.[qSeq - 1];
+
+                              handleQuestionDataUpdate(
+                                getQuestionObj({
+                                  ...(questionData || {}),
+                                  qSeq,
+                                }),
+                              );
+                            }}
+                          >
+                            {Array(DEFAULTS?.totalQuestions)
+                              .fill()
+                              .map((_, index) => (
+                                <IonSelectOption
+                                  key={index}
+                                  value={index + 1}
+                                  disabled={quizData?.totalQuestions < index}
+                                >
+                                  {index + 1}
+                                </IonSelectOption>
+                              ))}
+                          </IonSelect>
+                        </IonItem>
+                      </IonList>
+
+                      <IonButton
+                        color="danger"
+                        onClick={() => handleQuizDataUpdate({ date: null })}
+                      >
+                        Select a new date
+                      </IonButton>
+                    </>
+                  )}
               </>
             )}
           </IonContent>

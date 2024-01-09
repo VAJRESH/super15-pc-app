@@ -1,4 +1,8 @@
-import { DEFAULT_PROFILE_PIC } from "@/helper/constants.helper";
+import { SubscriptionAtom } from "@/atom/global.atom";
+import { CurrentUserAtom } from "@/atom/user.atom";
+import { DEFAULTS } from "@/helper/constants.helper";
+import useHandlePlayQuiz from "@/hooks/useHandlePlayQuiz";
+import useHandleSubscription from "@/hooks/useHandleSubscription";
 import {
   IonAvatar,
   IonButton,
@@ -19,11 +23,14 @@ import { useRecoilValue } from "recoil";
 import IconHeadingText from "../../components/IconHeadingText";
 import SideMenu from "../../components/SideMenu";
 import styles from "./dashboard.module.css";
-import { CurrentUserAtom } from "@/atom/user.atom";
 
 export default function Dashboard() {
+  const subscription = useRecoilValue(SubscriptionAtom);
   const user = useRecoilValue(CurrentUserAtom);
   const router = useRouter();
+
+  const { loadUserSubscription } = useHandleSubscription();
+  const { quizData } = useHandlePlayQuiz();
 
   return (
     <IonSplitPane when="sm" contentId="main-content">
@@ -41,7 +48,7 @@ export default function Dashboard() {
 
             <IonItem lines="none" onClick={() => router.push("/profile")}>
               <IonAvatar slot="start">
-                <img src={user?.photoURL || DEFAULT_PROFILE_PIC} />
+                <img src={user?.photoURL || DEFAULTS?.profilePic} />
               </IonAvatar>
               <IonLabel>
                 Hello, <b>{user?.displayName?.split(" ")[0] || ""}</b>
@@ -57,7 +64,20 @@ export default function Dashboard() {
               <button onClick={() => router.push("/play-quiz")}>
                 Play Demo
               </button>
-              <button onClick={() => router.push("/play-quiz")}>
+              <button
+                disabled={quizData?.totalQuestions !== DEFAULTS.totalQuestions}
+                onClick={() => {
+                  if (!subscription?.userId) {
+                    return loadUserSubscription().then((res) => {
+                      if (!res?.userId) return;
+
+                      router.push("/play-quiz");
+                    });
+                  }
+
+                  router.push("/play-quiz");
+                }}
+              >
                 Play Quiz
               </button>
             </div>

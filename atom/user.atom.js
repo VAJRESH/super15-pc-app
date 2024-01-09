@@ -1,4 +1,4 @@
-import { DEFAULT_PROFILE_PIC } from "@/helper/constants.helper";
+import { DEFAULTS } from "@/helper/constants.helper";
 import { atom } from "recoil";
 
 export const CurrentUserAtom = atom({
@@ -12,7 +12,7 @@ export function getUserDataObj(data = {}) {
     displayName: data?.displayName || null,
     email: data?.email || null,
     phoneNumber: data?.phoneNumber || null,
-    photoURL: data?.photoURL || DEFAULT_PROFILE_PIC,
+    photoURL: data?.photoURL || DEFAULTS?.profilePic,
     accessToken: data?.accessToken || null,
     expirationTime: data?.expirationTime || null,
     refreshToken: data?.refreshToken || null,

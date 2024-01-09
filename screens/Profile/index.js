@@ -1,3 +1,5 @@
+import { DEFAULTS } from "@/helper/constants.helper";
+import { useAuth } from "@/hooks/useAuth";
 import {
   IonButton,
   IonButtons,
@@ -13,21 +15,19 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { ellipsisVertical } from "ionicons/icons";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRecoilValue } from "recoil";
 import { CurrentUserAtom } from "../../atom/user.atom";
 import FormInput from "../../components/FormInput";
 import SideMenu from "../../components/SideMenu";
 import { upload } from "../../helper/firebase.helper";
 import styles from "./profile.module.css";
-import { DEFAULT_PROFILE_PIC } from "@/helper/constants.helper";
-import { useAuth } from "@/hooks/useAuth";
 
 export default function Profile() {
   const user = useRecoilValue(CurrentUserAtom);
   const currentUser = useAuth();
 
-  const [avatar, setAvatar] = useState(user?.photoURL || DEFAULT_PROFILE_PIC);
+  const [avatar, setAvatar] = useState(user?.photoURL || DEFAULTS?.profilePic);
 
   const [loading, setLoading] = useState(false);
 
