@@ -37,3 +37,5 @@ export const MONTHS = [
   "November",
   "December",
 ];
+
+export const ADMIN_UIDS = ["dYuHjusZ5hXX9PuCtvna6ULezwu1"];
