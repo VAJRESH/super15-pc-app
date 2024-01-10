@@ -1,8 +1,6 @@
-import { SubscriptionAtom } from "@/atom/global.atom";
 import { CurrentUserAtom } from "@/atom/user.atom";
 import { DEFAULTS } from "@/helper/constants.helper";
 import useHandlePlayQuiz from "@/hooks/useHandlePlayQuiz";
-import useHandleSubscription from "@/hooks/useHandleSubscription";
 import {
   IonAvatar,
   IonButton,
@@ -25,12 +23,10 @@ import SideMenu from "../../components/SideMenu";
 import styles from "./dashboard.module.css";
 
 export default function Dashboard() {
-  const subscription = useRecoilValue(SubscriptionAtom);
   const user = useRecoilValue(CurrentUserAtom);
   const router = useRouter();
 
-  const { loadUserSubscription } = useHandleSubscription();
-  const { quizData } = useHandlePlayQuiz();
+  const { handlePlayQuiz } = useHandlePlayQuiz();
 
   return (
     <IonSplitPane when="sm" contentId="main-content">
@@ -56,31 +52,20 @@ export default function Dashboard() {
             </IonItem>
           </IonToolbar>
         </IonHeader>
+
         <IonContent className="ion-padding">
           {/* Not compatible with firebase 9. Please update your app. */}
           <div className={styles.dashboardBody}>
             <div className={styles.dashboardKpis}></div>
             <div className={styles.dashboardBtns}>
-              <button onClick={() => router.push("/play-quiz")}>
+              <IonButton size="large" onClick={() => router.push("/play-quiz")}>
                 Play Demo
-              </button>
-              <button
-                disabled={quizData?.totalQuestions !== DEFAULTS.totalQuestions}
-                onClick={() => {
-                  if (!subscription?.userId) {
-                    return loadUserSubscription().then((res) => {
-                      if (!res?.userId) return;
-
-                      router.push("/play-quiz");
-                    });
-                  }
-
-                  router.push("/play-quiz");
-                }}
-              >
+              </IonButton>
+              <IonButton size="large" onClick={handlePlayQuiz}>
                 Play Quiz
-              </button>
+              </IonButton>
             </div>
+
             <div className={styles.dashboardEdits}>
               <IconHeadingText
                 img="/images/dashicons_email-alt2.png"

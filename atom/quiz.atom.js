@@ -52,3 +52,24 @@ export function getQuestionObj(data = {}) {
     status: data?.status || "",
   };
 }
+
+export const UserQuizMapAtom = atom({
+  key: "UserQuizMapAtom",
+  default: [],
+});
+
+export function getUserQuizMapDataObj(data = {}) {
+  return {
+    userId: data?.userId || null,
+    quizId: data?.quizId || null,
+    qId: data?.qId || null,
+    answer: data?.answer || "",
+    result: data?.result || 0, // 0 for fail, 1 for pass
+
+    status: data?.status || "",
+    createdAt: data?.createdAt || "",
+    createdBy: data?.createdBy || "",
+    updatedAt: data?.updatedAt || "",
+    updatedBy: data?.updatedBy || "",
+  };
+}

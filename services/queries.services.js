@@ -27,6 +27,18 @@ export async function loadQuizData(quizId = null) {
     .catch((err) => console.error(err));
 }
 
+export async function loadUserQuizMap(userId = null, quizId = null) {
+  if (!quizId) return null;
+
+  return await getSubCollectionData(
+    COLLECTIONS.userQuizAttempts,
+    quizId,
+    userId,
+  )
+    .then((res) => res?.sort((q1, q2) => (q1?.qId < q2?.qId ? -1 : 1)) || [])
+    .catch((err) => console.error(err));
+}
+
 export async function loadSubscriptionData() {
   return await getDataWithFilter(
     COLLECTIONS.subscriptions,

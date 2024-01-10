@@ -15,6 +15,7 @@ import {
   getDocs,
   getFirestore,
   limit,
+  onSnapshot,
   query,
   setDoc,
   updateDoc,
@@ -191,4 +192,19 @@ export async function getDataWithFilter(
     console.error("Error getting data:", error);
     throw error;
   }
+}
+
+// Listen to a collection with a document ID
+export function listenToCollectionWithId(collectionName, docId, callback) {
+  const docRef = doc(db, collectionName, docId);
+
+  const unsubscribe = onSnapshot(docRef, (doc) => {
+    if (doc.exists()) {
+      callback({ id: doc.id, ...doc.data() });
+    } else {
+      callback(null);
+    }
+  });
+
+  return unsubscribe;
 }

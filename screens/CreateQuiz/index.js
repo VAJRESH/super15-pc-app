@@ -1,4 +1,6 @@
 import { DEFAULTS } from "@/helper/constants.helper";
+import { getFormatedDate } from "@/helper/utils.helper";
+import useHandleCreatQuiz from "@/hooks/useHandleCreatQuiz";
 import {
   IonButton,
   IonButtons,
@@ -24,7 +26,6 @@ import { getQuestionObj } from "../../atom/quiz.atom";
 import SideMenu from "../../components/SideMenu";
 import SuperIcons from "../../components/SuperIcons";
 import styles from "./createQuiz.module.css";
-import useHandleCreatQuiz from "@/hooks/useHandleCreatQuiz";
 
 export default function CreateQuiz() {
   const {
@@ -38,6 +39,9 @@ export default function CreateQuiz() {
     handleQuestionDataUpdate,
     handleSaveQuestion,
   } = useHandleCreatQuiz();
+
+  const minDate = new Date();
+  minDate.setDate(minDate.getDate() + 1);
 
   return (
     <>
@@ -75,6 +79,7 @@ export default function CreateQuiz() {
                     ref={ionDatetimePickerRef}
                     id="calendar"
                     presentation="date"
+                    min={getFormatedDate(minDate)}
                     highlightedDates={monthlyQuizDataArr?.map((quiz) => {
                       const isQuizComplete =
                         quiz?.totalQuestions === DEFAULTS?.totalQuestions;
