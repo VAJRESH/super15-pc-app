@@ -2,5 +2,5 @@
 
 ## Running Andriod App
 
-- npm i
-- npx cap open android
+npm i
+npx cap open android

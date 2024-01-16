@@ -1,7 +1,7 @@
 {
   "appId": "com.super15",
   "appName": "Super15",
-  "webDir": "build",
+  "webDir": "out",
   "bundledWebRuntime": false,
   "plugins": {
     "SplashScreen": {

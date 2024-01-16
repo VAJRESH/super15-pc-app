@@ -1,4 +1,5 @@
-import { IonInput, IonItem, IonLabel } from "@ionic/react";
+import { IonInput, IonItem } from "@ionic/react";
+import "@ionic/react/css/core.css";
 
 export default function FormInput({
   label = "",

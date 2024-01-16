@@ -1,9 +1,10 @@
 import { SUBSCRIBTIONS } from "@/helper/constants.helper";
 import { generateRandomId } from "@/helper/utils.helper";
+import Razorpay from "razorpay";
 
 // https://www.freecodecamp.org/news/integrate-a-payment-gateway-in-next-js-and-react-with-razorpay-and-tailwindcss/
 
-export default async function createRazorPayOrder(req, res) {
+export default async function handler(req, res) {
   // Initialize razorpay object
   const razorpay = new Razorpay({
     key_id: process.env.RAZOR_PAY_KEY_ID,

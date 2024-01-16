@@ -9,7 +9,8 @@ import "@ionic/react/css/structure.css"; // Remove if nothing is visible
 import "@ionic/react/css/typography.css";
 
 /* Optional CSS utils that can be commented out */
-import { setupIonicReact } from "@ionic/react";
+import Layout from "@/components/Layout";
+import { IonApp, setupIonicReact } from "@ionic/react";
 import "@ionic/react/css/display.css";
 import "@ionic/react/css/flex-utils.css";
 import "@ionic/react/css/float-elements.css";
@@ -19,7 +20,6 @@ import "@ionic/react/css/text-transformation.css";
 import { RecoilRoot } from "recoil";
 import AuthChecker from "../components/AuthChecker";
 import NonSSRWrapper from "../components/NonSSRWrapper";
-import Layout from "@/components/Layout";
 
 setupIonicReact();
 
@@ -37,11 +37,13 @@ function MyApp({ Component, pageProps }) {
       </Head>
       <NonSSRWrapper>
         <RecoilRoot>
-          <Layout>
-            <AuthChecker>
-              <Component {...pageProps} />
-            </AuthChecker>
-          </Layout>
+          <IonApp>
+            <Layout>
+              <AuthChecker>
+                <Component {...pageProps} />
+              </AuthChecker>
+            </Layout>
+          </IonApp>
         </RecoilRoot>
       </NonSSRWrapper>
     </>

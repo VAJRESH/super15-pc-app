@@ -4,32 +4,59 @@ import {
   getSubscriptionDataObj,
 } from "@/atom/global.atom";
 import { CurrentUserAtom } from "@/atom/user.atom";
-import {
-  COLLECTIONS,
-  DEFAULTS,
-  SUBSCRIBTIONS,
-} from "@/helper/constants.helper";
-import { addUpdateFirestoreData } from "@/helper/firebase.helper";
-import { getFormatedDate } from "@/helper/utils.helper";
+import { DEFAULTS, SUBSCRIBTIONS } from "@/helper/constants.helper";
 import { loadSubscriptionData } from "@/services/queries.services";
 import { useIonToast } from "@ionic/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 
 export default function useHandleSubscription() {
   const user = useRecoilValue(CurrentUserAtom);
   const [subscription, setSubscription] = useRecoilState(SubscriptionAtom);
   const [isLoading, setIsLoading] = useRecoilState(IsLoadingAtom);
-  const [isUnsubscribed, setIsUnsubscribed] = useState(false);
-
-  const [present] = useIonToast();
 
   const expiryDate = new Date();
   expiryDate.setDate(expiryDate.getDate() + SUBSCRIBTIONS?.noOfDays);
 
+  const [options, setOptions] = useState({
+    key: "rzp_test_8SCsJGRxwB9Dnp",
+    amount: SUBSCRIBTIONS.amount,
+    description: `Monthly subscription till ${expiryDate?.toDateString()}`,
+    image: "https://cdn.razorpay.com/logos/BUVwvgaqVByGp2_large.jpg",
+    orderId: null,
+    currency: SUBSCRIBTIONS?.currency,
+    name: DEFAULTS.appName,
+    prefillName: user?.displayName,
+    prefillEmail: user.email,
+    prefillPhoneNumber: user.phoneNumber,
+  });
+
+  const btnRef = useRef(null);
+
+  const [present] = useIonToast();
+
   useEffect(() => {
+    if (!user?.uid) return;
+
     loadUserSubscription();
-  }, []);
+  }, [user?.uid]);
+
+  // update user details
+  useEffect(() => {
+    setOptions((prev) => ({
+      ...(prev || {}),
+      prefillName: user?.displayName,
+      prefillEmail: user.email,
+      prefillPhoneNumber: user.phoneNumber,
+    }));
+  }, [user?.displayName, user?.email, user?.phoneNumber]);
+
+  // submit razorpay form
+  useEffect(() => {
+    if (!options?.orderId) return;
+
+    btnRef?.current?.click();
+  }, [options?.orderId]);
 
   function toaster(message) {
     present({
@@ -47,77 +74,71 @@ export default function useHandleSubscription() {
     return await loadSubscriptionData()
       .then((res) => {
         console.log("res", res);
-        setIsUnsubscribed(!res?.length);
-
         const subData = getSubscriptionDataObj(res?.[0]);
-        setSubscription(subData);
+        subData.isSubscribed = !!res?.length;
 
+        setSubscription(subData);
         return subData;
       })
       .catch((err) => console.log(err))
       .finally(() => setIsLoading(false));
   }
 
-  function payWithRazorpay() {
+  async function payWithRazorpay() {
     // toaster("Feature not implemented yet");
-
-    const options = {
-      key: "rzp_test_8SCsJGRxwB9Dnp",
-      amount: SUBSCRIBTIONS.amount,
-      description: `Monthly subscription till ${expiryDate?.toDateString()}`,
-      image: "https://i.imgur.com/3g7nmJC.jpg",
-      order_id: null,
-      currency: SUBSCRIBTIONS?.currency,
-      name: DEFAULTS.appName,
-      prefill: {
-        email: user.email,
-        contact: user.phoneNumber,
-      },
-      theme: {
-        color: "#3399cc",
-      },
-    };
-
-    const subscriptionData = {
-      userId: user?.uid,
-      expiryDate: getFormatedDate(expiryDate),
-      amount: options?.amount,
-    };
     setIsLoading(true);
-    addUpdateFirestoreData(COLLECTIONS.subscriptions, subscriptionData)
-      .then(() => {
-        setIsUnsubscribed(false);
-        setSubscription(getSubscriptionDataObj(subscriptionData));
+
+    fetch(SUBSCRIBTIONS.orderUrl)
+      .then((res) => res.json())
+      .then(async (res) => {
+        console.log(res);
+
+        setOptions((prev) => ({ ...(prev || {}), orderId: res?.id }));
+
+        try {
+          function successCallback(success) {
+            console.log("payment_id: " + success.razorpay_payment_id);
+            var orderId = success.razorpay_order_id;
+            var signature = success.razorpay_signature;
+
+            const subscriptionData = {
+              userId: user?.uid,
+              expiryDate: getFormatedDate(expiryDate),
+              amount: options?.amount,
+              orderId,
+              signature,
+            };
+
+            addUpdateFirestoreData(COLLECTIONS.subscriptions, subscriptionData)
+              .then(() => {
+                setSubscription(
+                  getSubscriptionDataObj({
+                    ...(subscriptionData || {}),
+                    isSubscribed: true,
+                  }),
+                );
+              })
+              .finally(() => setIsLoading(false));
+          }
+
+          function cancelCallback(error) {
+            console.log(error);
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
       })
       .finally(() => setIsLoading(false));
-
-    // fetch(SUBSCRIBTIONS.url)
-    //   .then((res) => res.json())
-    //   .then(async (res) => {
-    //     console.log(res);
-
-    //     options.order_id = res?.id;
-
-    //     try {
-    //       let data = await Checkout.open(options);
-    //       console.log(data.response + "AcmeCorp");
-    //       console.log(JSON.stringify(data));
-    //     } catch (error) {
-    //       //it's paramount that you parse the data into a JSONObject
-    //       let errorObj = JSON.parse(error["code"]);
-
-    //       console.log(errorObj);
-    //     }
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //   });
   }
 
   return {
     loadUserSubscription,
-    isUnsubscribed,
     payWithRazorpay,
     expiryDate,
+    options,
+    btnRef,
   };
 }

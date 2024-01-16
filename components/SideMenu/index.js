@@ -1,3 +1,5 @@
+import { CurrentUserAtom, getUserDataObj } from "@/atom/user.atom";
+import { ADMIN_UIDS } from "@/helper/constants.helper";
 import {
   IonContent,
   IonHeader,
@@ -11,14 +13,13 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { useRouter } from "next/router";
+import { useRecoilState } from "recoil";
 import { logOut } from "../../helper/firebase.helper";
 import { SidebarMenu } from "../../helper/menu.helper";
-import { useRecoilValue } from "recoil";
-import { CurrentUserAtom } from "@/atom/user.atom";
-import { ADMIN_UIDS } from "@/helper/constants.helper";
 
 export default function SideMenu() {
-  const user = useRecoilValue(CurrentUserAtom);
+  const [user, setUser] = useRecoilState(CurrentUserAtom);
+
   const router = useRouter();
 
   return (
@@ -43,6 +44,7 @@ export default function SideMenu() {
                     key={menu.id}
                     onClick={() => {
                       if (menu.label === "Logout") {
+                        setUser(getUserDataObj());
                         logOut();
                       }
                       router.push(menu.link);

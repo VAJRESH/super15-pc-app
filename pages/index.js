@@ -10,7 +10,7 @@ export default function Home() {
   useEffect(() => {
     if (!user?.uid) return;
 
-    const timer = setTimeout(() => router.push("/dashboard"), 1000);
+    const timer = setTimeout(() => router.push("/dashboard"), 2000);
 
     return () => clearTimeout(timer);
   }, [user?.uid]);

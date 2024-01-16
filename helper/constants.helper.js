@@ -22,7 +22,9 @@ export const SUBSCRIBTIONS = {
   noOfDays: 30,
   amount: 299,
   currency: "INR",
-  url: "http://localhost:3000/api/razorpay",
+  orderUrl: "http://localhost:3000/api/razorpay",
+  successUrl: "http://localhost:3000/api/payment-success",
+  failureUrl: "http://localhost:3000/api/payment-failure",
 };
 
 export const MONTHS = [

@@ -80,13 +80,18 @@ export default function useHandlePlayQuiz() {
         const currentQ = getCurrentQuestionIndex();
 
         if (
-          userQuizAttempt?.[currentQ]?.result === 1 ||
+          (userQuizAttempt?.length < 15 &&
+            userQuizAttempt?.[currentQ]?.result === 1) ||
           (userQuizAttempt?.length === currentQ &&
-            userQuizAttempt?.[currentQ - 1]?.result)
+            userQuizAttempt?.[currentQ - 1]?.result === 1)
         )
           router.push("/play-quiz");
 
-        if (userQuizMap?.some((quizMap) => quizMap?.result === 0))
+        if (
+          userQuizMap?.some((quizMap) => quizMap?.result === 0) ||
+          currentQ >= 15 ||
+          userQuizMap?.[currentQ - 1]?.result !== 1
+        )
           router.push("/dashboard");
       })
       .catch((err) => console.log(err));

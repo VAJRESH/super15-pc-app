@@ -11,6 +11,8 @@
       "@/styles/*": ["./styles/*"],
       "@/services/*": ["./services/*"]
     },
+    "module": "ES6",
+    "target": "ES5",
     "baseUrl": "./"
   }
 }

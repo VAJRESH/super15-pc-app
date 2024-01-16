@@ -7,7 +7,7 @@ import {
   useIonToast,
 } from "@ionic/react";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 import { CurrentUserAtom } from "../../atom/user.atom";
 import FormInput from "../../components/FormInput";
@@ -22,6 +22,12 @@ export default function Login() {
 
   const [present] = useIonToast();
 
+  useEffect(() => {
+    if (!user?.uid) return;
+
+    router.push("/dashboard");
+  }, [user?.uid]);
+
   const Toaster = (message) => {
     present({
       message: message,
@@ -35,13 +41,13 @@ export default function Login() {
       /^(?=.{1,254}$)(?=.{1,64}@)[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/,
     );
   };
-  const setEmailFn = (e) => {
-    const email = e.target.value;
-    if (email === "") return;
-    validateEmail(email) !== null ? setEmail(email) : Toaster("Invalid Email");
-  };
+
   const onSubmit = async (e) => {
     e.preventDefault();
+    console.log(validateEmail(email), email, 123);
+
+    if (validateEmail(email) === null) return Toaster("Invalid Email");
+
     try {
       let signInResponse = await signIn(email, password);
       Toaster("Login Successful.");
@@ -84,16 +90,16 @@ export default function Login() {
                 label="Email Id : "
                 placeholder="Email Id"
                 value={email}
-                onIonBlur={setEmailFn}
-                onIonInput={setEmailFn}
+                onIonInput={(e) => setEmail(e.target.value)}
+                onIonBlur={(e) => setEmail(e.target.value)}
               />
               <FormInput
                 type="password"
                 label="Enter Password : "
                 placeholder="Enter Password"
                 value={password}
-                onIonBlur={(e) => setPassword(e.target.value)}
                 onIonInput={(e) => setPassword(e.target.value)}
+                onIonBlur={(e) => setPassword(e.target.value)}
               />
             </IonList>
 

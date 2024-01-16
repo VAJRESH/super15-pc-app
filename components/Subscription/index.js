@@ -1,3 +1,6 @@
+import { SubscriptionAtom } from "@/atom/global.atom";
+import { CurrentUserAtom } from "@/atom/user.atom";
+import useHandleSubscription from "@/hooks/useHandleSubscription";
 import {
   IonContent,
   IonHeader,
@@ -6,19 +9,21 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
+import { useRecoilValue } from "recoil";
 import Card from "./Card";
-import useHandleSubscription from "@/hooks/useHandleSubscription";
+import RazorpayForm from "./RazorpayForm";
 
 export default function Subscription() {
-  const { payWithRazorpay, expiryDate, isUnsubscribed } =
+  const user = useRecoilValue(CurrentUserAtom);
+  const subscription = useRecoilValue(SubscriptionAtom);
+  const { payWithRazorpay, expiryDate, options, btnRef } =
     useHandleSubscription();
 
   return (
     <>
       <IonContent className="ion-padding">
         <IonModal
-          trigger="open-modal"
-          isOpen={isUnsubscribed}
+          isOpen={!!user?.uid && !subscription?.isSubscribed}
           style={{ display: "flex" }}
         >
           <IonHeader>
@@ -33,6 +38,8 @@ export default function Subscription() {
             </IonText>
 
             <Card expiryDate={expiryDate} handleClick={payWithRazorpay} />
+
+            <RazorpayForm btnRef={btnRef} options={options} />
           </IonContent>
         </IonModal>
       </IonContent>
