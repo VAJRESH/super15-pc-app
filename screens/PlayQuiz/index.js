@@ -1,6 +1,13 @@
+import { QuizAtom, UserQuizMapAtom } from "@/atom/quiz.atom";
+import useHandlePlayQuiz from "@/hooks/useHandlePlayQuiz";
 import {
   IonButton,
   IonButtons,
+  IonCard,
+  IonCardContent,
+  IonCardHeader,
+  IonCardSubtitle,
+  IonCardTitle,
   IonContent,
   IonHeader,
   IonIcon,
@@ -9,43 +16,24 @@ import {
   IonMenuToggle,
   IonPage,
   IonSplitPane,
-  IonTitle,
+  IonText,
   IonToolbar,
 } from "@ionic/react";
-import { collection, getDocs, onSnapshot } from "firebase/firestore";
-import { ellipsisVertical, menu } from "ionicons/icons";
-import { useEffect, useState } from "react";
+import { ellipsisVertical } from "ionicons/icons";
 import { useRecoilValue } from "recoil";
-import { currentUserAtom } from "../../atom/user.atom";
 import Leaderboard from "../../components/Leaderboard";
 import QuestionBlock from "../../components/QuestionBlock";
 import SideMenu from "../../components/SideMenu";
 import SuperIcons from "../../components/SuperIcons";
-import { db } from "../../helper/firebase.helper";
+import { useRouter } from "next/router";
 
 export default function PlayQuiz() {
-  const user = useRecoilValue(currentUserAtom);
+  const userQuizMap = useRecoilValue(UserQuizMapAtom);
+  const quizData = useRecoilValue(QuizAtom);
 
-  const qCollectionRef = collection(db, "questions");
+  const router = useRouter();
 
-  const [dbQuestions, setDbQuestions] = useState([]);
-  const [currentQ, setCurrentQ] = useState(0);
-
-  useEffect(async () => {
-    const unsub = onSnapshot(qCollectionRef, (querySnapshot) => {
-      let qarray = [];
-      querySnapshot.forEach((docu) => {
-        qarray.push(docu.data());
-        // console.log(docu.id, " => ", docu.data().qText);
-      });
-      let sortedQuestionArr = qarray.sort((a, b) => a.qSeq - b.qSeq);
-      setDbQuestions(sortedQuestionArr);
-    });
-    // unsub();
-
-    console.log(dbQuestions);
-  }, []);
-
+  const { currentQuestionIndex, hanldeOpSelection } = useHandlePlayQuiz();
 
   return (
     <>
@@ -67,14 +55,54 @@ export default function PlayQuiz() {
               </IonItem>
             </IonToolbar>
           </IonHeader>
-          <IonContent className="ion-padding">
-            <SuperIcons qSeq={currentQ + 1} />
-            <QuestionBlock
-              data={dbQuestions[currentQ]}
-              setCurrentQ={setCurrentQ}
-            />
-            <Leaderboard />
-          </IonContent>
+          {currentQuestionIndex <= 14 ? (
+            <>
+              <IonContent className="ion-padding">
+                <SuperIcons qSeq={currentQuestionIndex + 1} />
+                <QuestionBlock
+                  qText={quizData?.questions?.[currentQuestionIndex]?.qText}
+                  options={Array(4)
+                    .fill()
+                    ?.map((_, i) => ({
+                      id: i,
+                      value:
+                        quizData?.questions?.[currentQuestionIndex]?.[
+                          `qOpt${i + 1}`
+                        ],
+                    }))}
+                  handleOpSelection={hanldeOpSelection}
+                  selectedOp={userQuizMap?.[currentQuestionIndex]?.answer}
+                  isCorrect={userQuizMap?.[currentQuestionIndex]?.result}
+                />
+
+                <Leaderboard currentQuestionIndex={currentQuestionIndex} />
+              </IonContent>
+            </>
+          ) : (
+            <>
+              <IonContent style={{ textAlign: "center", fontWeight: "bold" }}>
+                <IonText color="secondary">
+                  <h1>You Won</h1>
+                </IonText>
+
+                <img
+                  alt=""
+                  src="/images/winner.png"
+                  style={{ maxHeight: "350px" }}
+                />
+
+                <IonText color="primary">
+                  <h2>Congrats!</h2>
+
+                  <p>You will recieve your cashback soon on your UPI Id</p>
+                </IonText>
+
+                <IonButton onClick={() => router.push("/dashboard")}>
+                  Dashboard
+                </IonButton>
+              </IonContent>
+            </>
+          )}
         </IonPage>
       </IonSplitPane>
     </>

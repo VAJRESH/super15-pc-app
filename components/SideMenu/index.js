@@ -1,3 +1,5 @@
+import { CurrentUserAtom, getUserDataObj } from "@/atom/user.atom";
+import { ADMIN_UIDS } from "@/helper/constants.helper";
 import {
   IonContent,
   IonHeader,
@@ -5,19 +7,21 @@ import {
   IonItem,
   IonLabel,
   IonList,
-  IonListHeader,
   IonMenu,
   IonMenuToggle,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { home, key, lockOpen, person } from "ionicons/icons";
 import { useRouter } from "next/router";
+import { useRecoilState } from "recoil";
 import { logOut } from "../../helper/firebase.helper";
 import { SidebarMenu } from "../../helper/menu.helper";
 
 export default function SideMenu() {
+  const [user, setUser] = useRecoilState(CurrentUserAtom);
+
   const router = useRouter();
+
   return (
     <>
       <IonMenu contentId="main-content">
@@ -31,17 +35,20 @@ export default function SideMenu() {
           <IonList>
             <IonMenuToggle autoHide={false}>
               {SidebarMenu.map((menu) => {
+                if (menu?.isAdmin && !ADMIN_UIDS?.includes(user?.uid))
+                  return null;
+
                 return (
                   <IonItem
                     button
                     key={menu.id}
                     onClick={() => {
-                      if (menu.label === 'Logout') {
+                      if (menu.label === "Logout") {
+                        setUser(getUserDataObj());
                         logOut();
                       }
-                      router.push(menu.link)
-                    }
-                    }
+                      router.push(menu.link);
+                    }}
                   >
                     <IonIcon slot="start" icon={menu.icon}></IonIcon>
                     <IonLabel>{menu.label}</IonLabel>

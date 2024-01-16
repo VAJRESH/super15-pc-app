@@ -1,5 +1,5 @@
-import "../styles/globals.css";
 import Head from "next/head";
+import "../styles/globals.css";
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
 
@@ -9,18 +9,19 @@ import "@ionic/react/css/structure.css"; // Remove if nothing is visible
 import "@ionic/react/css/typography.css";
 
 /* Optional CSS utils that can be commented out */
-import "@ionic/react/css/padding.css";
+import Layout from "@/components/Layout";
+import { IonApp, setupIonicReact } from "@ionic/react";
+import "@ionic/react/css/display.css";
+import "@ionic/react/css/flex-utils.css";
 import "@ionic/react/css/float-elements.css";
+import "@ionic/react/css/padding.css";
 import "@ionic/react/css/text-alignment.css";
 import "@ionic/react/css/text-transformation.css";
-import "@ionic/react/css/flex-utils.css";
-import "@ionic/react/css/display.css";
-import { setupIonicReact } from "@ionic/react";
-
-setupIonicReact();
-import NonSSRWrapper from "../components/NonSSRWrapper";
 import { RecoilRoot } from "recoil";
 import AuthChecker from "../components/AuthChecker";
+import NonSSRWrapper from "../components/NonSSRWrapper";
+
+setupIonicReact();
 
 function MyApp({ Component, pageProps }) {
   return (
@@ -36,9 +37,13 @@ function MyApp({ Component, pageProps }) {
       </Head>
       <NonSSRWrapper>
         <RecoilRoot>
-          <AuthChecker>
-            <Component {...pageProps} />
-          </AuthChecker>
+          <IonApp>
+            <Layout>
+              <AuthChecker>
+                <Component {...pageProps} />
+              </AuthChecker>
+            </Layout>
+          </IonApp>
         </RecoilRoot>
       </NonSSRWrapper>
     </>

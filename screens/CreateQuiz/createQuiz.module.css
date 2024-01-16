@@ -1,25 +1,31 @@
-.createQuizHeader{
-    display: flex;
-    justify-content: space-between;
+.createQuizHeader {
+  display: flex;
+  justify-content: space-between;
 }
 
-.buttonGrp{
-    display: flex;
-    justify-content: space-evenly;
-    margin-top: 30px;
+.buttonGrp {
+  display: flex;
+  justify-content: space-evenly;
+  margin-top: 30px;
 }
 .buttonGrp .save,
-.buttonGrp .next{
-    padding: 15px 40px;
-    border-radius: 10px;
-    text-transform: uppercase;
+.buttonGrp .back {
+  padding: 15px 40px;
+  border-radius: 10px;
+  text-transform: uppercase;
+  color: var(--white);
 }
-.buttonGrp .save{
-    background-color: var(--primary);
-    color: white;
+.buttonGrp .save {
+  background-color: var(--primary);
 }
-.buttonGrp .next{
-    background-color: white;
-    color: var(--primary);
-    border: 1px solid var(--primary);
+.buttonGrp .save:disabled {
+  background-color: var(--grey);
+}
+.buttonGrp .back {
+  background-color: var(--danger);
+}
+
+.textarea,
+.textarea textarea {
+  width: 100%;
 }

@@ -1,3 +1,5 @@
+import { DEFAULTS } from "@/helper/constants.helper";
+import { useAuth } from "@/hooks/useAuth";
 import {
   IonButton,
   IonButtons,
@@ -10,27 +12,22 @@ import {
   IonMenuToggle,
   IonPage,
   IonSplitPane,
-  IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { collection, getDocs, onSnapshot } from "firebase/firestore";
-import { ellipsisVertical, menu } from "ionicons/icons";
-import { useEffect, useState } from "react";
+import { ellipsisVertical } from "ionicons/icons";
+import { useState } from "react";
 import { useRecoilValue } from "recoil";
-import { currentUserAtom } from "../../atom/user.atom";
+import { CurrentUserAtom } from "../../atom/user.atom";
 import FormInput from "../../components/FormInput";
 import SideMenu from "../../components/SideMenu";
-import { db, useAuth, upload } from "../../helper/firebase.helper";
+import { upload } from "../../helper/firebase.helper";
 import styles from "./profile.module.css";
 
 export default function Profile() {
-  const user = useRecoilValue(currentUserAtom);
+  const user = useRecoilValue(CurrentUserAtom);
   const currentUser = useAuth();
 
-  console.log(user, currentUser);
-  const [avatar, setAvatar] = useState(
-    "https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png"
-  );
+  const [avatar, setAvatar] = useState(user?.photoURL || DEFAULTS?.profilePic);
 
   const [loading, setLoading] = useState(false);
 
@@ -54,11 +51,6 @@ export default function Profile() {
   //   // unsub();
   // }, []);
 
-  useEffect(() => {
-    if (currentUser?.photoURL) {
-      setAvatar(currentUser?.photoURL);
-    }
-  }, [currentUser]);
   return (
     <>
       <IonSplitPane when="sm" contentId="main-content">
@@ -94,18 +86,13 @@ export default function Profile() {
                 className={styles.uploadPhoto}
                 id="uploadPhoto"
                 type="file"
-                onChange={(e) => {
-                  let photoURL = upload(
-                    e.target.files[0],
-                    currentUser,
-                    setLoading,
-                    setAvatar
-                  );
-                }}
+                onChange={(e) =>
+                  upload(e.target.files[0], currentUser, setLoading, setAvatar)
+                }
               />
             </div>
             <h4 style={{ textAlign: "center" }}>
-              Hello, {currentUser?.displayName || "username"}
+              Hello, {user?.displayName || "username"}
             </h4>
             <form onSubmit={() => {}}>
               <IonList>

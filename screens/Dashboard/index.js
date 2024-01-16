@@ -1,3 +1,6 @@
+import { CurrentUserAtom } from "@/atom/user.atom";
+import { DEFAULTS } from "@/helper/constants.helper";
+import useHandlePlayQuiz from "@/hooks/useHandlePlayQuiz";
 import {
   IonAvatar,
   IonButton,
@@ -10,19 +13,20 @@ import {
   IonMenuToggle,
   IonPage,
   IonSplitPane,
-  IonTitle,
   IonToolbar,
 } from "@ionic/react";
 import { ellipsisVertical } from "ionicons/icons";
 import { useRouter } from "next/router";
+import { useRecoilValue } from "recoil";
 import IconHeadingText from "../../components/IconHeadingText";
 import SideMenu from "../../components/SideMenu";
-import { useAuth } from "../../helper/firebase.helper";
 import styles from "./dashboard.module.css";
 
 export default function Dashboard() {
-  const user = useAuth();
+  const user = useRecoilValue(CurrentUserAtom);
   const router = useRouter();
+
+  const { handlePlayQuiz } = useHandlePlayQuiz();
 
   return (
     <IonSplitPane when="sm" contentId="main-content">
@@ -38,33 +42,30 @@ export default function Dashboard() {
               </IonMenuToggle>
             </IonButtons>
 
-            <IonItem lines="none" onClick={() => router.push('/profile')}>
+            <IonItem lines="none" onClick={() => router.push("/profile")}>
               <IonAvatar slot="start">
-                <img
-                  src={
-                    user?.photoURL ||
-                    "https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png"
-                  }
-                />
+                <img src={user?.photoURL || DEFAULTS?.profilePic} />
               </IonAvatar>
               <IonLabel>
-                Hello, <b>{user?.displayName?.split(" ")[0] || "username"}</b>
+                Hello, <b>{user?.displayName?.split(" ")[0] || ""}</b>
               </IonLabel>
             </IonItem>
           </IonToolbar>
         </IonHeader>
+
         <IonContent className="ion-padding">
           {/* Not compatible with firebase 9. Please update your app. */}
           <div className={styles.dashboardBody}>
             <div className={styles.dashboardKpis}></div>
             <div className={styles.dashboardBtns}>
-              <button onClick={() => router.push("/play-quiz")}>
+              <IonButton size="large" onClick={() => router.push("/play-quiz")}>
                 Play Demo
-              </button>
-              <button onClick={() => router.push("/play-quiz")}>
+              </IonButton>
+              <IonButton size="large" onClick={handlePlayQuiz}>
                 Play Quiz
-              </button>
+              </IonButton>
             </div>
+
             <div className={styles.dashboardEdits}>
               <IconHeadingText
                 img="/images/dashicons_email-alt2.png"
