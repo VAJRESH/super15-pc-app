@@ -1,5 +1,4 @@
 export default function PaymentSuccess(req, res) {
-  console.log(req.body);
-
-  return res.status(200).json({ Success: true });
+  // redirecting to pages as node api does not have user id
+  res.status(200).redirect(`/payment-success?data=${JSON.stringify(req.body)}`);
 }

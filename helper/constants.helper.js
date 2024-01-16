@@ -18,13 +18,16 @@ export const DEFAULTS = {
   totalQuestions: 15,
 };
 
+export const BASE_URL = "https://super15-pc-6gsjo4k1t-jtas01.vercel.app";
+// export const BASE_URL = "http://localhost:3000";
+
 export const SUBSCRIBTIONS = {
   noOfDays: 30,
   amount: 299,
   currency: "INR",
-  orderUrl: "http://localhost:3000/api/razorpay",
-  successUrl: "http://localhost:3000/api/payment-success",
-  failureUrl: "http://localhost:3000/api/payment-failure",
+  orderUrl: `${BASE_URL}/api/razorpay`,
+  successUrl: `${BASE_URL}/api/payment-success`,
+  failureUrl: `${BASE_URL}/api/payment-failure`,
 };
 
 export const MONTHS = [

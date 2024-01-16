@@ -23,7 +23,7 @@ export default function Subscription() {
     <>
       <IonContent className="ion-padding">
         <IonModal
-          isOpen={!!user?.uid && !subscription?.isSubscribed}
+          isOpen={!!user?.uid && subscription?.isSubscribed === false}
           style={{ display: "flex" }}
         >
           <IonHeader>
