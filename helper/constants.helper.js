@@ -27,7 +27,7 @@ export const SUBSCRIBTIONS = {
   currency: "INR",
   orderUrl: `${BASE_URL}/api/razorpay`,
   successUrl: `${BASE_URL}/api/payment-success`,
-  failureUrl: `${BASE_URL}/api/payment-failure`,
+  cancelUrl: `/dashboard`,
 };
 
 export const MONTHS = [
