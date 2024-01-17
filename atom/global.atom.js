@@ -15,6 +15,6 @@ export function getSubscriptionDataObj(data = {}) {
     userId: data?.userId || null,
     expiryDate: data?.expiryDate || null,
     amount: data?.amount || null,
-    isSubscribed: data?.isSubscribed || false,
+    isSubscribed: data?.isSubscribed || null,
   };
 }

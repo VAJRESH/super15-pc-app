@@ -73,7 +73,6 @@ export default function useHandleSubscription() {
 
     return await loadSubscriptionData()
       .then((res) => {
-        console.log("res", res);
         const subData = getSubscriptionDataObj(res?.[0]);
         subData.isSubscribed = !!res?.length;
 
@@ -85,7 +84,6 @@ export default function useHandleSubscription() {
   }
 
   async function payWithRazorpay() {
-    // toaster("Feature not implemented yet");
     setIsLoading(true);
 
     fetch(SUBSCRIBTIONS.orderUrl)
