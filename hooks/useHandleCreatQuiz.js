@@ -109,6 +109,7 @@ export default function useHandleCreatQuiz() {
       console.log(err);
     }
   }
+  console.log(quizData);
 
   // state updates
   function handleQuizDataUpdate(obj = {}) {

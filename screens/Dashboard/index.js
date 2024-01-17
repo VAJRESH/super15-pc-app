@@ -58,7 +58,10 @@ export default function Dashboard() {
           <div className={styles.dashboardBody}>
             <div className={styles.dashboardKpis}></div>
             <div className={styles.dashboardBtns}>
-              <IonButton size="large" onClick={() => router.push("/play-quiz")}>
+              <IonButton
+                size="large"
+                onClick={() => router.push("/play-quiz-demo")}
+              >
                 Play Demo
               </IonButton>
               <IonButton size="large" onClick={handlePlayQuiz}>
