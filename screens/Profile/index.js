@@ -1,3 +1,4 @@
+import { IsLoadingAtom } from "@/atom/global.atom";
 import { DEFAULTS } from "@/helper/constants.helper";
 import { useAuth } from "@/hooks/useAuth";
 import {
@@ -13,43 +14,41 @@ import {
   IonPage,
   IonSplitPane,
   IonToolbar,
+  useIonToast,
 } from "@ionic/react";
+import { updateProfile } from "firebase/auth";
 import { ellipsisVertical } from "ionicons/icons";
 import { useState } from "react";
-import { useRecoilValue } from "recoil";
-import { CurrentUserAtom } from "../../atom/user.atom";
+import PhoneInput from "react-phone-number-input";
+import "react-phone-number-input/style.css";
+import { useRecoilState } from "recoil";
+import { CurrentUserAtom, getUserDataObj } from "../../atom/user.atom";
 import FormInput from "../../components/FormInput";
 import SideMenu from "../../components/SideMenu";
-import { upload } from "../../helper/firebase.helper";
+import { auth, upload } from "../../helper/firebase.helper";
 import styles from "./profile.module.css";
 
 export default function Profile() {
-  const user = useRecoilValue(CurrentUserAtom);
-  const currentUser = useAuth();
+  const [user, setUser] = useRecoilState(CurrentUserAtom);
+  const [loading, setLoading] = useRecoilState(IsLoadingAtom);
 
+  const currentUser = useAuth();
+  const [present] = useIonToast();
+
+  const [userTemp, setUserTemp] = useState(user);
   const [avatar, setAvatar] = useState(user?.photoURL || DEFAULTS?.profilePic);
 
-  const [loading, setLoading] = useState(false);
+  function hanldeChange(obj = {}) {
+    setUserTemp((prev) => ({ ...(prev || {}), ...(obj || {}) }));
+  }
 
-  // const qCollectionRef = collection(db, "questions");
-
-  // const getAllQuestions = () => {
-  //   return getDocs(qCollectionRef);
-  // };
-
-  // const [dbQuestions, setDbQuestions] = useState([]);
-
-  // useEffect(async () => {
-  //   const unsub = onSnapshot(qCollectionRef, (querySnapshot) => {
-  //     let qarray = [];
-  //     querySnapshot.forEach((docu) => {
-  //       qarray.push(docu.data().qText);
-  //       console.log(docu.id, " => ", docu.data().qText);
-  //     });
-  //     setDbQuestions(qarray);
-  //   });
-  //   // unsub();
-  // }, []);
+  function toaster(message) {
+    present({
+      message: message,
+      duration: 1500,
+      position: "bottom",
+    });
+  }
 
   return (
     <>
@@ -76,11 +75,7 @@ export default function Profile() {
             <div className={styles.profileContainer}>
               <img src={avatar} alt="Avatar" className={styles.avatar} />
               <label className={styles.uploadBtn} htmlFor="uploadPhoto">
-                {loading ? (
-                  ""
-                ) : (
-                  <img src="/images/carbon_edit (1).png" alt="" />
-                )}
+                <img src="/images/carbon_edit (1).png" alt="" />
               </label>
               <input
                 className={styles.uploadPhoto}
@@ -94,31 +89,61 @@ export default function Profile() {
             <h4 style={{ textAlign: "center" }}>
               Hello, {user?.displayName || "username"}
             </h4>
-            <form onSubmit={() => {}}>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+
+                setLoading(true);
+                updateProfile(auth?.currentUser, userTemp)
+                  .then(() => {
+                    setUser(
+                      getUserDataObj({
+                        ...(user || {}),
+                        ...(userTemp || {}),
+                        displayName: userTemp?.displayName || user?.displayName,
+                        email: userTemp?.email || user?.email,
+                        phoneNumber: userTemp?.phoneNumber || user?.phoneNumber,
+                      }),
+                    );
+                    toaster("Profile Updated");
+                    setLoading(false);
+                  })
+                  .catch((err) => {
+                    toaster("Something went wrong");
+                    console.log(err);
+                    setLoading(false);
+                  });
+              }}
+            >
               <IonList>
                 <FormInput
-                  label="First Name "
-                  placeholder="First Name"
-                  // onIonBlur={setEmailFn}
-                />
-                <FormInput
-                  label="Last Name "
-                  placeholder="Last Name"
-                  // onIonBlur={(e) => setPassword(e.target.value)}
+                  label="User Name"
+                  placeholder="User Name"
+                  value={userTemp?.displayName || user?.displayName}
+                  onIonInput={(e) =>
+                    hanldeChange({ displayName: e.target.value })
+                  }
                 />
                 <FormInput
                   label="Email"
                   disabled={true}
-                  value={user?.email}
+                  value={userTemp?.email || user?.email}
                   // onIonBlur={(e) => setConfirmPassword(e.target.value)}
                 />
-                <FormInput
-                  label="Mobile"
-                  type="tel"
-                  value={user?.phoneNumber}
-                  // onIonBlur={(e) => setConfirmPassword(e.target.value)}
-                />
-                <FormInput
+                <IonItem style={{ margin: "20px auto" }}>
+                  <PhoneInput
+                    defaultCountry="IN"
+                    international
+                    countryCallingCodeEditable={false}
+                    value={userTemp?.phoneNumber || user?.phoneNumber}
+                    placeholder={"Mobile"}
+                    containerComponent={"div"}
+                    className={styles.phoneNumber}
+                    onChange={(phoneNumber) => hanldeChange({ phoneNumber })}
+                  />
+                </IonItem>
+
+                {/* <FormInput
                   label="Address"
                   // onIonBlur={(e) => setConfirmPassword(e.target.value)}
                 />
@@ -133,8 +158,8 @@ export default function Profile() {
                 <FormInput
                   label="Country"
                   // onIonBlur={(e) => setConfirmPassword(e.target.value)}
-                />
-                <h4 style={{ textAlign: "center" }}>KYC details</h4>
+                /> */}
+                {/* <h4 style={{ textAlign: "center" }}>KYC details</h4>
                 <FormInput
                   label="PAN Number"
                   // onIonBlur={(e) => setConfirmPassword(e.target.value)}
@@ -142,12 +167,12 @@ export default function Profile() {
                 <label htmlFor="pan" className={styles.uploadPan}>
                   <h6>Click to upload Image or pdf of pan card here.</h6>
                 </label>
-                <input type="file" id="pan" className={styles.uploadPhoto} />
+                <input type="file" id="pan" className={styles.uploadPhoto} /> */}
               </IonList>
               <br />
-              <ion-button type="submit" expand="full" shape="round">
+              <IonButton type="submit" expand="full" shape="round">
                 Update
-              </ion-button>
+              </IonButton>
             </form>
           </IonContent>
         </IonPage>

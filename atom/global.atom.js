@@ -14,7 +14,9 @@ export function getSubscriptionDataObj(data = {}) {
   return {
     userId: data?.userId || null,
     expiryDate: data?.expiryDate || null,
-    amount: data?.amount || null,
+    razorpayPaymentId: data?.razorpayPaymentId || null,
+    orderId: data?.orderId || null,
+    signature: data?.signature || null,
     isSubscribed: data?.isSubscribed || null,
   };
 }

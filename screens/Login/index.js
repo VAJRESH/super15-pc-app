@@ -44,7 +44,6 @@ export default function Login() {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    console.log(validateEmail(email), email, 123);
 
     if (validateEmail(email) === null) return Toaster("Invalid Email");
 
