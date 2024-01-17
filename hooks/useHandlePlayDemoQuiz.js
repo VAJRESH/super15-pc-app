@@ -49,6 +49,7 @@ export default function useHandlePlayDemoQuiz() {
     present({
       header: title,
       message: message,
+      buttons: ["OK"],
     });
   }
 
