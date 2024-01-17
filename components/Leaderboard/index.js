@@ -4,9 +4,11 @@ import { getFormatedDate } from "@/helper/utils.helper";
 import { IonItem, IonLabel, IonThumbnail } from "@ionic/react";
 import { useEffect, useState } from "react";
 import styles from "./leaderboard.module.css";
+import { useRecoilState } from "recoil";
+import { LeaderBoardAtom } from "@/atom/quiz.atom";
 
 export default function Leaderboard({ currentQuestionIndex = null }) {
-  const [leaderboard, setLeaderboard] = useState([]);
+  const [leaderboard, setLeaderboard] = useRecoilState(LeaderBoardAtom);
 
   const quizId = getFormatedDate();
 

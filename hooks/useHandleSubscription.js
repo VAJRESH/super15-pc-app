@@ -28,7 +28,6 @@ export default function useHandleSubscription() {
     name: DEFAULTS.appName,
     prefillName: user?.displayName,
     prefillEmail: user.email,
-    prefillPhoneNumber: user.phoneNumber,
   });
 
   const btnRef = useRef(null);
@@ -47,9 +46,8 @@ export default function useHandleSubscription() {
       ...(prev || {}),
       prefillName: user?.displayName,
       prefillEmail: user.email,
-      prefillPhoneNumber: user.phoneNumber,
     }));
-  }, [user?.displayName, user?.email, user?.phoneNumber]);
+  }, [user?.displayName, user?.email]);
 
   // submit razorpay form
   useEffect(() => {
@@ -71,7 +69,7 @@ export default function useHandleSubscription() {
 
     setIsLoading(true);
 
-    return await loadSubscriptionData()
+    return await loadSubscriptionData(user?.uid)
       .then((res) => {
         const subData = getSubscriptionDataObj(res?.[0]);
         subData.isSubscribed = !!res?.length && !!subData?.razorpayPaymentId;
@@ -86,7 +84,15 @@ export default function useHandleSubscription() {
   async function payWithRazorpay() {
     setIsLoading(true);
 
-    fetch(SUBSCRIBTIONS.orderUrl)
+    fetch(SUBSCRIBTIONS.orderUrl, {
+      method: "POST",
+      contentType: "application/json",
+      body: JSON.stringify({
+        userId: user?.uid,
+        expiryDate,
+        amount: options?.amount,
+      }),
+    })
       .then((res) => res.json())
       .then(async (res) =>
         setOptions((prev) => ({ ...(prev || {}), orderId: res?.id })),

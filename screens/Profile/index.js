@@ -19,8 +19,6 @@ import {
 import { updateProfile } from "firebase/auth";
 import { ellipsisVertical } from "ionicons/icons";
 import { useState } from "react";
-import PhoneInput from "react-phone-number-input";
-import "react-phone-number-input/style.css";
 import { useRecoilState } from "recoil";
 import { CurrentUserAtom, getUserDataObj } from "../../atom/user.atom";
 import FormInput from "../../components/FormInput";
@@ -49,6 +47,8 @@ export default function Profile() {
       position: "bottom",
     });
   }
+
+  console.log(user);
 
   return (
     <>
@@ -93,18 +93,18 @@ export default function Profile() {
               onSubmit={(e) => {
                 e.preventDefault();
 
+                const userData = getUserDataObj({
+                  ...(userTemp || {}),
+                  ...(user || {}),
+                  displayName: userTemp?.displayName || user?.displayName,
+                  email: userTemp?.email || user?.email,
+                });
+
                 setLoading(true);
-                updateProfile(auth?.currentUser, userTemp)
+                console.log(userData);
+                updateProfile(auth?.currentUser, userData)
                   .then(() => {
-                    setUser(
-                      getUserDataObj({
-                        ...(user || {}),
-                        ...(userTemp || {}),
-                        displayName: userTemp?.displayName || user?.displayName,
-                        email: userTemp?.email || user?.email,
-                        phoneNumber: userTemp?.phoneNumber || user?.phoneNumber,
-                      }),
-                    );
+                    setUser(userData);
                     toaster("Profile Updated");
                     setLoading(false);
                   })
@@ -130,18 +130,6 @@ export default function Profile() {
                   value={userTemp?.email || user?.email}
                   // onIonBlur={(e) => setConfirmPassword(e.target.value)}
                 />
-                <IonItem style={{ margin: "20px auto" }}>
-                  <PhoneInput
-                    defaultCountry="IN"
-                    international
-                    countryCallingCodeEditable={false}
-                    value={userTemp?.phoneNumber || user?.phoneNumber}
-                    placeholder={"Mobile"}
-                    containerComponent={"div"}
-                    className={styles.phoneNumber}
-                    onChange={(phoneNumber) => hanldeChange({ phoneNumber })}
-                  />
-                </IonItem>
 
                 {/* <FormInput
                   label="Address"

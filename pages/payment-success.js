@@ -21,31 +21,31 @@ export default function PaymentSuccess() {
   const expiryDate = new Date();
   expiryDate.setDate(expiryDate.getDate() + SUBSCRIBTIONS?.noOfDays);
 
-  useEffect(() => {
-    if (!user?.uid) return;
-    if (!!subscription?.razorpayPaymentId) return;
+  // useEffect(() => {
+  //   if (!user?.uid) return;
+  //   if (!!subscription?.razorpayPaymentId) return;
 
-    setIsLoading(true);
-    const razorpayData = JSON.parse(router?.query?.data);
-    const subscriptionData = {
-      userId: user?.uid,
-      expiryDate: getFormatedDate(expiryDate),
-      razorpayPaymentId: razorpayData?.razorpay_payment_id,
-      orderId: razorpayData?.razorpay_order_id,
-      signature: razorpayData?.razorpay_signature,
-    };
+  //   setIsLoading(true);
+  //   const razorpayData = JSON.parse(router?.query?.data);
+  //   const subscriptionData = {
+  //     userId: user?.uid,
+  //     expiryDate: getFormatedDate(expiryDate),
+  //     razorpayPaymentId: razorpayData?.razorpay_payment_id,
+  //     orderId: razorpayData?.razorpay_order_id,
+  //     signature: razorpayData?.razorpay_signature,
+  //   };
 
-    addUpdateFirestoreData(COLLECTIONS.subscriptions, subscriptionData)
-      .then(() => {
-        setSubscription(
-          getSubscriptionDataObj({
-            ...(subscriptionData || {}),
-            isSubscribed: true,
-          }),
-        );
-      })
-      .finally(() => setIsLoading(false));
-  }, [user?.uid]);
+  //   addUpdateFirestoreData(COLLECTIONS.subscriptions, subscriptionData)
+  //     .then(() => {
+  //       setSubscription(
+  //         getSubscriptionDataObj({
+  //           ...(subscriptionData || {}),
+  //           isSubscribed: true,
+  //         }),
+  //       );
+  //     })
+  //     .finally(() => setIsLoading(false));
+  // }, [user?.uid]);
 
   return (
     <>

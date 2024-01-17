@@ -102,6 +102,8 @@ export async function addUpdateFirestoreData(
   firebaseOptions = {},
   options = { createNew: null },
 ) {
+  console.log(options);
+
   let isEdit = !!_id;
   let docId = isEdit ? _id : generateRandomId();
   if (options?.createNew) {

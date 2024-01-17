@@ -1,21 +1,28 @@
 import { IsLoadingAtom, SubscriptionAtom } from "@/atom/global.atom";
 import {
+  LeaderBoardAtom,
+  PollDataAtom,
   QuizAtom,
   UserQuizMapAtom,
+  getPollDataObj,
   getQuizDataObj,
   getUserQuizMapDataObj,
 } from "@/atom/quiz.atom";
 import { CurrentUserAtom } from "@/atom/user.atom";
-import { COLLECTIONS, DEFAULTS } from "@/helper/constants.helper";
+import {
+  COLLECTIONS,
+  DEFAULTS,
+  QUESTION_TIMES,
+} from "@/helper/constants.helper";
 import {
   addUpdateFirestoreData,
   getDataWithId,
+  listenToCollectionWithId,
 } from "@/helper/firebase.helper";
+import { getCurrentQuestionIndex } from "@/helper/utils.helper";
 import {
-  getCurrentQuestionIndex,
-  getFormatedDate,
-} from "@/helper/utils.helper";
-import {
+  loadLeaderBoardData,
+  loadPollData,
   loadQuestionsData,
   loadQuizData,
   loadUserQuizMap,
@@ -30,29 +37,79 @@ import useHandleSubscription from "./useHandleSubscription";
 export default function useHandlePlayQuiz() {
   const user = useRecoilValue(CurrentUserAtom);
   const subscription = useRecoilValue(SubscriptionAtom);
+
+  const [leaderboard, setLeaderboard] = useRecoilState(LeaderBoardAtom);
   const [userQuizMap, setUserQuizMap] = useRecoilState(UserQuizMapAtom);
   const [quizData, setQuizData] = useRecoilState(QuizAtom);
   const [isLoading, setIsLoading] = useRecoilState(IsLoadingAtom);
+  const [pollData, setPollData] = useRecoilState(PollDataAtom);
 
+  const [superRoundPoll, setSuperRoundPoll] = useState(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(null);
+  const [timer, setTimer] = useState(null);
   const router = useRouter();
 
   const [present] = useIonToast();
   const { loadUserSubscription } = useHandleSubscription();
 
-  const quizId = getFormatedDate();
+  // const quizId = getFormatedDate();
+  const quizId = "2024-01-18";
 
-  // check for current question number based on time
+  const isSuperRoundActive =
+    currentQuestionIndex < 9
+      ? true
+      : pollData?.continue?.length > pollData?.quit?.length;
+
+  // set initial time left
   useEffect(() => {
-    setCurrentQuestionIndex(getCurrentQuestionIndex());
+    if (currentQuestionIndex != null) return;
 
-    const intervalId = setInterval(
-      () => setCurrentQuestionIndex(getCurrentQuestionIndex()),
-      5000,
+    loadInitialTime();
+  }, [currentQuestionIndex]);
+
+  // load and set poll data for 10th question
+  useEffect(() => {
+    if (currentQuestionIndex !== 9) return;
+    if (userQuizMap?.[currentQuestionIndex]?.result !== 1) return;
+
+    loadPollData(quizId)
+      .then((res) => {
+        if (res?.continue?.includes(user?.uid)) return;
+        if (res?.quit?.includes(user?.uid)) return;
+
+        setSuperRoundPoll(true);
+      })
+      .catch((err) => console.log(err));
+  }, [currentQuestionIndex, userQuizMap?.length]);
+
+  // listen to poll data
+  useEffect(() => {
+    if (currentQuestionIndex < 9) return;
+
+    const unsub = listenToCollectionWithId(
+      COLLECTIONS?.superRoundVotes,
+      quizId,
+      (res) => setPollData(getPollDataObj(res)),
     );
 
-    return () => clearInterval(intervalId); // Clear the interval on cleanup
-  }, []);
+    return unsub;
+  }, [currentQuestionIndex]);
+
+  // update timeleft
+  useEffect(() => {
+    if (currentQuestionIndex == null) return;
+    if (timer == null) return;
+
+    const t = setTimeout(() => {
+      const currentQ = getCurrentQuestionIndex();
+
+      if (currentQ !== currentQuestionIndex) return loadInitialTime();
+
+      setCurrentQuestionIndex(currentQ);
+      setTimer((prev) => prev - 1000);
+    }, 1000);
+    return () => clearTimeout(t);
+  }, [timer, currentQuestionIndex]);
 
   // load quiz data
   useEffect(() => {
@@ -63,9 +120,15 @@ export default function useHandlePlayQuiz() {
         const questions = (await loadQuestionsData(quizId)) || [];
 
         setQuizData(getQuizDataObj({ ...(res || {}), questions }));
-        setCurrentQuestionIndex(getCurrentQuestionIndex());
+        loadInitialTime();
       })
       .catch((err) => console.log(err));
+
+    if (!leaderboard) {
+      loadLeaderBoardData(quizId)
+        .then(setLeaderboard)
+        .catch((err) => console.log(err));
+    }
   }, []);
 
   // load user quiz map data
@@ -88,9 +151,10 @@ export default function useHandlePlayQuiz() {
           router.push("/play-quiz");
 
         if (
-          userQuizMap?.some((quizMap) => quizMap?.result === 0) ||
-          currentQ >= 15 ||
-          userQuizMap?.[currentQ - 1]?.result !== 1
+          currentQ !== 0 &&
+          (userQuizMap?.some((quizMap) => quizMap?.result === 0) ||
+            currentQ >= 15 ||
+            userQuizMap?.[currentQ - 1]?.result !== 1)
         )
           router.push("/dashboard");
       })
@@ -103,11 +167,23 @@ export default function useHandlePlayQuiz() {
     if (!userQuizMap?.length && router.pathname !== "/play-quiz") return;
 
     if (
-      userQuizMap?.some((quizMap) => quizMap?.result === 0) ||
-      userQuizMap?.[currentQuestionIndex - 1]?.result !== 1
+      currentQuestionIndex !== 0 &&
+      !!userQuizMap?.length &&
+      (userQuizMap?.some((quizMap) => quizMap?.result === 0) ||
+        userQuizMap?.[currentQuestionIndex - 1]?.result !== 1)
     )
       router.push("/dashboard");
   }, [currentQuestionIndex]);
+
+  // leaderboard check
+  const cuttOff = QUESTION_TIMES?.[currentQuestionIndex]?.cuttOff;
+  const leaderboardCount = leaderboard?.[currentQuestionIndex + 1]?.length || 0;
+  useEffect(() => {
+    if (cuttOff > leaderboardCount) return;
+
+    alert("You were knocked out");
+    router.push("/dashboard");
+  }, [leaderboardCount, cuttOff]);
 
   // helper functions
   function alertBox(title, message) {
@@ -116,6 +192,29 @@ export default function useHandlePlayQuiz() {
       message: message,
       buttons: ["OK"],
     });
+  }
+
+  function loadInitialTime() {
+    const currentQ = getCurrentQuestionIndex();
+    const currentTime = new Date();
+    const timeElapsed =
+      currentTime.getTime() -
+      new Date(
+        `${new Date().toDateString()} ${DEFAULTS.quizStartTime}`,
+      ).getTime();
+
+    let totalTimeForPreviousQuestions = 0;
+    for (const questionTime of QUESTION_TIMES.slice(0, currentQ)) {
+      // Iterate only up to Q4
+      totalTimeForPreviousQuestions += questionTime.timeLimit;
+    }
+
+    const timeLeft =
+      QUESTION_TIMES?.[currentQ]?.timeLimit -
+      (timeElapsed - totalTimeForPreviousQuestions);
+
+    setCurrentQuestionIndex(currentQ);
+    setTimer(timeLeft > 0 ? timeLeft : null);
   }
 
   function handlePlayQuiz() {
@@ -138,8 +237,10 @@ export default function useHandlePlayQuiz() {
 
     // user has failed today
     if (
-      userQuizMap?.some((quizMap) => quizMap?.result === 0) ||
-      userQuizMap?.[currentQ - 1]?.result !== 1
+      currentQ !== 0 &&
+      !!userQuizMap?.length &&
+      (userQuizMap?.some((quizMap) => quizMap?.result === 0) ||
+        userQuizMap?.[currentQ - 1]?.result !== 1)
     )
       return alertBox(
         "Quiz Failed",
@@ -221,9 +322,31 @@ export default function useHandlePlayQuiz() {
       .finally(() => setIsLoading(false));
   }
 
+  async function handleVote(isQuit = false) {
+    const pollData = await loadPollData(quizId);
+
+    const data = { [isQuit ? "quit" : "continue"]: arrayUnion(user?.uid) };
+
+    setIsLoading(true);
+    addUpdateFirestoreData(
+      COLLECTIONS.superRoundVotes,
+      data,
+      quizData?.quizId,
+      {},
+      { createNew: pollData == null },
+    )
+      .then(async () => setSuperRoundPoll(null))
+      .catch((err) => console.log(err))
+      .finally(() => setIsLoading(false));
+  }
+
   return {
+    timer,
     currentQuestionIndex,
     handlePlayQuiz,
     hanldeOpSelection,
+    handleVote,
+    superRoundPoll,
+    isSuperRoundActive,
   };
 }

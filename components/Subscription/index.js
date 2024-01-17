@@ -1,4 +1,4 @@
-import { SubscriptionAtom } from "@/atom/global.atom";
+import { IsLoadingAtom, SubscriptionAtom } from "@/atom/global.atom";
 import { CurrentUserAtom } from "@/atom/user.atom";
 import useHandleSubscription from "@/hooks/useHandleSubscription";
 import {
@@ -12,8 +12,10 @@ import {
 import { useRecoilValue } from "recoil";
 import Card from "./Card";
 import RazorpayForm from "./RazorpayForm";
+import Loader from "../Loader/index";
 
 export default function Subscription() {
+  const isLoading = useRecoilValue(IsLoadingAtom);
   const user = useRecoilValue(CurrentUserAtom);
   const subscription = useRecoilValue(SubscriptionAtom);
   const { payWithRazorpay, expiryDate, options, btnRef } =
@@ -31,6 +33,8 @@ export default function Subscription() {
               <IonTitle style={{ textAlign: "center" }}>Subscriptions</IonTitle>
             </IonToolbar>
           </IonHeader>
+
+          {isLoading && <Loader isFullPage={true} />}
 
           <IonContent>
             <IonText style={{ textAlign: "center" }}>

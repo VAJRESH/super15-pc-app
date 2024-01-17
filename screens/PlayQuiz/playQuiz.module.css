@@ -1,0 +1,21 @@
+.superRoundModal {
+  --width: fit-content;
+  --min-width: 250px;
+  --height: fit-content;
+  --border-radius: 6px;
+  --box-shadow: 0 28px 48px rgba(0, 0, 0, 0.4);
+}
+.superRoundModal > div {
+  text-align: center;
+  padding: 0.5em 1em;
+}
+
+.superRoundModal .title {
+  font-weight: bold;
+}
+
+.superRoundModal .btns {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1em;
+}
