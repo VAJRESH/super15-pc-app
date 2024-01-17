@@ -81,10 +81,16 @@ export const logOut = () => {
 export async function upload(file, currentUser, setLoading, setAvatar) {
   const fileRef = ref(storage, currentUser.uid + ".png");
   setLoading(true);
-  const snapshot = await uploadBytes(fileRef, file);
-  const photoURL = await getDownloadURL(fileRef);
-  updateProfile(currentUser, { photoURL });
-  setAvatar(photoURL);
+  try {
+    const snapshot = await uploadBytes(fileRef, file);
+    const photoURL = await getDownloadURL(fileRef);
+    updateProfile(currentUser, { photoURL });
+    setAvatar(photoURL);
+  } catch (error) {
+    console.log(error);
+    alert("Something went wrong");
+  }
+
   setLoading(false);
   return photoURL;
 }

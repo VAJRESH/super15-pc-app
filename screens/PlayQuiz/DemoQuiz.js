@@ -1,5 +1,4 @@
-import { QuizAtom, UserQuizMapAtom } from "@/atom/quiz.atom";
-import useHandlePlayQuiz from "@/hooks/useHandlePlayQuiz";
+import useHandlePlayDemoQuiz from "@/hooks/useHandlePlayDemoQuiz";
 import {
   IonButton,
   IonButtons,
@@ -16,19 +15,17 @@ import {
 } from "@ionic/react";
 import { ellipsisVertical } from "ionicons/icons";
 import { useRouter } from "next/router";
-import { useRecoilValue } from "recoil";
 import Leaderboard from "../../components/Leaderboard";
 import QuestionBlock from "../../components/QuestionBlock";
 import SideMenu from "../../components/SideMenu";
 import SuperIcons from "../../components/SuperIcons";
 
-export default function PlayQuiz() {
-  const userQuizMap = useRecoilValue(UserQuizMapAtom);
-  const quizData = useRecoilValue(QuizAtom);
-
+export default function DemoQuiz() {
   const router = useRouter();
 
-  const { currentQuestionIndex, hanldeOpSelection } = useHandlePlayQuiz();
+  const { userQuizMap, quizData, currentQuestionIndex, hanldeOpSelection } =
+    useHandlePlayDemoQuiz();
+  console.log(currentQuestionIndex);
 
   return (
     <>
@@ -46,7 +43,7 @@ export default function PlayQuiz() {
               </IonButtons>
 
               <IonItem lines="none">
-                <IonLabel>Quiz</IonLabel>
+                <IonLabel>Demo Quiz</IonLabel>
               </IonItem>
             </IonToolbar>
           </IonHeader>
@@ -90,7 +87,7 @@ export default function PlayQuiz() {
                 <IonText color="primary">
                   <h2>Congrats!</h2>
 
-                  <p>You will recieve your cashback soon on your UPI Id</p>
+                  <p>You have completed demo quiz. Now try real quiz</p>
                 </IonText>
 
                 <IonButton onClick={() => router.push("/dashboard")}>

@@ -74,7 +74,7 @@ export default function useHandleSubscription() {
     return await loadSubscriptionData()
       .then((res) => {
         const subData = getSubscriptionDataObj(res?.[0]);
-        subData.isSubscribed = !!res?.length;
+        subData.isSubscribed = !!res?.length && !!subData?.razorpayPaymentId;
 
         setSubscription(subData);
         return subData;
@@ -88,47 +88,10 @@ export default function useHandleSubscription() {
 
     fetch(SUBSCRIBTIONS.orderUrl)
       .then((res) => res.json())
-      .then(async (res) => {
-        console.log(res);
-
-        setOptions((prev) => ({ ...(prev || {}), orderId: res?.id }));
-
-        try {
-          function successCallback(success) {
-            console.log("payment_id: " + success.razorpay_payment_id);
-            var orderId = success.razorpay_order_id;
-            var signature = success.razorpay_signature;
-
-            const subscriptionData = {
-              userId: user?.uid,
-              expiryDate: getFormatedDate(expiryDate),
-              amount: options?.amount,
-              orderId,
-              signature,
-            };
-
-            addUpdateFirestoreData(COLLECTIONS.subscriptions, subscriptionData)
-              .then(() => {
-                setSubscription(
-                  getSubscriptionDataObj({
-                    ...(subscriptionData || {}),
-                    isSubscribed: true,
-                  }),
-                );
-              })
-              .finally(() => setIsLoading(false));
-          }
-
-          function cancelCallback(error) {
-            console.log(error);
-          }
-        } catch (error) {
-          console.log(error);
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      })
+      .then(async (res) =>
+        setOptions((prev) => ({ ...(prev || {}), orderId: res?.id })),
+      )
+      .catch((err) => console.log(err))
       .finally(() => setIsLoading(false));
   }
 

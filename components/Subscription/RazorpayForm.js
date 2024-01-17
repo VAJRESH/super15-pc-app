@@ -37,7 +37,7 @@ export default function RazorpayForm({ options = {}, btnRef = null }) {
         <input
           type="hidden"
           name="cancel_url"
-          value={SUBSCRIBTIONS?.failureUrl}
+          value={SUBSCRIBTIONS?.cancelUrl}
         />
         <button ref={btnRef}>Submit</button>
       </form>

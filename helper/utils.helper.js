@@ -40,7 +40,5 @@ export function getCurrentQuestionIndex() {
     currentQuestionIndex++;
   }
 
-  console.log("Current question:", currentQuestionIndex);
-
   return currentQuestionIndex;
 }

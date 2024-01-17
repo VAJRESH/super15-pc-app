@@ -23,13 +23,14 @@ export default function PaymentSuccess() {
 
   useEffect(() => {
     if (!user?.uid) return;
+    if (!!subscription?.razorpayPaymentId) return;
 
     setIsLoading(true);
     const razorpayData = JSON.parse(router?.query?.data);
     const subscriptionData = {
       userId: user?.uid,
       expiryDate: getFormatedDate(expiryDate),
-      razorpay_payment_id: razorpayData?.razorpay_payment_id,
+      razorpayPaymentId: razorpayData?.razorpay_payment_id,
       orderId: razorpayData?.razorpay_order_id,
       signature: razorpayData?.razorpay_signature,
     };
