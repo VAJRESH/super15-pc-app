@@ -89,7 +89,6 @@ export default function Profile() {
             <h4 style={{ textAlign: "center" }}>
               Hello, {user?.displayName || "username"}
             </h4>
-
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -163,7 +162,6 @@ export default function Profile() {
                 </label>
                 <input type="file" id="pan" className={styles.uploadPhoto} /> */}
               </IonList>
-
               <IonButton type="submit" expand="full" shape="round">
                 Update
               </IonButton>
