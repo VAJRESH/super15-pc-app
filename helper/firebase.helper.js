@@ -35,7 +35,7 @@ import { generateRandomId } from "./utils.helper";
 //   messagingSenderId: "612218298030",
 //   appId: "1:612218298030:web:345a4049c0cea7fae5573f",
 // };
-const firebaseConfig = {
+export const firebaseConfig = {
   apiKey: "AIzaSyAWgMG1LQg4Eq-EqK_f5Q9Z8-ek9j9BUus",
   authDomain: "temp-365806.firebaseapp.com",
   projectId: "temp-365806",

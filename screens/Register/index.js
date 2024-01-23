@@ -1,28 +1,14 @@
 import {
-  IonButton,
-  IonButtons,
   IonContent,
-  IonHeader,
-  IonIcon,
   IonImg,
-  IonInput,
-  IonItem,
-  IonLabel,
   IonList,
-  IonMenuToggle,
-  IonNote,
   IonPage,
   IonSplitPane,
-  IonTitle,
-  IonToolbar,
   useIonToast,
 } from "@ionic/react";
-import { menu } from "ionicons/icons";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { FormProvider, useForm } from "react-hook-form";
 import FormInput from "../../components/FormInput";
-import SideMenu from "../../components/SideMenu";
 
 import { signUp } from "../../helper/firebase.helper";
 import { logo } from "./register.module.css";
@@ -50,45 +36,17 @@ export default function Register({ history }) {
 
   const validateEmail = (email) => {
     return email.match(
-      /^(?=.{1,254}$)(?=.{1,64}@)[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/
+      /^(?=.{1,254}$)(?=.{1,64}@)[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/,
     );
   };
 
-  const validate = (e) => {
-    const value = e.target.value;
-    setIsValid(undefined);
-    if (value === "") return;
-    validateEmail(value) !== null ? setIsValid(true) : setIsValid(false);
-  };
-
-  const markTouched = () => {
-    setIsTouched(true);
-  };
-
-  const setNameFn = (e) => {
-    setName(e.target.value);
-  };
-
-  const setEmailFn = (e) => {
-    const email = e.target.value;
-    if (email === "") return;
-    // console.log(email);
-    validateEmail(email) !== null ? setEmail(email) : Toaster("Invalid Email");
-  };
-
-  const onSubmit = async (e) => {
+  async function onSubmit(e) {
     e.preventDefault();
-    if (!name) {
-      console.log("username is required!");
-      Toaster("Username is required!");
-      return;
-    }
-    if (password !== confirmPassword) {
-      console.log("Passwords did not match!");
-      Toaster("Passwords did not match!");
-      return;
-    }
-    console.log(email, password);
+
+    if (!name) return Toaster("Username is required!");
+    if (validateEmail(email) === null) return Toaster("Invalid Email");
+    if (password !== confirmPassword)
+      return Toaster("Passwords did not match!");
 
     try {
       await signUp(email, password, name);
@@ -98,7 +56,7 @@ export default function Register({ history }) {
       console.log(error);
       Toaster("Registration Failed.");
     }
-  };
+  }
 
   return (
     <>
@@ -116,13 +74,13 @@ export default function Register({ history }) {
                 <FormInput
                   label="Username : "
                   placeholder="username"
-                  onIonBlur={setNameFn}
+                  onIonBlur={(e) => setName(e.target.value)}
                   value={name}
                 />
                 <FormInput
                   label="Email Id : "
                   placeholder="Email Id"
-                  onIonBlur={setEmailFn}
+                  onIonBlur={(e) => setEmail(e.target.value)}
                   value={email}
                 />
                 <FormInput

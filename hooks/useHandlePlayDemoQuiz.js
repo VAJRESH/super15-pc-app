@@ -1,6 +1,6 @@
 import { IsLoadingAtom } from "@/atom/global.atom";
 import { CurrentUserAtom } from "@/atom/user.atom";
-import { DEMO_QUIZ_DATA } from "@/helper/constants.helper";
+import { DEFAULTS, DEMO_QUIZ_DATA } from "@/helper/constants.helper";
 import { getFormatedDate } from "@/helper/utils.helper";
 import { useIonToast } from "@ionic/react";
 import { useRouter } from "next/router";
@@ -12,6 +12,7 @@ export default function useHandlePlayDemoQuiz() {
   const [userQuizMap, setUserQuizMap] = useState([]);
   const [isLoading, setIsLoading] = useRecoilState(IsLoadingAtom);
 
+  const [timer, setTimer] = useState(DEFAULTS?.demoQuizQuestionTime);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const router = useRouter();
 
@@ -36,13 +37,21 @@ export default function useHandlePlayDemoQuiz() {
         }
 
         setCurrentQuestionIndex((prev) => prev + 1);
+        setTimer(DEFAULTS?.demoQuizQuestionTime);
 
         return prev;
       });
-    }, 5 * 1000);
+    }, DEFAULTS?.demoQuizQuestionTime);
 
     return () => clearInterval(intervalId); // Clear the interval on cleanup
   }, []);
+
+  // update timeleft
+  useEffect(() => {
+    const t = setTimeout(() => setTimer((prev) => prev - 1000), 1000);
+
+    return () => clearTimeout(t);
+  }, [timer, currentQuestionIndex]);
 
   // helper functions
   function alertBox(title, message) {
@@ -90,5 +99,6 @@ export default function useHandlePlayDemoQuiz() {
     hanldeOpSelection,
     userQuizMap,
     quizData,
+    timer,
   };
 }

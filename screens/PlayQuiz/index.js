@@ -24,6 +24,7 @@ import QuestionBlock from "../../components/QuestionBlock";
 import SideMenu from "../../components/SideMenu";
 import SuperIcons from "../../components/SuperIcons";
 import styles from "./playQuiz.module.css";
+import { formatTime } from "@/helper/utils.helper";
 
 export default function PlayQuiz() {
   const userQuizMap = useRecoilValue(UserQuizMapAtom);
@@ -39,16 +40,6 @@ export default function PlayQuiz() {
     superRoundPoll,
     isSuperRoundActive,
   } = useHandlePlayQuiz();
-
-  function formatTime(milliseconds) {
-    const hours = Math.floor(milliseconds / (1000 * 60 * 60));
-    const minutes = Math.floor((milliseconds % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((milliseconds % (1000 * 60)) / 1000);
-
-    if (hours === 0 && minutes === 0) return `${seconds}s`;
-    if (hours === 0) return `${minutes}m ${seconds}s`;
-    return `${hours}h ${minutes}m ${seconds}s`;
-  }
 
   const isQuizActive = currentQuestionIndex <= 14 && isSuperRoundActive;
 

@@ -19,7 +19,10 @@ import {
   getDataWithId,
   listenToCollectionWithId,
 } from "@/helper/firebase.helper";
-import { getCurrentQuestionIndex } from "@/helper/utils.helper";
+import {
+  getCurrentQuestionIndex,
+  getFormatedDate,
+} from "@/helper/utils.helper";
 import {
   loadLeaderBoardData,
   loadPollData,
@@ -52,8 +55,7 @@ export default function useHandlePlayQuiz() {
   const [present] = useIonToast();
   const { loadUserSubscription } = useHandleSubscription();
 
-  // const quizId = getFormatedDate();
-  const quizId = "2024-01-18";
+  const quizId = getFormatedDate();
 
   const isSuperRoundActive =
     currentQuestionIndex < 9
@@ -143,10 +145,11 @@ export default function useHandlePlayQuiz() {
         const currentQ = getCurrentQuestionIndex();
 
         if (
-          (userQuizAttempt?.length < 15 &&
+          currentQ < 15 &&
+          ((userQuizAttempt?.length < 15 &&
             userQuizAttempt?.[currentQ]?.result === 1) ||
-          (userQuizAttempt?.length === currentQ &&
-            userQuizAttempt?.[currentQ - 1]?.result === 1)
+            (userQuizAttempt?.length === currentQ &&
+              userQuizAttempt?.[currentQ - 1]?.result === 1))
         )
           router.push("/play-quiz");
 
@@ -179,9 +182,11 @@ export default function useHandlePlayQuiz() {
   const cuttOff = QUESTION_TIMES?.[currentQuestionIndex]?.cuttOff;
   const leaderboardCount = leaderboard?.[currentQuestionIndex + 1]?.length || 0;
   useEffect(() => {
+    if (typeof cuttOff !== "number" || typeof leaderboardCount !== "number")
+      return;
     if (cuttOff > leaderboardCount) return;
 
-    alert("You were knocked out");
+    alertBox("You were knocked out");
     router.push("/dashboard");
   }, [leaderboardCount, cuttOff]);
 

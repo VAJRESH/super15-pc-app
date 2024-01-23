@@ -56,12 +56,10 @@ export default function useHandleSubscription() {
     btnRef?.current?.click();
   }, [options?.orderId]);
 
-  function toaster(message) {
-    present({
-      message: message,
-      duration: 1500,
-      position: "bottom",
-    });
+  function hanldeSubscription(obj = {}) {
+    setSubscription((prev) =>
+      getSubscriptionDataObj({ ...(prev || {}), ...(obj || {}) }),
+    );
   }
 
   async function loadUserSubscription() {
@@ -72,7 +70,7 @@ export default function useHandleSubscription() {
     return await loadSubscriptionData(user?.uid)
       .then((res) => {
         const subData = getSubscriptionDataObj(res?.[0]);
-        subData.isSubscribed = !!res?.length && !!subData?.razorpayPaymentId;
+        subData.isPopUpOpen = !!res?.length && !!subData?.razorpayPaymentId;
 
         setSubscription(subData);
         return subData;
@@ -86,7 +84,6 @@ export default function useHandleSubscription() {
 
     fetch(SUBSCRIBTIONS.orderUrl, {
       method: "POST",
-      contentType: "application/json",
       body: JSON.stringify({
         userId: user?.uid,
         expiryDate,
@@ -102,6 +99,7 @@ export default function useHandleSubscription() {
   }
 
   return {
+    hanldeSubscription,
     loadUserSubscription,
     payWithRazorpay,
     expiryDate,

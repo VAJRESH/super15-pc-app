@@ -1,6 +1,8 @@
 import { IsLoadingAtom } from "@/atom/global.atom";
+import VpaInput from "@/components/VpaInput/index";
 import { DEFAULTS } from "@/helper/constants.helper";
 import { useAuth } from "@/hooks/useAuth";
+import { updateContact } from "@/services/razorpayX.services";
 import {
   IonButton,
   IonButtons,
@@ -48,8 +50,6 @@ export default function Profile() {
     });
   }
 
-  console.log(user);
-
   return (
     <>
       <IonSplitPane when="sm" contentId="main-content">
@@ -89,6 +89,7 @@ export default function Profile() {
             <h4 style={{ textAlign: "center" }}>
               Hello, {user?.displayName || "username"}
             </h4>
+
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -104,6 +105,11 @@ export default function Profile() {
                 console.log(userData);
                 updateProfile(auth?.currentUser, userData)
                   .then(() => {
+                    updateContact({
+                      userId: user?.uid,
+                      name: userData?.displayName,
+                    });
+
                     setUser(userData);
                     toaster("Profile Updated");
                     setLoading(false);
@@ -157,11 +163,16 @@ export default function Profile() {
                 </label>
                 <input type="file" id="pan" className={styles.uploadPhoto} /> */}
               </IonList>
-              <br />
+
               <IonButton type="submit" expand="full" shape="round">
                 Update
               </IonButton>
             </form>
+
+            <br />
+            <br />
+
+            <VpaInput />
           </IonContent>
         </IonPage>
       </IonSplitPane>

@@ -14,20 +14,24 @@ export const DEFAULTS = {
   appName: "Super 15",
   profilePic:
     "https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png",
-  quizStartTime: "00:30:00",
+  quizStartTime: "10:00:00",
   totalQuestions: 15,
+  demoQuizQuestionTime: 10 * 1000,
 };
+
+export const RAZOR_PAY_BASE_URL = "https://api.razorpay.com/v1";
 
 // export const BASE_URL = "https://super15-pc-6gsjo4k1t-jtas01.vercel.app";
 export const BASE_URL = "http://localhost:3000";
 
 export const SUBSCRIBTIONS = {
   noOfDays: 30,
-  amount: 299,
+  amount: 30,
   currency: "INR",
   orderUrl: `${BASE_URL}/api/razorpay`,
   successUrl: `${BASE_URL}/api/payment-success`,
   cancelUrl: `${BASE_URL}/dashboard`,
+  accountNumber: "7878780080316316",
 };
 
 export const MONTHS = [
@@ -48,36 +52,36 @@ export const MONTHS = [
 export const ADMIN_UIDS = ["dYuHjusZ5hXX9PuCtvna6ULezwu1"];
 
 export const QUESTION_TIMES = [
-  { questionNumber: 1, timeLimit: 30 * 60 * 1000 }, // 4 hours in milliseconds //12
-  { questionNumber: 2, timeLimit: 5 * 60 * 1000 },
-  { questionNumber: 3, timeLimit: 3 * 60 * 1000 },
-  { questionNumber: 4, timeLimit: 1 * 60 * 1000 },
-  { questionNumber: 5, timeLimit: 1 * 60 * 1000 },
-  { questionNumber: 6, timeLimit: 38 * 60 * 1000 },
-  { questionNumber: 7, timeLimit: 1 * 60 * 1000 },
-  { questionNumber: 8, timeLimit: 20 * 60 * 1000 },
-  { questionNumber: 9, timeLimit: 5 * 60 * 1000 },
-  { questionNumber: 10, timeLimit: 105 * 30 * 1000 },
+  // { questionNumber: 1, timeLimit: 30 * 1000 }, // 4 hours in milliseconds //12
+  // { questionNumber: 2, timeLimit: 30 * 1000 },
+  // { questionNumber: 3, timeLimit: 30 * 1000 },
+  // { questionNumber: 4, timeLimit: 30 * 1000 },
+  // { questionNumber: 5, timeLimit: 30 * 1000 },
+  // { questionNumber: 6, timeLimit: 30 * 1000 },
+  // { questionNumber: 7, timeLimit: 30 * 1000 },
+  // { questionNumber: 8, timeLimit: 30 * 1000 },
+  // { questionNumber: 9, timeLimit: 30 * 1000 },
+  // { questionNumber: 10, timeLimit: 30 * 1000 },
+  // { questionNumber: 11, timeLimit: 30 * 1000, cuttOff: 100 },
+  // { questionNumber: 12, timeLimit: 30 * 1000, cuttOff: 50 },
+  // { questionNumber: 13, timeLimit: 30 * 1000, cuttOff: 20 },
+  // { questionNumber: 14, timeLimit: 30 * 1000, cuttOff: 10 },
+  // { questionNumber: 15, timeLimit: 30 * 1000, cuttOff: 1 },
+  { questionNumber: 1, timeLimit: 4 * 60 * 60 * 1000 }, // 4 hours in milliseconds
+  { questionNumber: 2, timeLimit: 2 * 60 * 60 * 1000 },
+  { questionNumber: 3, timeLimit: 60 * 60 * 1000 },
+  { questionNumber: 4, timeLimit: 30 * 60 * 1000 },
+  { questionNumber: 5, timeLimit: 15 * 60 * 1000 },
+  { questionNumber: 6, timeLimit: 8 * 60 * 1000 },
+  { questionNumber: 7, timeLimit: 4 * 60 * 1000 },
+  { questionNumber: 8, timeLimit: 2 * 60 * 1000 },
+  { questionNumber: 9, timeLimit: 60 * 1000 },
+  { questionNumber: 10, timeLimit: 30 * 1000 },
   { questionNumber: 11, timeLimit: 15 * 1000, cuttOff: 100 },
   { questionNumber: 12, timeLimit: 15 * 1000, cuttOff: 50 },
-  { questionNumber: 13, timeLimit: 15 * 1000, cuttOff: 20 },
-  { questionNumber: 14, timeLimit: 15 * 1000, cuttOff: 10 },
-  { questionNumber: 15, timeLimit: 15 * 1000, cuttOff: 1 },
-  // { questionNumber: 1, timeLimit: 4 * 60 * 60 * 1000 }, // 4 hours in milliseconds //12
-  // { questionNumber: 2, timeLimit: 2 * 60 * 60 * 1000 },
-  // { questionNumber: 3, timeLimit: 60 * 60 * 1000 },
-  // { questionNumber: 4, timeLimit: 30 * 60 * 1000 },
-  // { questionNumber: 5, timeLimit: 15 * 60 * 1000 },
-  // { questionNumber: 6, timeLimit: 8 * 60 * 1000 },
-  // { questionNumber: 7, timeLimit: 4 * 60 * 1000 },
-  // { questionNumber: 8, timeLimit: 2 * 60 * 1000 },
-  // { questionNumber: 9, timeLimit: 60 * 1000 },
-  // { questionNumber: 10, timeLimit: 30 * 1000 },
-  // { questionNumber: 11, timeLimit: 15 * 1000, cuttOff: 100 },
-  // { questionNumber: 12, timeLimit: 15 * 1000, cuttOff: 50 },
-  // { questionNumber: 13, timeLimit: 10 * 1000, cuttOff: 20},
-  // { questionNumber: 14, timeLimit: 10 * 1000, cuttOff: 10 },
-  // { questionNumber: 15, timeLimit: 10 * 1000, cuttOff: 1 },
+  { questionNumber: 13, timeLimit: 10 * 1000, cuttOff: 20 },
+  { questionNumber: 14, timeLimit: 10 * 1000, cuttOff: 10 },
+  { questionNumber: 15, timeLimit: 10 * 1000, cuttOff: 1 },
 ];
 
 export const DEMO_QUIZ_DATA = [
@@ -250,4 +254,6 @@ export const DEMO_QUIZ_DATA = [
 
 export const DB_TABLES = {
   subscriptions: "subscriptions",
+  razorpayXData: "razorpayXData",
+  payoutData: "payoutData",
 };
