@@ -39,6 +39,7 @@ export async function loadPollData(quizId = null) {
 
 export async function loadUserQuizMap(userId = null, quizId = null) {
   if (!quizId) return null;
+  if (!userId) return null;
 
   return await getSubCollectionData(
     COLLECTIONS.userQuizAttempts,
@@ -50,12 +51,16 @@ export async function loadUserQuizMap(userId = null, quizId = null) {
 }
 
 export async function loadSubscriptionData(userId) {
+  if (!userId) return null;
+
   return await fetch(`${BASE_URL}/api/subscriptions?userId=${userId}`)
     .then((res) => res.json())
     .catch((err) => console.log(err));
 }
 
 export async function loadVpaData(userId) {
+  if (!userId) return null;
+
   return await fetch(`${BASE_URL}/api/contacts/${userId}`)
     .then((res) => res.json())
     .catch((err) => console.log(err));

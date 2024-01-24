@@ -2,7 +2,6 @@ import { IsLoadingAtom } from "@/atom/global.atom";
 import { CurrentUserAtom } from "@/atom/user.atom";
 import { DEFAULTS, DEMO_QUIZ_DATA } from "@/helper/constants.helper";
 import { getFormatedDate } from "@/helper/utils.helper";
-import { useIonToast } from "@ionic/react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
@@ -16,8 +15,6 @@ export default function useHandlePlayDemoQuiz() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const router = useRouter();
 
-  const [present] = useIonToast();
-
   const quizData = {
     quizId: "demo",
     date: getFormatedDate(),
@@ -27,40 +24,29 @@ export default function useHandlePlayDemoQuiz() {
 
   // check for current question number based on time
   useEffect(() => {
-    const intervalId = setInterval(() => {
-      setUserQuizMap((prev) => {
-        if (prev?.[currentQuestionIndex]?.result !== 1) {
-          alertBox("Failed", "You are knocked out of quiz");
+    if (timer !== 1000) return;
 
-          setTimeout(() => router.push("/dashboard"), 1000);
-          return [];
-        }
+    setUserQuizMap((prev) => {
+      if (prev?.[currentQuestionIndex]?.result !== 1) {
+        router.push("/lose?message=You are knocked out of quiz");
 
-        setCurrentQuestionIndex((prev) => prev + 1);
-        setTimer(DEFAULTS?.demoQuizQuestionTime);
+        return [];
+      }
 
-        return prev;
-      });
-    }, DEFAULTS?.demoQuizQuestionTime);
-
-    return () => clearInterval(intervalId); // Clear the interval on cleanup
-  }, []);
+      return prev;
+    });
+    setCurrentQuestionIndex((prev) => prev + 1);
+    setTimer(DEFAULTS?.demoQuizQuestionTime);
+  }, [timer]);
 
   // update timeleft
   useEffect(() => {
+    if (currentQuestionIndex > 14) return;
+
     const t = setTimeout(() => setTimer((prev) => prev - 1000), 1000);
 
     return () => clearTimeout(t);
   }, [timer, currentQuestionIndex]);
-
-  // helper functions
-  function alertBox(title, message) {
-    present({
-      header: title,
-      message: message,
-      buttons: ["OK"],
-    });
-  }
 
   function hanldeOpSelection(op) {
     const isCorrect =
@@ -78,20 +64,12 @@ export default function useHandlePlayDemoQuiz() {
       createdBy: user?.uid,
     };
 
-    setIsLoading(true);
-
-    if (!isCorrect) {
-      alertBox("Failed", "You are knocked out of quiz");
-
-      setTimeout(() => router.push("/dashboard"), 1000);
-    }
-
     setUserQuizMap((prev) =>
       [...(prev || []), userQuizAttempt]?.sort((m1, m2) =>
         m1?.qId < m2?.qId ? -1 : 1,
       ),
     );
-    setIsLoading(false);
+    if (!isCorrect) router.push("/lose?message=You are knocked out of quiz");
   }
 
   return {

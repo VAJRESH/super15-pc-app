@@ -51,13 +51,15 @@ export default function DemoQuiz() {
               <IonItem lines="none">
                 <IonLabel>Demo Quiz</IonLabel>
 
-                <IonBadge
-                  slot="start"
-                  style={{ display: "flex", gap: "0.2em" }}
-                >
-                  <IonIcon icon={timeOutline}></IonIcon>
-                  {formatTime(timer)}
-                </IonBadge>
+                {currentQuestionIndex <= 14 && (
+                  <IonBadge
+                    slot="start"
+                    style={{ display: "flex", gap: "0.2em" }}
+                  >
+                    <IonIcon icon={timeOutline}></IonIcon>
+                    {formatTime(timer)}
+                  </IonBadge>
+                )}
               </IonItem>
             </IonToolbar>
           </IonHeader>

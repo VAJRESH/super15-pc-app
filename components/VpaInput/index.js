@@ -15,10 +15,12 @@ export default function VpaInput() {
 
   // load vpa
   useEffect(() => {
+    if (!user?.uid) return;
+
     loadVpaData(user?.uid)
       .then((res) => setVpaData({ id: res?.id, vpa: res?.vpa?.address }))
       .catch((err) => console.log(err));
-  }, []);
+  }, [user?.uid]);
 
   // helper functions
   function alertBox(title, message) {
