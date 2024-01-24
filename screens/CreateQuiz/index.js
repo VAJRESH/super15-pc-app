@@ -115,7 +115,7 @@ export default function CreateQuiz() {
 
             {quizData?.date != null && (
               <>
-                {questionData?.qSeq != null && (
+                {questionData?.qSeq != null ? (
                   <>
                     <SuperIcons qSeq={questionData?.qSeq} />
                     <div className={styles.createQuizHeader}>
@@ -246,9 +246,7 @@ export default function CreateQuiz() {
                       </button>
                     </div>
                   </>
-                )}
-
-                {quizData?.totalQuestions === DEFAULTS?.totalQuestions &&
+                ) : (
                   questionData?.qSeq == null && (
                     <>
                       <h4>Date : {new Date(quizData?.date)?.toDateString()}</h4>
@@ -299,7 +297,8 @@ export default function CreateQuiz() {
                         Select a new date
                       </IonButton>
                     </>
-                  )}
+                  )
+                )}
               </>
             )}
           </IonContent>
