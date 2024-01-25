@@ -27,6 +27,7 @@ export default function Dashboard() {
   const router = useRouter();
 
   const { handlePlayQuiz } = useHandlePlayQuiz();
+  const userName = user?.displayName?.split(" ")[0] || "";
 
   return (
     <IonSplitPane when="sm" contentId="main-content">
@@ -47,7 +48,7 @@ export default function Dashboard() {
                 <img src={user?.photoURL || DEFAULTS?.profilePic} />
               </IonAvatar>
               <IonLabel>
-                Hello, <b>{user?.displayName?.split(" ")[0] || ""}</b>
+                Hello{!userName?.length ? "!" : ","} <b>{userName}</b>
               </IonLabel>
             </IonItem>
           </IonToolbar>
