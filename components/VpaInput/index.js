@@ -9,7 +9,7 @@ import styles from "./vpaInput.module.css";
 
 export default function VpaInput() {
   const user = useRecoilValue(CurrentUserAtom);
-  const [vpaData, setVpaData] = useState({ id: null, vpa: null });
+  const [vpaData, setVpaData] = useState({ id: null, vpa: user?.vpa || null });
 
   const [present] = useIonToast();
 

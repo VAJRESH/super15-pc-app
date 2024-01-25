@@ -155,14 +155,14 @@ export default function useHandlePlayQuiz() {
 
         if (
           currentQ !== 0 &&
-          (userQuizMap?.some((quizMap) => quizMap?.result === 0) ||
+          (userQuizAttempt?.some((quizMap) => quizMap?.result === 0) ||
             currentQ >= 15 ||
-            userQuizMap?.[currentQ - 1]?.result !== 1)
+            userQuizAttempt?.[currentQ - 1]?.result !== 1)
         )
           router.push("/dashboard");
       })
       .catch((err) => console.log(err));
-  }, [user?.uid]);
+  }, [user?.uid, userQuizMap?.length]);
 
   // to check if user is still not knocked out
   useEffect(() => {
@@ -173,9 +173,10 @@ export default function useHandlePlayQuiz() {
       currentQuestionIndex !== 0 &&
       !!userQuizMap?.length &&
       (userQuizMap?.some((quizMap) => quizMap?.result === 0) ||
-        userQuizMap?.[currentQuestionIndex - 1]?.result !== 1)
+        userQuizMap?.[currentQuestionIndex - 1]?.result !== 1) &&
+      router.pathname === "/play-quiz"
     )
-      router.push("/dashboard");
+      router.push("/lose?message=You are knocked out of quiz");
   }, [currentQuestionIndex]);
 
   // leaderboard check
@@ -186,8 +187,7 @@ export default function useHandlePlayQuiz() {
       return;
     if (cuttOff > leaderboardCount) return;
 
-    alertBox("You were knocked out");
-    router.push("/dashboard");
+    router.push("/lose?message=You are knocked out of quiz");
   }, [leaderboardCount, cuttOff]);
 
   // helper functions
@@ -223,7 +223,24 @@ export default function useHandlePlayQuiz() {
   }
 
   function handlePlayQuiz() {
-    // TODO: add check for UPI id
+    // vpa check
+    if (!user?.vpa)
+      return alertBox("No VPA", "Please add your upi id in profile");
+
+    // if today quiz is not completed
+    if (quizData?.totalQuestions !== DEFAULTS.totalQuestions)
+      return alertBox(
+        "No Quiz",
+        "Today there is no quiz. Please come back tomorrow",
+      );
+
+    // time check
+    const now = new Date();
+    const quizStartTime = new Date(
+      `${getFormatedDate()}T${DEFAULTS?.quizStartTime}`,
+    );
+    if (now?.getHours() < quizStartTime?.getHours())
+      return alertBox("Not Started", "Quiz has not yet started!");
 
     // if today quiz is not completed
     if (quizData?.totalQuestions !== DEFAULTS.totalQuestions)
@@ -289,7 +306,10 @@ export default function useHandlePlayQuiz() {
       { createNew: true },
     )
       .then(async () => {
-        if (isCorrect) {
+        let shouldSaveToLeaderBoard = null;
+        if (isCorrect) shouldSaveToLeaderBoard = true;
+        if (currentQuestion === 0) shouldSaveToLeaderBoard = true;
+        if (shouldSaveToLeaderBoard) {
           const isLeaderboardPresent = await getDataWithId(
             COLLECTIONS?.leaderboards,
             quizId,
@@ -303,6 +323,7 @@ export default function useHandlePlayQuiz() {
                 name: user?.displayName,
                 email: user?.email,
                 profileImg: user?.photoURL,
+                isCorrect,
               }),
             },
             `${quizData?.quizId}`,
@@ -317,11 +338,8 @@ export default function useHandlePlayQuiz() {
           ),
         );
 
-        if (!isCorrect) {
-          alertBox("Failed", "You are knocked out of today's quiz");
-
-          setTimeout(() => router.push("/dashboard"), 1000);
-        }
+        if (!isCorrect)
+          router.push("/lose?message=You are knocked out of today's quiz");
       })
       .catch((err) => console.log(err))
       .finally(() => setIsLoading(false));
