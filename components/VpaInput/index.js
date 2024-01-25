@@ -9,7 +9,10 @@ import styles from "./vpaInput.module.css";
 
 export default function VpaInput() {
   const user = useRecoilValue(CurrentUserAtom);
-  const [vpaData, setVpaData] = useState({ id: null, vpa: user?.vpa || null });
+  const [vpaData, setVpaData] = useState({
+    id: null,
+    vpa: user?.vpa || "name@okhdfc",
+  });
 
   const [present] = useIonToast();
 
@@ -18,7 +21,9 @@ export default function VpaInput() {
     if (!user?.uid) return;
 
     loadVpaData(user?.uid)
-      .then((res) => setVpaData({ id: res?.id, vpa: res?.vpa?.address }))
+      .then((res) =>
+        setVpaData({ id: res?.id, vpa: res?.vpa?.address || "name@okhdfc" }),
+      )
       .catch((err) => console.log(err));
   }, [user?.uid]);
 
@@ -42,6 +47,10 @@ export default function VpaInput() {
       email: user?.email,
       name: user?.displayName,
       vpa: vpaData,
+    }).then((res) => {
+      if (!!res?.error) return alertBox(res?.error || "Something went wrong");
+
+      alertBox("VPA added successfully");
     });
   }
 

@@ -11,6 +11,11 @@ export default function subscriptions(req, res) {
       values: [userId, getFormatedDate()],
     });
 
+    if (!!result?.error) {
+      res.status(400).json({ error: result?.error || "Something went wrong" });
+      return reject();
+    }
+
     res.status(200).json(result);
     resolve();
   });

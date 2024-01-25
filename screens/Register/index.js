@@ -42,6 +42,11 @@ export default function Register() {
     if (!name) return Toaster("Username is required!");
     if (!email) return Toaster("Email is required!");
     if (!password) return Toaster("Password is required!");
+
+    if (name?.length < 2)
+      return Toaster("Username should be at least 3 characters!");
+    if (name?.length > 50)
+      return Toaster("Username should not be at more than 50 characters!");
     if (validateEmail(email?.trim()) === null) return Toaster("Invalid Email");
     if (password?.trim() !== confirmPassword?.trim())
       return Toaster("Passwords did not match!");

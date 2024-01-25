@@ -27,6 +27,7 @@ export default async function payout(req, res) {
       leaderboardData?.[lastQuizRoundIndex]?.map((user) => user?.userId),
     ],
   });
+
   for (let i = 0; i < result?.length; i++) {
     const data = result?.[i];
     const payoutData = await razorpayX?.Payout?.create({
