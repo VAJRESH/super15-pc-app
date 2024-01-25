@@ -11,10 +11,10 @@ export function getUserDataObj(data = {}) {
     uid: data?.uid || null,
     displayName: data?.displayName || null,
     email: data?.email || null,
-    phoneNumber: data?.phoneNumber || null,
     photoURL: data?.photoURL || DEFAULTS?.profilePic,
     accessToken: data?.accessToken || null,
     expirationTime: data?.expirationTime || null,
     refreshToken: data?.refreshToken || null,
+    vpa: data?.vpa || null,
   };
 }

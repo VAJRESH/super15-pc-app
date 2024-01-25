@@ -2,5 +2,6 @@
 
 ## Running Andriod App
 
-npm i
+npm run static
+npx cap sync
 npx cap open android

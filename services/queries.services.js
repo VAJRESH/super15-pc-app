@@ -1,10 +1,9 @@
-import { COLLECTIONS } from "@/helper/constants.helper";
+import { BASE_URL, COLLECTIONS } from "@/helper/constants.helper";
 import {
   getDataWithFilter,
   getDataWithId,
   getSubCollectionData,
 } from "@/helper/firebase.helper";
-import { getFormatedDate } from "@/helper/utils.helper";
 import { where } from "firebase/firestore";
 
 export async function loadQuestionsData(quizId = null) {
@@ -27,8 +26,31 @@ export async function loadQuizData(quizId = null) {
     .catch((err) => console.error(err));
 }
 
+export async function loadLeaderBoardData(quizId = null) {
+  if (!quizId) return null;
+
+  return await getDataWithFilter(COLLECTIONS?.leaderboards, [
+    where("quizId", "==", quizId),
+    where("isCorrect", "==", true),
+  ])
+    .then((res) => {
+      console.log("lead", res);
+      return res;
+    })
+    .catch((err) => console.error(err));
+}
+
+export async function loadPollData(quizId = null) {
+  if (!quizId) return null;
+
+  return await getDataWithId(COLLECTIONS?.superRoundVotes, quizId)
+    .then((res) => res)
+    .catch((err) => console.error(err));
+}
+
 export async function loadUserQuizMap(userId = null, quizId = null) {
   if (!quizId) return null;
+  if (!userId) return null;
 
   return await getSubCollectionData(
     COLLECTIONS.userQuizAttempts,
@@ -39,12 +61,18 @@ export async function loadUserQuizMap(userId = null, quizId = null) {
     .catch((err) => console.error(err));
 }
 
-export async function loadSubscriptionData() {
-  return await getDataWithFilter(
-    COLLECTIONS.subscriptions,
-    [where("expiryDate", ">=", getFormatedDate())],
-    1,
-  )
-    .then((res) => res)
+export async function loadSubscriptionData(userId) {
+  if (!userId) return null;
+
+  return await fetch(`${BASE_URL}/api/subscriptions?userId=${userId}`)
+    .then((res) => res.json())
+    .catch((err) => console.log(err));
+}
+
+export async function loadVpaData(userId) {
+  if (!userId) return null;
+
+  return await fetch(`${BASE_URL}/api/contacts/${userId}`)
+    .then((res) => res.json())
     .catch((err) => console.log(err));
 }

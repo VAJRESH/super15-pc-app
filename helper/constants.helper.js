@@ -5,7 +5,7 @@ export const ERROR_MSG = {
 export const COLLECTIONS = {
   quiz: "quiz",
   questions: "questions", // sub collection in quiz
-  subscriptions: "subscriptions",
+  superRoundVotes: "superRoundVotes",
   userQuizAttempts: "userQuizAttempts",
   leaderboards: "leaderboards",
 };
@@ -16,18 +16,22 @@ export const DEFAULTS = {
     "https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png",
   quizStartTime: "10:00:00",
   totalQuestions: 15,
+  demoQuizQuestionTime: 10 * 1000,
 };
+
+export const RAZOR_PAY_BASE_URL = "https://api.razorpay.com/v1";
 
 export const BASE_URL = "https://super15-pc-6gsjo4k1t-jtas01.vercel.app";
 // export const BASE_URL = "http://localhost:3000";
 
 export const SUBSCRIBTIONS = {
   noOfDays: 30,
-  amount: 299,
+  amount: 30,
   currency: "INR",
   orderUrl: `${BASE_URL}/api/razorpay`,
   successUrl: `${BASE_URL}/api/payment-success`,
   cancelUrl: `${BASE_URL}/dashboard`,
+  accountNumber: "7878780080316316",
 };
 
 export const MONTHS = [
@@ -48,21 +52,36 @@ export const MONTHS = [
 export const ADMIN_UIDS = ["dYuHjusZ5hXX9PuCtvna6ULezwu1"];
 
 export const QUESTION_TIMES = [
-  { questionNumber: 1, timeLimit: 2 * 60 * 60 * 1000 }, // 2 hours in milliseconds //12
-  { questionNumber: 2, timeLimit: 60 * 1000 },
-  { questionNumber: 3, timeLimit: 60 * 1000 },
-  { questionNumber: 4, timeLimit: 60 * 1000 },
-  { questionNumber: 5, timeLimit: 60 * 1000 },
-  { questionNumber: 6, timeLimit: 60 * 1000 },
-  { questionNumber: 7, timeLimit: 60 * 1000 },
-  { questionNumber: 8, timeLimit: 22 * 60 * 1000 },
+  // { questionNumber: 1, timeLimit: 30 * 1000 }, // 4 hours in milliseconds //12
+  // { questionNumber: 2, timeLimit: 30 * 1000 },
+  // { questionNumber: 3, timeLimit: 30 * 1000 },
+  // { questionNumber: 4, timeLimit: 30 * 1000 },
+  // { questionNumber: 5, timeLimit: 30 * 1000 },
+  // { questionNumber: 6, timeLimit: 30 * 1000 },
+  // { questionNumber: 7, timeLimit: 30 * 1000 },
+  // { questionNumber: 8, timeLimit: 30 * 1000 },
+  // { questionNumber: 9, timeLimit: 30 * 1000 },
+  // { questionNumber: 10, timeLimit: 30 * 1000 },
+  // { questionNumber: 11, timeLimit: 30 * 1000, cuttOff: 100 },
+  // { questionNumber: 12, timeLimit: 30 * 1000, cuttOff: 50 },
+  // { questionNumber: 13, timeLimit: 30 * 1000, cuttOff: 20 },
+  // { questionNumber: 14, timeLimit: 30 * 1000, cuttOff: 10 },
+  // { questionNumber: 15, timeLimit: 30 * 1000, cuttOff: 1 },
+  { questionNumber: 1, timeLimit: 4 * 60 * 60 * 1000 }, // 4 hours in milliseconds
+  { questionNumber: 2, timeLimit: 2 * 60 * 60 * 1000 },
+  { questionNumber: 3, timeLimit: 60 * 60 * 1000 },
+  { questionNumber: 4, timeLimit: 30 * 60 * 1000 },
+  { questionNumber: 5, timeLimit: 15 * 60 * 1000 },
+  { questionNumber: 6, timeLimit: 8 * 60 * 1000 },
+  { questionNumber: 7, timeLimit: 4 * 60 * 1000 },
+  { questionNumber: 8, timeLimit: 2 * 60 * 1000 },
   { questionNumber: 9, timeLimit: 60 * 1000 },
-  { questionNumber: 10, timeLimit: 60 * 1000 },
-  { questionNumber: 11, timeLimit: 10 * 1000 },
-  { questionNumber: 12, timeLimit: 10 * 1000 },
-  { questionNumber: 13, timeLimit: 10 * 1000 },
-  { questionNumber: 14, timeLimit: 10 * 1000 },
-  { questionNumber: 15, timeLimit: 10 * 1000 },
+  { questionNumber: 10, timeLimit: 30 * 1000 },
+  { questionNumber: 11, timeLimit: 15 * 1000, cuttOff: 100 },
+  { questionNumber: 12, timeLimit: 15 * 1000, cuttOff: 50 },
+  { questionNumber: 13, timeLimit: 10 * 1000, cuttOff: 20 },
+  { questionNumber: 14, timeLimit: 10 * 1000, cuttOff: 10 },
+  { questionNumber: 15, timeLimit: 10 * 1000, cuttOff: 1 },
 ];
 
 export const DEMO_QUIZ_DATA = [
@@ -180,12 +199,12 @@ export const DEMO_QUIZ_DATA = [
     qId: "2024-01-18-11",
     date: "2024-01-18",
     qSeq: 11,
-    qText: "Which ocean is the largest on Earth?",
-    qOpt1: "Pacific Ocean",
-    qOpt2: "Atlantic Ocean",
-    qOpt3: "Indian Ocean",
-    qOpt4: "Arctic Ocean",
-    qOptCorrect: "Pacific Ocean",
+    qText: "What is the largest living organism on Earth?",
+    qOpt1: "Giant sequoia tree",
+    qOpt2: "Blue whale",
+    qOpt3: "Honey fungus",
+    qOpt4: "African baobab",
+    qOptCorrect: "Giant sequoia tree",
   },
   {
     qId: "2024-01-18-12",
@@ -202,12 +221,12 @@ export const DEMO_QUIZ_DATA = [
     qId: "2024-01-18-13",
     date: "2024-01-18",
     qSeq: 13,
-    qText: "Which artist painted the Mona Lisa?",
-    qOpt1: "Michelangelo",
-    qOpt2: "Leonardo da Vinci",
-    qOpt3: "Sandro Botticelli",
-    qOpt4: "Raphael",
-    qOptCorrect: "Leonardo da Vinci",
+    qText: "Which country has the most islands in the world?",
+    qOpt1: "Indonesia",
+    qOpt2: "Philippines",
+    qOpt3: "Japan",
+    qOpt4: "Greece",
+    qOptCorrect: "Indonesia",
   },
   {
     qId: "2024-01-18-14",
@@ -232,3 +251,9 @@ export const DEMO_QUIZ_DATA = [
     qOptCorrect: "Nitrogen",
   },
 ];
+
+export const DB_TABLES = {
+  subscriptions: "subscriptions",
+  razorpayXData: "razorpayXData",
+  payoutData: "payoutData",
+};

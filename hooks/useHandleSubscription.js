@@ -28,7 +28,6 @@ export default function useHandleSubscription() {
     name: DEFAULTS.appName,
     prefillName: user?.displayName,
     prefillEmail: user.email,
-    prefillPhoneNumber: user.phoneNumber,
   });
 
   const btnRef = useRef(null);
@@ -47,9 +46,8 @@ export default function useHandleSubscription() {
       ...(prev || {}),
       prefillName: user?.displayName,
       prefillEmail: user.email,
-      prefillPhoneNumber: user.phoneNumber,
     }));
-  }, [user?.displayName, user?.email, user?.phoneNumber]);
+  }, [user?.displayName, user?.email]);
 
   // submit razorpay form
   useEffect(() => {
@@ -58,12 +56,10 @@ export default function useHandleSubscription() {
     btnRef?.current?.click();
   }, [options?.orderId]);
 
-  function toaster(message) {
-    present({
-      message: message,
-      duration: 1500,
-      position: "bottom",
-    });
+  function hanldeSubscription(obj = {}) {
+    setSubscription((prev) =>
+      getSubscriptionDataObj({ ...(prev || {}), ...(obj || {}) }),
+    );
   }
 
   async function loadUserSubscription() {
@@ -71,10 +67,10 @@ export default function useHandleSubscription() {
 
     setIsLoading(true);
 
-    return await loadSubscriptionData()
+    return await loadSubscriptionData(user?.uid)
       .then((res) => {
         const subData = getSubscriptionDataObj(res?.[0]);
-        subData.isSubscribed = !!res?.length && !!subData?.razorpayPaymentId;
+        subData.isPopUpOpen = !!res?.length && !!subData?.razorpayPaymentId;
 
         setSubscription(subData);
         return subData;
@@ -86,7 +82,14 @@ export default function useHandleSubscription() {
   async function payWithRazorpay() {
     setIsLoading(true);
 
-    fetch(SUBSCRIBTIONS.orderUrl)
+    fetch(SUBSCRIBTIONS.orderUrl, {
+      method: "POST",
+      body: JSON.stringify({
+        userId: user?.uid,
+        expiryDate,
+        amount: options?.amount,
+      }),
+    })
       .then((res) => res.json())
       .then(async (res) =>
         setOptions((prev) => ({ ...(prev || {}), orderId: res?.id })),
@@ -96,6 +99,7 @@ export default function useHandleSubscription() {
   }
 
   return {
+    hanldeSubscription,
     loadUserSubscription,
     payWithRazorpay,
     expiryDate,

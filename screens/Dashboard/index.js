@@ -82,7 +82,7 @@ export default function Dashboard() {
               />
               <p style={{ margin: "20px", textAlign: "center" }}>
                 Rules and Guidelines?{" "}
-                <button onClick={() => router.push("/dashboard")}>
+                <button onClick={() => router.push("/details")}>
                   Read Here
                 </button>
               </p>

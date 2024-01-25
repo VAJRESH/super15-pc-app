@@ -1,6 +1,8 @@
 import { IsLoadingAtom } from "@/atom/global.atom";
+import VpaInput from "@/components/VpaInput/index";
 import { DEFAULTS } from "@/helper/constants.helper";
 import { useAuth } from "@/hooks/useAuth";
+import { updateContact } from "@/services/razorpayX.services";
 import {
   IonButton,
   IonButtons,
@@ -19,8 +21,6 @@ import {
 import { updateProfile } from "firebase/auth";
 import { ellipsisVertical } from "ionicons/icons";
 import { useState } from "react";
-import PhoneInput from "react-phone-number-input";
-import "react-phone-number-input/style.css";
 import { useRecoilState } from "recoil";
 import { CurrentUserAtom, getUserDataObj } from "../../atom/user.atom";
 import FormInput from "../../components/FormInput";
@@ -93,18 +93,23 @@ export default function Profile() {
               onSubmit={(e) => {
                 e.preventDefault();
 
+                const userData = getUserDataObj({
+                  ...(userTemp || {}),
+                  ...(user || {}),
+                  displayName: userTemp?.displayName || user?.displayName,
+                  email: userTemp?.email || user?.email,
+                });
+
                 setLoading(true);
-                updateProfile(auth?.currentUser, userTemp)
+                console.log(userData);
+                updateProfile(auth?.currentUser, userData)
                   .then(() => {
-                    setUser(
-                      getUserDataObj({
-                        ...(user || {}),
-                        ...(userTemp || {}),
-                        displayName: userTemp?.displayName || user?.displayName,
-                        email: userTemp?.email || user?.email,
-                        phoneNumber: userTemp?.phoneNumber || user?.phoneNumber,
-                      }),
-                    );
+                    updateContact({
+                      userId: user?.uid,
+                      name: userData?.displayName,
+                    });
+
+                    setUser(userData);
                     toaster("Profile Updated");
                     setLoading(false);
                   })
@@ -130,18 +135,6 @@ export default function Profile() {
                   value={userTemp?.email || user?.email}
                   // onIonBlur={(e) => setConfirmPassword(e.target.value)}
                 />
-                <IonItem style={{ margin: "20px auto" }}>
-                  <PhoneInput
-                    defaultCountry="IN"
-                    international
-                    countryCallingCodeEditable={false}
-                    value={userTemp?.phoneNumber || user?.phoneNumber}
-                    placeholder={"Mobile"}
-                    containerComponent={"div"}
-                    className={styles.phoneNumber}
-                    onChange={(phoneNumber) => hanldeChange({ phoneNumber })}
-                  />
-                </IonItem>
 
                 {/* <FormInput
                   label="Address"
@@ -169,11 +162,15 @@ export default function Profile() {
                 </label>
                 <input type="file" id="pan" className={styles.uploadPhoto} /> */}
               </IonList>
-              <br />
               <IonButton type="submit" expand="full" shape="round">
                 Update
               </IonButton>
             </form>
+
+            <br />
+            <br />
+
+            <VpaInput />
           </IonContent>
         </IonPage>
       </IonSplitPane>

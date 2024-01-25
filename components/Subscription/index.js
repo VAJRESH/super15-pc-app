@@ -1,7 +1,8 @@
-import { SubscriptionAtom } from "@/atom/global.atom";
-import { CurrentUserAtom } from "@/atom/user.atom";
+import { IsLoadingAtom, SubscriptionAtom } from "@/atom/global.atom";
 import useHandleSubscription from "@/hooks/useHandleSubscription";
 import {
+  IonButton,
+  IonButtons,
   IonContent,
   IonHeader,
   IonModal,
@@ -10,27 +11,43 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { useRecoilValue } from "recoil";
+import Loader from "../Loader/index";
 import Card from "./Card";
 import RazorpayForm from "./RazorpayForm";
 
 export default function Subscription() {
-  const user = useRecoilValue(CurrentUserAtom);
+  const isLoading = useRecoilValue(IsLoadingAtom);
   const subscription = useRecoilValue(SubscriptionAtom);
-  const { payWithRazorpay, expiryDate, options, btnRef } =
+  const { hanldeSubscription, payWithRazorpay, expiryDate, options, btnRef } =
     useHandleSubscription();
 
   return (
     <>
       <IonContent className="ion-padding">
         <IonModal
-          isOpen={!!user?.uid && subscription?.isSubscribed === false}
+          isOpen={subscription?.isPopUpOpen}
           style={{ display: "flex" }}
         >
           <IonHeader>
             <IonToolbar>
-              <IonTitle style={{ textAlign: "center" }}>Subscriptions</IonTitle>
+              <IonTitle>Subscriptions</IonTitle>
+
+              <IonButtons slot="end">
+                <IonButton
+                  strong={true}
+                  onClick={() =>
+                    hanldeSubscription({
+                      isPopUpOpen: !subscription?.isPopUpOpen,
+                    })
+                  }
+                >
+                  Close
+                </IonButton>
+              </IonButtons>
             </IonToolbar>
           </IonHeader>
+
+          {isLoading && <Loader isFullPage={true} />}
 
           <IonContent>
             <IonText style={{ textAlign: "center" }}>

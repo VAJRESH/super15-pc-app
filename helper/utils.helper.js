@@ -42,3 +42,21 @@ export function getCurrentQuestionIndex() {
 
   return currentQuestionIndex;
 }
+
+export function formatTime(milliseconds, isLongFormat = false) {
+  const hours = Math.floor(milliseconds / (1000 * 60 * 60));
+  const minutes = Math.floor((milliseconds % (1000 * 60 * 60)) / (1000 * 60));
+  const seconds = Math.floor((milliseconds % (1000 * 60)) / 1000);
+
+  if (isLongFormat) {
+    let time = "";
+    if (hours !== 0) time += `${hours} hours`;
+    if (minutes !== 0) time += ` ${minutes} min`;
+    if (seconds !== 0) time += ` ${seconds} sec`;
+
+    return time;
+  }
+  if (hours === 0 && minutes === 0) return `${seconds}s`;
+  if (hours === 0) return `${minutes}m ${seconds}s`;
+  return `${hours}h ${minutes}m ${seconds}s`;
+}

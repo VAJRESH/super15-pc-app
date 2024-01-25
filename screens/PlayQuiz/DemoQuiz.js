@@ -1,5 +1,7 @@
+import { formatTime } from "@/helper/utils.helper";
 import useHandlePlayDemoQuiz from "@/hooks/useHandlePlayDemoQuiz";
 import {
+  IonBadge,
   IonButton,
   IonButtons,
   IonContent,
@@ -13,7 +15,7 @@ import {
   IonText,
   IonToolbar,
 } from "@ionic/react";
-import { ellipsisVertical } from "ionicons/icons";
+import { ellipsisVertical, timeOutline } from "ionicons/icons";
 import { useRouter } from "next/router";
 import Leaderboard from "../../components/Leaderboard";
 import QuestionBlock from "../../components/QuestionBlock";
@@ -23,9 +25,13 @@ import SuperIcons from "../../components/SuperIcons";
 export default function DemoQuiz() {
   const router = useRouter();
 
-  const { userQuizMap, quizData, currentQuestionIndex, hanldeOpSelection } =
-    useHandlePlayDemoQuiz();
-  console.log(currentQuestionIndex);
+  const {
+    userQuizMap,
+    quizData,
+    currentQuestionIndex,
+    timer,
+    hanldeOpSelection,
+  } = useHandlePlayDemoQuiz();
 
   return (
     <>
@@ -44,6 +50,16 @@ export default function DemoQuiz() {
 
               <IonItem lines="none">
                 <IonLabel>Demo Quiz</IonLabel>
+
+                {currentQuestionIndex <= 14 && (
+                  <IonBadge
+                    slot="start"
+                    style={{ display: "flex", gap: "0.2em" }}
+                  >
+                    <IonIcon icon={timeOutline}></IonIcon>
+                    {formatTime(timer)}
+                  </IonBadge>
+                )}
               </IonItem>
             </IonToolbar>
           </IonHeader>

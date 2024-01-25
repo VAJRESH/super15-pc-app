@@ -35,13 +35,3 @@
     background-color: #b3cde8; */
   /* border-radius: 4px; */
 }
-.phoneNumber {
-  width: 100%;
-  height: 100%;
-}
-.phoneNumber input {
-  width: 100%;
-  height: 100%;
-  border: 0px;
-  outline: 0px;
-}

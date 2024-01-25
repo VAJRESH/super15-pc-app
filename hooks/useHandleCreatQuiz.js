@@ -109,10 +109,20 @@ export default function useHandleCreatQuiz() {
       console.log(err);
     }
   }
-  console.log(quizData);
 
   // state updates
   function handleQuizDataUpdate(obj = {}) {
+    if (obj?.date == null && quizData?.date != null) {
+      setMonthlyQuizDataArr((prev) =>
+        prev?.map((q) => {
+          if (q?.date === quizData?.date)
+            return { ...(q || {}), totalQuestions: quizData?.totalQuestions };
+
+          return q;
+        }),
+      );
+    }
+
     setQuizData((prev) => getQuizDataObj({ ...(prev || {}), ...(obj || {}) }));
   }
 
@@ -222,7 +232,7 @@ export default function useHandleCreatQuiz() {
         "Cannot have same option more than once.",
       );
 
-    const isUpdate = questionData?.qSeq <= quizData?.totalQuestions;
+    const isUpdate = questionData?.qSeq <= (quizData?.totalQuestions || 0);
 
     const _questionData = {
       qId: quizData?.quizId || null,

@@ -73,3 +73,20 @@ export function getUserQuizMapDataObj(data = {}) {
     updatedBy: data?.updatedBy || "",
   };
 }
+
+export const PollDataAtom = atom({
+  key: "PollDataAtom",
+  default: getPollDataObj(),
+});
+
+export function getPollDataObj(data = {}) {
+  return {
+    continue: data?.continue || [],
+    quit: data?.quit || [],
+  };
+}
+
+export const LeaderBoardAtom = atom({
+  key: "LeaderBoardAtom",
+  default: null,
+});
