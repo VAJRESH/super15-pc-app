@@ -70,7 +70,7 @@ export default function useHandleSubscription() {
     return await loadSubscriptionData(user?.uid)
       .then((res) => {
         const subData = getSubscriptionDataObj(res?.[0]);
-        subData.isPopUpOpen = !!res?.length && !!subData?.razorpayPaymentId;
+        subData.isPopUpOpen = !subData?.razorpayPaymentId;
 
         setSubscription(subData);
         return subData;

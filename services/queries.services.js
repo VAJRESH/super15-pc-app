@@ -65,12 +65,9 @@ export async function loadSubscriptionData(userId) {
   if (!userId) return null;
 
   return await fetch(`${BASE_URL}/api/subscriptions?userId=${userId}`, {
-    headers: {
-      "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*",
-    },
+    headers: { "Content-Type": "application/json" },
   })
-    .then((res) => res.json())
+    .then((res) => (res?.body == null ? null : res?.json()))
     .catch((err) => console.log(err));
 }
 
@@ -78,11 +75,8 @@ export async function loadVpaData(userId) {
   if (!userId) return null;
 
   return await fetch(`${BASE_URL}/api/contacts/${userId}`, {
-    headers: {
-      "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*",
-    },
+    headers: { "Content-Type": "application/json" },
   })
-    .then((res) => res.json())
-    .catch((err) => console.log(err));
+    .then((res) => (res?.body == null ? null : res?.json()))
+    .catch((err) => console.log("err", err));
 }

@@ -48,7 +48,8 @@ export default function VpaInput() {
       name: user?.displayName,
       vpa: vpaData,
     }).then((res) => {
-      if (!!res?.error) return alertBox(res?.error || "Something went wrong");
+      if (!res || !!res?.error)
+        return alertBox(res?.error || "Something went wrong");
 
       alertBox("VPA added successfully");
     });

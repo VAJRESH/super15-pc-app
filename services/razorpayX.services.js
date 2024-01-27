@@ -14,9 +14,17 @@ export async function createContactAccount({
     },
     body: JSON.stringify({ name, email, vpa, userId }),
   })
+    .then((res) => {
+      console.log(res, res.status, res.body);
+
+      return res;
+    })
     .then((res) => res.json())
     .then((res) => res)
-    .catch((err) => err);
+    .catch((err) => {
+      console.log("create vpa error", err, err?.message);
+      return err;
+    });
 }
 
 export function updateContact({ userId = null, name = null }) {
