@@ -9,14 +9,10 @@ import {
 import { useRouter } from "next/router";
 import { useState } from "react";
 import FormInput from "../../components/FormInput";
-
 import { signUp } from "../../helper/firebase.helper";
 import { logo } from "./register.module.css";
 
-export default function Register({ history }) {
-  const [isTouched, setIsTouched] = useState(false);
-  const [isValid, setIsValid] = useState();
-
+export default function Register() {
   const router = useRouter();
 
   const [name, setName] = useState("");
@@ -44,12 +40,19 @@ export default function Register({ history }) {
     e.preventDefault();
 
     if (!name) return Toaster("Username is required!");
-    if (validateEmail(email) === null) return Toaster("Invalid Email");
-    if (password !== confirmPassword)
+    if (!email) return Toaster("Email is required!");
+    if (!password) return Toaster("Password is required!");
+
+    if (name?.length < 2)
+      return Toaster("Username should be at least 3 characters!");
+    if (name?.length > 50)
+      return Toaster("Username should not be at more than 50 characters!");
+    if (validateEmail(email?.trim()) === null) return Toaster("Invalid Email");
+    if (password?.trim() !== confirmPassword?.trim())
       return Toaster("Passwords did not match!");
 
     try {
-      await signUp(email, password, name);
+      await signUp(email?.trim(), password?.trim(), name?.trim());
       Toaster("Registration Successful.");
       router.push("/login");
     } catch (error) {
@@ -74,27 +77,27 @@ export default function Register({ history }) {
                 <FormInput
                   label="Username : "
                   placeholder="username"
-                  onIonBlur={(e) => setName(e.target.value)}
+                  onIonInput={(e) => setName(e.target.value)}
                   value={name}
                 />
                 <FormInput
                   label="Email Id : "
                   placeholder="Email Id"
-                  onIonBlur={(e) => setEmail(e.target.value)}
+                  onIonInput={(e) => setEmail(e.target.value)}
                   value={email}
                 />
                 <FormInput
                   type="password"
                   label="Enter Password : "
                   placeholder="Enter Password"
-                  onIonBlur={(e) => setPassword(e.target.value)}
+                  onIonInput={(e) => setPassword(e.target.value)}
                   value={password}
                 />
                 <FormInput
                   type="password"
                   label="Confirm Password : "
                   placeholder="Confirm Password"
-                  onIonBlur={(e) => setConfirmPassword(e.target.value)}
+                  onIonInput={(e) => setConfirmPassword(e.target.value)}
                   value={confirmPassword}
                 />
               </IonList>

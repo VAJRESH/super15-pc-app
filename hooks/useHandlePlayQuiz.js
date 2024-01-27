@@ -143,6 +143,14 @@ export default function useHandlePlayQuiz() {
         const userQuizAttempt = res?.map((r) => getUserQuizMapDataObj(r));
         setUserQuizMap(userQuizAttempt);
         const currentQ = getCurrentQuestionIndex();
+        const isQuizPage = router.pathname.includes("/play-quiz");
+
+        // user has no attempts and is on quiz page
+        if (!userQuizAttempt?.length) {
+          if (isQuizPage) return router.push("/dashboard");
+
+          return;
+        }
 
         if (
           currentQ < 15 &&
@@ -153,6 +161,17 @@ export default function useHandlePlayQuiz() {
         )
           router.push("/play-quiz");
 
+        console.log(
+          currentQ !== 0 &&
+            (userQuizAttempt?.some((quizMap) => quizMap?.result === 0) ||
+              currentQ >= 15 ||
+              userQuizAttempt?.[currentQ - 1]?.result !== 1),
+          currentQ,
+          currentQ !== 0,
+          userQuizAttempt?.some((quizMap) => quizMap?.result === 0),
+          userQuizAttempt,
+          userQuizAttempt?.[currentQ - 1]?.result,
+        );
         if (
           currentQ !== 0 &&
           (userQuizAttempt?.some((quizMap) => quizMap?.result === 0) ||

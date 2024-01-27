@@ -4,11 +4,19 @@ import { DB_TABLES } from "@/helper/constants.helper";
 export default async function handle(req, res) {
   const { userId } = req.query;
   const isGet = req.method === "GET";
+  if (!userId) return res.status(400).json({ error: "UserId is required" });
 
   const result = await excuteQuery({
     query: `SELECT * from ${DB_TABLES?.razorpayXData} WHERE userId=?`,
     values: [userId],
   });
+
+  if (!!result?.error)
+    return res
+      .status(400)
+      .json({ error: result?.error || "Something went wrong" });
+
+  if (!result?.length) return res.json(null);
 
   if (isGet) {
     const fundData = await razorpayX.FundAccount.get(result?.[0]?.fundId);

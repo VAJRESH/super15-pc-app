@@ -96,12 +96,20 @@ export default function Profile() {
                 const userData = getUserDataObj({
                   ...(userTemp || {}),
                   ...(user || {}),
-                  displayName: userTemp?.displayName || user?.displayName,
-                  email: userTemp?.email || user?.email,
+                  displayName:
+                    userTemp?.displayName?.trim() || user?.displayName?.trim(),
+                  email: userTemp?.email?.trim() || user?.email?.trim(),
                 });
 
+                if (userData?.displayName?.length < 2)
+                  return toaster("Username should be at least 3 characters!");
+                if (userData?.displayName?.length > 50)
+                  return toaster(
+                    "Username should not be at more than 50 characters!",
+                  );
+
                 setLoading(true);
-                console.log(userData);
+
                 updateProfile(auth?.currentUser, userData)
                   .then(() => {
                     updateContact({
