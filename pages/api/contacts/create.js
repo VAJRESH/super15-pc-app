@@ -4,6 +4,8 @@ import { DB_TABLES } from "@/helper/constants.helper";
 export default async function createContactAndVPA(req, res) {
   const { vpa, userId, name, email } = req.body;
 
+  if (req.method === "OPTIONS") return res.status(200).end();
+
   if (!vpa) return res.status(400).json({ error: "VPA is required" });
   if (!email) return res.status(400).json({ error: "Email is required" });
   if (!userId) return res.status(400).json({ error: "UserId is required" });
