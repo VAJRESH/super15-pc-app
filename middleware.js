@@ -9,9 +9,8 @@ export default async function middleware(request) {
     "Content-Type, Authorization",
   );
 
-  const origin = request.headers.get("Origin");
   response.headers.set("Access-Control-Allow-Credentials", "true");
-  response.headers.set("Access-Control-Allow-Origin", origin);
+  response.headers.set("Access-Control-Allow-Origin", "*");
 
   return response;
 }
