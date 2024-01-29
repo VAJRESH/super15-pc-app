@@ -1,5 +1,4 @@
 import { CurrentUserAtom, getUserDataObj } from "@/atom/user.atom";
-import { ADMIN_UIDS } from "@/helper/constants.helper";
 import {
   IonContent,
   IonHeader,
@@ -35,8 +34,7 @@ export default function SideMenu() {
           <IonList>
             <IonMenuToggle autoHide={false}>
               {SidebarMenu.map((menu) => {
-                if (menu?.isAdmin && !ADMIN_UIDS?.includes(user?.uid))
-                  return null;
+                if (menu?.isAdmin && !user?.isAdmin) return null;
 
                 return (
                   <IonItem
