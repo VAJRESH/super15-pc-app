@@ -10,7 +10,8 @@ export default async function middleware(request) {
 
   // Construct the base URL without the port number
   let baseUrl = `${protocol}://${host}`;
-  if (!protocol || !host) baseUrl = request.headers.origin || "*";
+  if (!protocol || !host) baseUrl = request.headers.origin;
+  if (!baseUrl) baseUrl = request.headers.referer || "*";
 
   response.headers.set("Access-Control-Allow-Credentials", "true");
   response.headers.set("Access-Control-Allow-Origin", baseUrl);
