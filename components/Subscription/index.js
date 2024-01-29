@@ -6,20 +6,17 @@ import {
   IonContent,
   IonHeader,
   IonModal,
-  IonText,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
 import { useRecoilValue } from "recoil";
 import Loader from "../Loader/index";
-import Card from "./Card";
-import RazorpayForm from "./RazorpayForm";
+import NoSubscription from "./NoSubscription";
 
 export default function Subscription() {
   const isLoading = useRecoilValue(IsLoadingAtom);
   const subscription = useRecoilValue(SubscriptionAtom);
-  const { hanldeSubscription, payWithRazorpay, expiryDate, options, btnRef } =
-    useHandleSubscription();
+  const { hanldeSubscription } = useHandleSubscription();
 
   return (
     <>
@@ -50,13 +47,7 @@ export default function Subscription() {
           {isLoading && <Loader isFullPage={true} />}
 
           <IonContent>
-            <IonText style={{ textAlign: "center" }}>
-              <h5>You don't have active subscription</h5>
-            </IonText>
-
-            <Card expiryDate={expiryDate} handleClick={payWithRazorpay} />
-
-            <RazorpayForm btnRef={btnRef} options={options} />
+            <NoSubscription />
           </IonContent>
         </IonModal>
       </IonContent>

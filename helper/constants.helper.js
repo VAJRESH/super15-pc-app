@@ -8,6 +8,7 @@ export const COLLECTIONS = {
   superRoundVotes: "superRoundVotes",
   userQuizAttempts: "userQuizAttempts",
   leaderboards: "leaderboards",
+  userData: "userData",
 };
 
 export const DEFAULTS = {
@@ -21,7 +22,8 @@ export const DEFAULTS = {
 
 export const RAZOR_PAY_BASE_URL = "https://api.razorpay.com/v1";
 
-export const BASE_URL = "https://super15-pc-6gsjo4k1t-jtas01.vercel.app";
+// export const BASE_URL = "https://super15-pc-app-sage.vercel.app";
+export const BASE_URL = "https://super15-pc-app.vercel.app";
 // export const BASE_URL = "http://localhost:3000";
 
 export const SUBSCRIBTIONS = {
@@ -48,8 +50,6 @@ export const MONTHS = [
   "November",
   "December",
 ];
-
-export const ADMIN_UIDS = ["dYuHjusZ5hXX9PuCtvna6ULezwu1"];
 
 export const QUESTION_TIMES = [
   // { questionNumber: 1, timeLimit: 30 * 1000 }, // 4 hours in milliseconds //12

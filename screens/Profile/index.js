@@ -1,6 +1,6 @@
 import { IsLoadingAtom } from "@/atom/global.atom";
 import VpaInput from "@/components/VpaInput/index";
-import { DEFAULTS } from "@/helper/constants.helper";
+import { COLLECTIONS, DEFAULTS } from "@/helper/constants.helper";
 import { useAuth } from "@/hooks/useAuth";
 import { updateContact } from "@/services/razorpayX.services";
 import {
@@ -25,7 +25,11 @@ import { useRecoilState } from "recoil";
 import { CurrentUserAtom, getUserDataObj } from "../../atom/user.atom";
 import FormInput from "../../components/FormInput";
 import SideMenu from "../../components/SideMenu";
-import { auth, upload } from "../../helper/firebase.helper";
+import {
+  addUpdateFirestoreData,
+  auth,
+  upload,
+} from "../../helper/firebase.helper";
 import styles from "./profile.module.css";
 
 export default function Profile() {
@@ -99,6 +103,7 @@ export default function Profile() {
                   displayName:
                     userTemp?.displayName?.trim() || user?.displayName?.trim(),
                   email: userTemp?.email?.trim() || user?.email?.trim(),
+                  address: userTemp?.address?.trim() || user?.address?.trim(),
                 });
 
                 if (userData?.displayName?.length < 2)
@@ -107,11 +112,21 @@ export default function Profile() {
                   return toaster(
                     "Username should not be at more than 50 characters!",
                   );
+                if (userData?.address?.length < 10)
+                  return toaster("Address should be at least 10 characters!");
 
                 setLoading(true);
 
                 updateProfile(auth?.currentUser, userData)
                   .then(() => {
+                    addUpdateFirestoreData(
+                      COLLECTIONS.userData,
+                      { address: userData?.address },
+                      auth?.currentUser?.uid,
+                    ).catch((err) =>
+                      console.log("Update User Data Error", err, err?.message),
+                    );
+
                     updateContact({
                       userId: user?.uid,
                       name: userData?.displayName,
@@ -142,6 +157,12 @@ export default function Profile() {
                   disabled={true}
                   value={userTemp?.email || user?.email}
                   // onIonBlur={(e) => setConfirmPassword(e.target.value)}
+                />
+                <FormInput
+                  label="Address"
+                  placeholder="Address"
+                  value={userTemp?.address || user?.address}
+                  onIonInput={(e) => hanldeChange({ address: e.target.value })}
                 />
 
                 {/* <FormInput

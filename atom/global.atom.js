@@ -17,6 +17,7 @@ export function getSubscriptionDataObj(data = {}) {
     razorpayPaymentId: data?.razorpayPaymentId || null,
     orderId: data?.orderId || null,
     signature: data?.signature || null,
+    amount: data?.amount || null,
     isPopUpOpen: data?.isPopUpOpen || null,
   };
 }

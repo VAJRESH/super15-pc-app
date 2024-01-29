@@ -1,65 +1,19 @@
+import useHandleUserData from "@/hooks/useHandleUserData";
 import {
   IonContent,
   IonImg,
   IonList,
   IonPage,
   IonSplitPane,
-  useIonToast,
 } from "@ionic/react";
 import { useRouter } from "next/router";
-import { useState } from "react";
 import FormInput from "../../components/FormInput";
-import { signUp } from "../../helper/firebase.helper";
 import { logo } from "./register.module.css";
 
 export default function Register() {
   const router = useRouter();
-
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-
-  const [present] = useIonToast();
-
-  const Toaster = (message) => {
-    present({
-      message: message,
-      duration: 1500,
-      position: "bottom",
-    });
-  };
-
-  const validateEmail = (email) => {
-    return email.match(
-      /^(?=.{1,254}$)(?=.{1,64}@)[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/,
-    );
-  };
-
-  async function onSubmit(e) {
-    e.preventDefault();
-
-    if (!name) return Toaster("Username is required!");
-    if (!email) return Toaster("Email is required!");
-    if (!password) return Toaster("Password is required!");
-
-    if (name?.length < 2)
-      return Toaster("Username should be at least 3 characters!");
-    if (name?.length > 50)
-      return Toaster("Username should not be at more than 50 characters!");
-    if (validateEmail(email?.trim()) === null) return Toaster("Invalid Email");
-    if (password?.trim() !== confirmPassword?.trim())
-      return Toaster("Passwords did not match!");
-
-    try {
-      await signUp(email?.trim(), password?.trim(), name?.trim());
-      Toaster("Registration Successful.");
-      router.push("/login");
-    } catch (error) {
-      console.log(error);
-      Toaster("Registration Failed.");
-    }
-  }
+  const { userTemp, handleUpdateUserTemp, handleRegister } =
+    useHandleUserData();
 
   return (
     <>
@@ -72,33 +26,42 @@ export default function Register() {
               className={logo}
             ></IonImg>
             <h4 style={{ textAlign: "center" }}>Register on Super 15</h4>
-            <form onSubmit={onSubmit}>
+
+            <form onSubmit={handleRegister}>
               <IonList>
                 <FormInput
                   label="Username : "
                   placeholder="username"
-                  onIonInput={(e) => setName(e.target.value)}
-                  value={name}
+                  onIonInput={(e) =>
+                    handleUpdateUserTemp({ displayName: e.target.value })
+                  }
+                  value={userTemp?.displayName}
                 />
                 <FormInput
                   label="Email Id : "
                   placeholder="Email Id"
-                  onIonInput={(e) => setEmail(e.target.value)}
-                  value={email}
+                  onIonInput={(e) =>
+                    handleUpdateUserTemp({ email: e.target.value })
+                  }
+                  value={userTemp?.email}
                 />
                 <FormInput
                   type="password"
                   label="Enter Password : "
                   placeholder="Enter Password"
-                  onIonInput={(e) => setPassword(e.target.value)}
-                  value={password}
+                  onIonInput={(e) =>
+                    handleUpdateUserTemp({ password: e.target.value })
+                  }
+                  value={userTemp?.password}
                 />
                 <FormInput
                   type="password"
                   label="Confirm Password : "
                   placeholder="Confirm Password"
-                  onIonInput={(e) => setConfirmPassword(e.target.value)}
-                  value={confirmPassword}
+                  onIonInput={(e) =>
+                    handleUpdateUserTemp({ cnfPassword: e.target.value })
+                  }
+                  value={userTemp?.cnfPassword}
                 />
               </IonList>
               <br />
@@ -106,6 +69,7 @@ export default function Register() {
                 Submit
               </ion-button>
             </form>
+
             <p style={{ margin: "20px", textAlign: "center" }}>
               Already have an account?{" "}
               <button onClick={() => router.push("/login")}>LOGIN</button>

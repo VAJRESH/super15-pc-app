@@ -10,13 +10,20 @@ export async function createContactAccount({
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*",
     },
     body: JSON.stringify({ name, email, vpa, userId }),
   })
+    .then((res) => {
+      console.log(res, res.status, res.body);
+
+      return res;
+    })
     .then((res) => res.json())
     .then((res) => res)
-    .catch((err) => err);
+    .catch((err) => {
+      console.log("create vpa error", err, err?.message);
+      return null;
+    });
 }
 
 export function updateContact({ userId = null, name = null }) {
