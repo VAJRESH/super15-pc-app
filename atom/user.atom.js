@@ -15,6 +15,8 @@ export function getUserDataObj(data = {}) {
     accessToken: data?.accessToken || null,
     expirationTime: data?.expirationTime || null,
     refreshToken: data?.refreshToken || null,
+    address: data?.address || null,
     vpa: data?.vpa || null,
+    isAdmin: data?.isAdmin || false,
   };
 }

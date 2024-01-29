@@ -1,0 +1,17 @@
+.subscription {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5em;
+  margin: 1em;
+  padding: 0.5em;
+
+  background-color: #ab81ee;
+  color: var(--white);
+  border-radius: 5px;
+}
+
+.subscription b {
+  font-size: 1.3rem;
+  font-weight: 500;
+}

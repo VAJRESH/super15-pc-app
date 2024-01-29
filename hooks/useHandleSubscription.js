@@ -6,7 +6,6 @@ import {
 import { CurrentUserAtom } from "@/atom/user.atom";
 import { DEFAULTS, SUBSCRIBTIONS } from "@/helper/constants.helper";
 import { loadSubscriptionData } from "@/services/queries.services";
-import { useIonToast } from "@ionic/react";
 import { useEffect, useRef, useState } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 
@@ -31,8 +30,6 @@ export default function useHandleSubscription() {
   });
 
   const btnRef = useRef(null);
-
-  const [present] = useIonToast();
 
   useEffect(() => {
     if (!user?.uid) return;

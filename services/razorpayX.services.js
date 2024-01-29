@@ -10,7 +10,6 @@ export async function createContactAccount({
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*",
     },
     body: JSON.stringify({ name, email, vpa, userId }),
   })
@@ -23,7 +22,7 @@ export async function createContactAccount({
     .then((res) => res)
     .catch((err) => {
       console.log("create vpa error", err, err?.message);
-      return err;
+      return null;
     });
 }
 

@@ -1,17 +1,17 @@
-import { CurrentUserAtom } from "@/atom/user.atom";
+import { CurrentUserAtom, getUserDataObj } from "@/atom/user.atom";
 import { loadVpaData } from "@/services/queries.services";
 import { createContactAccount } from "@/services/razorpayX.services";
 import { IonButton, useIonToast } from "@ionic/react";
 import { useEffect, useState } from "react";
-import { useRecoilValue } from "recoil";
+import { useRecoilState } from "recoil";
 import FormInput from "../FormInput/index";
 import styles from "./vpaInput.module.css";
 
 export default function VpaInput() {
-  const user = useRecoilValue(CurrentUserAtom);
+  const [user, setUser] = useRecoilState(CurrentUserAtom);
   const [vpaData, setVpaData] = useState({
     id: null,
-    vpa: user?.vpa || "name@okhdfc",
+    vpa: user?.vpa || "",
   });
 
   const [present] = useIonToast();
@@ -21,9 +21,7 @@ export default function VpaInput() {
     if (!user?.uid) return;
 
     loadVpaData(user?.uid)
-      .then((res) =>
-        setVpaData({ id: res?.id, vpa: res?.vpa?.address || "name@okhdfc" }),
-      )
+      .then((res) => setVpaData({ id: res?.id, vpa: res?.vpa?.address || "" }))
       .catch((err) => console.log(err));
   }, [user?.uid]);
 
@@ -46,11 +44,13 @@ export default function VpaInput() {
       userId: user?.uid,
       email: user?.email,
       name: user?.displayName,
-      vpa: vpaData,
+      vpa: vpaData?.vpa,
     }).then((res) => {
+      console.log(res);
       if (!res || !!res?.error)
         return alertBox(res?.error || "Something went wrong");
 
+      setUser((prev) => getUserDataObj({ ...(prev || {}), vpa: vpaData?.vpa }));
       alertBox("VPA added successfully");
     });
   }

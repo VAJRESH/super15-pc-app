@@ -1,5 +1,6 @@
 import { IonInput, IonItem } from "@ionic/react";
 import "@ionic/react/css/core.css";
+import styles from "./formInput.module.css";
 
 export default function FormInput({
   label = "",
@@ -14,6 +15,7 @@ export default function FormInput({
   return (
     <IonItem style={{ margin: "20px auto" }}>
       <IonInput
+        className={styles.input}
         label={label}
         labelPlacement="floating"
         type={type}

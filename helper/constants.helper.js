@@ -8,6 +8,7 @@ export const COLLECTIONS = {
   superRoundVotes: "superRoundVotes",
   userQuizAttempts: "userQuizAttempts",
   leaderboards: "leaderboards",
+  userData: "userData",
 };
 
 export const DEFAULTS = {
