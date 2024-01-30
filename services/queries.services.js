@@ -33,10 +33,7 @@ export async function loadLeaderBoardData(quizId = null) {
     where("quizId", "==", quizId),
     where("isCorrect", "==", true),
   ])
-    .then((res) => {
-      console.log("lead", res);
-      return res;
-    })
+    .then((res) => res)
     .catch((err) => console.error(err));
 }
 

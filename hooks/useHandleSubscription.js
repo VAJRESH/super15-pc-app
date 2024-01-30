@@ -60,9 +60,9 @@ export default function useHandleSubscription() {
   }
 
   async function loadUserSubscription() {
-    if (!!subscription?.userId) return;
+    if (subscription?.userId === user?.uid) return;
 
-    setIsLoading(true);
+    if (subscription?.isPopUpOpen == null) setIsLoading(true);
 
     return await loadSubscriptionData(user?.uid)
       .then((res) => {

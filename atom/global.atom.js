@@ -18,6 +18,7 @@ export function getSubscriptionDataObj(data = {}) {
     orderId: data?.orderId || null,
     signature: data?.signature || null,
     amount: data?.amount || null,
-    isPopUpOpen: data?.isPopUpOpen || null,
+    isPopUpOpen:
+      typeof data?.isPopUpOpen === "boolean" ? data?.isPopUpOpen : null,
   };
 }

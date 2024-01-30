@@ -126,7 +126,7 @@ export default function useHandlePlayQuiz() {
       })
       .catch((err) => console.log(err));
 
-    if (!leaderboard) {
+    if (!leaderboard?.length && router.pathname === "/play-quiz") {
       loadLeaderBoardData(quizId)
         .then(setLeaderboard)
         .catch((err) => console.log(err));
@@ -136,6 +136,7 @@ export default function useHandlePlayQuiz() {
   // load user quiz map data
   useEffect(() => {
     if (!user?.uid) return;
+    if (!quizData?.quizId) return;
     if (userQuizMap?.length) return;
 
     loadUserQuizMap(user?.uid, quizId)
@@ -161,17 +162,6 @@ export default function useHandlePlayQuiz() {
         )
           router.push("/play-quiz");
 
-        console.log(
-          currentQ !== 0 &&
-            (userQuizAttempt?.some((quizMap) => quizMap?.result === 0) ||
-              currentQ >= 15 ||
-              userQuizAttempt?.[currentQ - 1]?.result !== 1),
-          currentQ,
-          currentQ !== 0,
-          userQuizAttempt?.some((quizMap) => quizMap?.result === 0),
-          userQuizAttempt,
-          userQuizAttempt?.[currentQ - 1]?.result,
-        );
         if (
           currentQ !== 0 &&
           (userQuizAttempt?.some((quizMap) => quizMap?.result === 0) ||
@@ -181,7 +171,7 @@ export default function useHandlePlayQuiz() {
           router.push("/dashboard");
       })
       .catch((err) => console.log(err));
-  }, [user?.uid, userQuizMap?.length]);
+  }, [user?.uid, userQuizMap?.length, quizData?.quizId]);
 
   // to check if user is still not knocked out
   useEffect(() => {
