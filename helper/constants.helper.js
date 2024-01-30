@@ -32,7 +32,7 @@ export const SUBSCRIBTIONS = {
   currency: "INR",
   orderUrl: `${BASE_URL}/api/razorpay`,
   successUrl: `${BASE_URL}/api/payment-success`,
-  cancelUrl: `${BASE_URL}/dashboard`,
+  cancelUrl: `http://localhost/dashboard`,
   accountNumber: "7878780080316316",
 };
 
