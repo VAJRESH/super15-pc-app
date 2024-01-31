@@ -21,11 +21,15 @@ export default function useHandleSubscription() {
   }, [user?.uid]);
 
   useEffect(() => {
+    if (!user?.uid) return;
+
     const script = document.createElement("script");
     script.src = "https://checkout.razorpay.com/v1/checkout.js";
 
     document.body.appendChild(script);
-  }, []);
+
+    return () => document.body.removeChild(script);
+  }, [user?.uid]);
 
   function hanldeSubscription(obj = {}) {
     setSubscription((prev) =>

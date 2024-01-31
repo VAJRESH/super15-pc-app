@@ -39,7 +39,13 @@ export default async function createContactAndVPA(req, res) {
         .status(400)
         .json({ error: result?.error || "Something went wrong" });
 
-    res.status(200).json({ success: true });
+    res
+      .status(200)
+      .json({
+        success: true,
+        contactId: contactData?.id,
+        fundId: fundData?.id,
+      });
   } catch (err) {
     res.status(400).json({
       error:

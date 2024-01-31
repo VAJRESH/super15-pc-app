@@ -19,7 +19,11 @@ export default async function handle(req, res) {
   if (!result?.length) return res.json(null);
 
   if (isGet) {
-    const fundData = await razorpayX.FundAccount.get(result?.[0]?.fundId);
+    const fundData = await razorpayX.FundAccount.get(result?.[0]?.fundId).catch(
+      (err) => console.log("Error", err),
+    );
+
+    if (!fundData) return res.status(200).json({});
 
     return res.status(200).json(fundData);
   }

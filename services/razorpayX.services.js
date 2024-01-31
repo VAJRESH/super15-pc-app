@@ -13,11 +13,6 @@ export async function createContactAccount({
     },
     body: JSON.stringify({ name, email, vpa, userId }),
   })
-    .then((res) => {
-      console.log(res, res.status, res.body);
-
-      return res;
-    })
     .then((res) => res.json())
     .then((res) => res)
     .catch((err) => {
