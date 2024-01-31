@@ -15,12 +15,12 @@ export default function PaymentSuccess(req, res) {
     });
 
     if (result?.error) {
-      res.status(400).redirect(`/dashboard`);
+      res.status(400).redirect(`http://localhost/dashboard`);
 
       return reject();
     }
 
-    res.status(200).redirect(`/payment-success`);
+    res.status(200).redirect(`http://localhost/payment-success`);
     resolve();
   });
 }

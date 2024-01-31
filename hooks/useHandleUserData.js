@@ -1,6 +1,7 @@
 import { CurrentUserAtom, getUserDataObj } from "@/atom/user.atom";
 import { COLLECTIONS, ERROR_MSG } from "@/helper/constants.helper";
 import { addUpdateFirestoreData, auth } from "@/helper/firebase.helper";
+import { useRouter } from "next/router";
 import { useIonToast } from "@ionic/react";
 import {
   createUserWithEmailAndPassword,
@@ -15,6 +16,7 @@ export default function useHandleUserData() {
   const [userTemp, setUserTemp] = useState(getTempUserDataObj(user));
 
   const [present] = useIonToast();
+  const router = useRouter();
 
   // utils
   function toaster(message) {
@@ -114,6 +116,7 @@ export default function useHandleUserData() {
       );
       toaster("Login Successful.");
       handleUpdateUser(signInResponse?.user);
+      router.push("/dashboard");
     } catch (error) {
       console.log(error, error?.message);
       if (error?.message?.includes("wrong-password"))
