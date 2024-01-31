@@ -9,6 +9,7 @@ import styles from "./vpaInput.module.css";
 
 export default function VpaInput() {
   const [user, setUser] = useRecoilState(CurrentUserAtom);
+  const [isLoading, setIsLoading] = useState(null);
   const [vpaData, setVpaData] = useState({
     id: null,
     vpa: user?.vpa || "",
@@ -40,6 +41,7 @@ export default function VpaInput() {
     if (!user?.email) return alertBox("Email is missing");
     if (!vpaData) return alertBox("Enter VPA");
 
+    setIsLoading(true);
     createContactAccount({
       userId: user?.uid,
       email: user?.email,
@@ -47,10 +49,12 @@ export default function VpaInput() {
       vpa: vpaData?.vpa,
     }).then((res) => {
       console.log(res);
+      setIsLoading(false);
+
       if (!res || !!res?.error)
         return alertBox(res?.error || "Something went wrong");
 
-      setUser((prev) => getUserDataObj({ ...(prev || {}), vpa: vpaData?.vpa }));
+      setUser(getUserDataObj({ vpa: vpaData?.vpa, id: res?.fundId }));
       alertBox("VPA added successfully");
     });
   }
@@ -73,7 +77,7 @@ export default function VpaInput() {
           <small>Enter VPA mindfully, it cannot be updated</small>
         </div>
 
-        <IonButton onClick={addUpdateVpa} disabled={!!vpaData?.id}>
+        <IonButton onClick={addUpdateVpa} disabled={!!vpaData?.id || isLoading}>
           Submit
         </IonButton>
       </div>

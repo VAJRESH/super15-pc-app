@@ -231,10 +231,19 @@ export default function useHandlePlayQuiz() {
     setTimer(timeLeft > 0 ? timeLeft : null);
   }
 
-  function handlePlayQuiz() {
+  async function handlePlayQuiz() {
     // vpa check
     if (!user?.vpa)
       return alertBox("No VPA", "Please add your upi id in profile");
+
+    if (!subscription?.userId) {
+      const subData = await loadUserSubscription();
+      if (!subData?.userId)
+        return alertBox(
+          "Please Subscribe",
+          "Please Subscribe from subscription tab",
+        );
+    }
 
     // if today quiz is not completed
     if (quizData?.totalQuestions !== DEFAULTS.totalQuestions)
@@ -277,14 +286,6 @@ export default function useHandlePlayQuiz() {
         "Quiz Failed",
         "You were knocked out for today. Please come back tomorrow",
       );
-
-    if (!subscription?.userId) {
-      return loadUserSubscription().then((res) => {
-        if (!res?.userId) return;
-
-        router.push("/play-quiz");
-      });
-    }
 
     router.push("/play-quiz");
   }

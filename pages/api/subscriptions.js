@@ -12,6 +12,10 @@ export default function subscriptions(req, res) {
         ORDER BY coalesce(updatedAt, createdAt) DESC`,
       values: [userId],
     });
+    if (!result?.[0]?.id) {
+      res.status(200).json({});
+      return resolve();
+    }
     const subData = await razorpay.subscriptions.fetch(
       result?.[0]?.subscriptionId,
     );
