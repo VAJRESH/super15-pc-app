@@ -68,6 +68,24 @@ export async function loadSubscriptionData(userId) {
     .catch((err) => console.log(err));
 }
 
+export async function loadPlans() {
+  return await fetch(`${BASE_URL}/api/plans`, {
+    headers: { "Content-Type": "application/json" },
+  })
+    .then((res) => res?.json() || [])
+    .catch((err) => console.log(err));
+}
+
+export async function loadPlanById(planId = null) {
+  if (!planId) return;
+
+  return await fetch(`${BASE_URL}/api/plans/${planId}`, {
+    headers: { "Content-Type": "application/json" },
+  })
+    .then((res) => res?.json())
+    .catch((err) => console.log(err));
+}
+
 export async function loadVpaData(userId) {
   if (!userId) return null;
 

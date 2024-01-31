@@ -6,11 +6,11 @@ export default function PaymentSuccess(req, res) {
 
   return new Promise(async (resolve, reject) => {
     const result = await excuteQuery({
-      query: `UPDATE ${DB_TABLES?.subscriptions} SET signature=?, razorpayPaymentId=? WHERE orderId=?`,
+      query: `UPDATE ${DB_TABLES?.subscriptions} SET signature=?, razorpayPaymentId=? WHERE subscriptionId=?`,
       values: [
         razorpayData?.razorpay_signature,
         razorpayData?.razorpay_payment_id,
-        razorpayData?.razorpay_order_id,
+        razorpayData?.razorpay_subscription_id,
       ],
     });
 

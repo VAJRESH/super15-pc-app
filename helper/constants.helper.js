@@ -34,6 +34,7 @@ export const SUBSCRIBTIONS = {
   successUrl: `${BASE_URL}/api/payment-success`,
   cancelUrl: `http://localhost/dashboard`,
   accountNumber: "7878780080316316",
+  razorpayKey: "rzp_test_9MvI1PsLSFtd6H",
 };
 
 export const MONTHS = [

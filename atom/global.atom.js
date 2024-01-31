@@ -14,11 +14,25 @@ export function getSubscriptionDataObj(data = {}) {
   return {
     id: data?.id || null,
     userId: data?.userId || null,
-    expiryDate: data?.expiryDate || null,
+    planId: data?.planId || null,
     razorpayPaymentId: data?.razorpayPaymentId || null,
-    orderId: data?.orderId || null,
     signature: data?.signature || null,
+
+    // razorpay plan data
     amount: data?.amount || null,
+    currency: data?.currency || null,
+    description: data?.description || null,
+    name: data?.name || null,
+
+    // razorpay subscription data
+    status: data?.status || null,
+    remainingCount: data?.remainingCount || null,
+    totalCount: data?.totalCount || null,
+    currentStart: data?.currentStart || null,
+    currentEnd: data?.currentEnd || null,
+    startAt: data?.startAt || null,
+    endAt: data?.endAt || null,
+
     createdAt: data?.createdAt || null,
     updatedAt: data?.updatedAt || null,
     isPopUpOpen:

@@ -3,7 +3,6 @@ import { CurrentUserAtom } from "@/atom/user.atom";
 import Invoice from "@/components/Invoice/index";
 import SideMenu from "@/components/SideMenu";
 import NoSubscription from "@/components/Subscription/NoSubscription";
-import { SUBSCRIBTIONS } from "@/helper/constants.helper";
 import useHandleSubscription from "@/hooks/useHandleSubscription";
 import {
   IonButton,
@@ -26,6 +25,7 @@ import styles from "./subscriptions.module.css";
 export default function Subscriptions() {
   const user = useRecoilValue(CurrentUserAtom);
   const subscription = useRecoilValue(SubscriptionAtom);
+
   useHandleSubscription();
 
   return (
@@ -61,12 +61,11 @@ export default function Subscriptions() {
                 </div>
 
                 <div>
-                  <h5>Super15 Monthly Subscription</h5>
-                  <b>
-                    Amount: ₹{subscription?.amount || SUBSCRIBTIONS?.amount} /-
-                  </b>
+                  <h5>{subscription?.name}</h5>
+                  <b>Amount: ₹{subscription?.amount || 0} /-</b>
                   <p>
-                    Renew on {new Date(subscription?.expiryDate).toDateString()}
+                    Renew on{" "}
+                    {new Date(subscription?.endAt * 1000).toDateString()}
                   </p>
                 </div>
               </div>
@@ -74,10 +73,14 @@ export default function Subscriptions() {
               <PDFDownloadLink
                 document={
                   <Invoice
-                    invoiceId={subscription?.orderId}
+                    invoiceId={subscription?.id}
                     amountInINR={subscription?.amount}
-                    paidOn={new Date(subscription?.createdAt).toDateString()}
-                    renewOn={new Date(subscription?.expiryDate).toDateString()}
+                    paidOn={new Date(
+                      subscription?.startAt * 1000,
+                    ).toDateString()}
+                    renewOn={new Date(
+                      subscription?.endAt * 1000,
+                    ).toDateString()}
                     paidTo={user?.displayName}
                     transactionId={subscription?.razorpayPaymentId}
                     billingDetails={{

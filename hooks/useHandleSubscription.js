@@ -6,7 +6,7 @@ import {
 import { CurrentUserAtom } from "@/atom/user.atom";
 import { DEFAULTS, SUBSCRIBTIONS } from "@/helper/constants.helper";
 import { loadSubscriptionData } from "@/services/queries.services";
-import { useEffect, useRef, useState } from "react";
+import { useEffect } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 
 export default function useHandleSubscription() {
@@ -14,44 +14,18 @@ export default function useHandleSubscription() {
   const [subscription, setSubscription] = useRecoilState(SubscriptionAtom);
   const [isLoading, setIsLoading] = useRecoilState(IsLoadingAtom);
 
-  const expiryDate = new Date();
-  expiryDate.setDate(expiryDate.getDate() + SUBSCRIBTIONS?.noOfDays);
-
-  const [options, setOptions] = useState({
-    key: "rzp_test_8SCsJGRxwB9Dnp",
-    amount: SUBSCRIBTIONS.amount,
-    description: `Monthly subscription till ${expiryDate?.toDateString()}`,
-    image: "https://cdn.razorpay.com/logos/BUVwvgaqVByGp2_large.jpg",
-    orderId: null,
-    currency: SUBSCRIBTIONS?.currency,
-    name: DEFAULTS.appName,
-    prefillName: user?.displayName,
-    prefillEmail: user.email,
-  });
-
-  const btnRef = useRef(null);
-
   useEffect(() => {
     if (!user?.uid) return;
 
     loadUserSubscription();
   }, [user?.uid]);
 
-  // update user details
   useEffect(() => {
-    setOptions((prev) => ({
-      ...(prev || {}),
-      prefillName: user?.displayName,
-      prefillEmail: user.email,
-    }));
-  }, [user?.displayName, user?.email]);
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
 
-  // submit razorpay form
-  useEffect(() => {
-    if (!options?.orderId) return;
-
-    btnRef?.current?.click();
-  }, [options?.orderId]);
+    document.body.appendChild(script);
+  }, []);
 
   function hanldeSubscription(obj = {}) {
     setSubscription((prev) =>
@@ -66,7 +40,8 @@ export default function useHandleSubscription() {
 
     return await loadSubscriptionData(user?.uid)
       .then((res) => {
-        const subData = getSubscriptionDataObj(res?.[0]);
+        const subData = getSubscriptionDataObj(res);
+
         subData.isPopUpOpen = !subData?.razorpayPaymentId;
 
         setSubscription(subData);
@@ -76,21 +51,38 @@ export default function useHandleSubscription() {
       .finally(() => setIsLoading(false));
   }
 
-  async function payWithRazorpay() {
+  async function payWithRazorpay(planData) {
     setIsLoading(true);
 
     fetch(SUBSCRIBTIONS.orderUrl, {
       method: "POST",
       body: JSON.stringify({
         userId: user?.uid,
-        expiryDate,
-        amount: options?.amount,
+        planId: planData?.id,
       }),
     })
       .then((res) => res.json())
-      .then(async (res) =>
-        setOptions((prev) => ({ ...(prev || {}), orderId: res?.id })),
-      )
+      .then(async (res) => {
+        const options = {
+          key: SUBSCRIBTIONS?.razorpayKey,
+          subscription_id: res?.id,
+          name: DEFAULTS?.appName,
+          description: planData?.description,
+          image: "/images/Super15 Logo.png",
+          callback_url: SUBSCRIBTIONS?.successUrl,
+          prefill: {
+            name: user?.displayName,
+            email: user.email,
+            contact: user?.phoneNumber,
+          },
+          theme: {
+            color: "#F37254",
+          },
+        };
+
+        const rzp1 = new Razorpay(options);
+        rzp1.open();
+      })
       .catch((err) => console.log(err))
       .finally(() => setIsLoading(false));
   }
@@ -99,8 +91,5 @@ export default function useHandleSubscription() {
     hanldeSubscription,
     loadUserSubscription,
     payWithRazorpay,
-    expiryDate,
-    options,
-    btnRef,
   };
 }
