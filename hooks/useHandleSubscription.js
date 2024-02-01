@@ -38,7 +38,7 @@ export default function useHandleSubscription() {
         const subData = getSubscriptionDataObj(res);
 
         subData.isPopUpOpen = !subData?.razorpayPaymentId;
-        if (router.pathname.included("subscription"))
+        if (router.pathname.includes("subscription"))
           subData.isPopUpOpen = null;
 
         setSubscription(subData);
