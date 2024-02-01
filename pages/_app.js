@@ -25,10 +25,20 @@ import { IonApp, setupIonicReact } from "@ionic/react";
 import { RecoilRoot } from "recoil";
 import AuthChecker from "../components/AuthChecker";
 import NonSSRWrapper from "../components/NonSSRWrapper";
+import { useEffect } from "react";
 
 setupIonicReact();
 
 function MyApp({ Component, pageProps }) {
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+
+    document.body.appendChild(script);
+
+    return () => document.body.removeChild(script);
+  }, []);
+
   return (
     <>
       <Head>

@@ -1,19 +1,21 @@
+import { IsLoadingAtom, PlansAtom } from "@/atom/global.atom";
 import useHandleSubscription from "@/hooks/useHandleSubscription";
 import { loadPlans } from "@/services/queries.services";
 import { IonText } from "@ionic/react";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useRecoilState, useRecoilValue } from "recoil";
 import Loader from "../Loader/index";
 import Card from "./Card";
-import { useRecoilValue } from "recoil";
-import { IsLoadingAtom } from "@/atom/global.atom";
 
 export default function NoSubscription() {
   const isLoading = useRecoilValue(IsLoadingAtom);
-  const [plans, setPlans] = useState(null);
+  const [plans, setPlans] = useRecoilState(PlansAtom);
 
   const { payWithRazorpay } = useHandleSubscription();
 
   useEffect(() => {
+    if (plans != null) return;
+
     loadPlans().then((res) => setPlans(res || []));
   }, []);
 

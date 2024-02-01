@@ -232,18 +232,14 @@ export default function useHandlePlayQuiz() {
   }
 
   async function handlePlayQuiz() {
+    if (!subscription?.userId) {
+      const subData = await loadUserSubscription();
+      if (!subData?.userId) return;
+    }
+
     // vpa check
     if (!user?.vpa)
       return alertBox("No VPA", "Please add your upi id in profile");
-
-    if (!subscription?.userId) {
-      const subData = await loadUserSubscription();
-      if (!subData?.userId)
-        return alertBox(
-          "Please Subscribe",
-          "Please Subscribe from subscription tab",
-        );
-    }
 
     // if today quiz is not completed
     if (quizData?.totalQuestions !== DEFAULTS.totalQuestions)

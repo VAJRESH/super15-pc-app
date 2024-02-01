@@ -5,6 +5,7 @@ import {
 } from "@/atom/global.atom";
 import { CurrentUserAtom } from "@/atom/user.atom";
 import { DEFAULTS, SUBSCRIBTIONS } from "@/helper/constants.helper";
+import { useRouter } from "next/router";
 import { loadSubscriptionData } from "@/services/queries.services";
 import { useEffect } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
@@ -13,22 +14,12 @@ export default function useHandleSubscription() {
   const user = useRecoilValue(CurrentUserAtom);
   const [subscription, setSubscription] = useRecoilState(SubscriptionAtom);
   const [isLoading, setIsLoading] = useRecoilState(IsLoadingAtom);
+  const router = useRouter();
 
   useEffect(() => {
     if (!user?.uid) return;
 
     loadUserSubscription();
-  }, [user?.uid]);
-
-  useEffect(() => {
-    if (!user?.uid) return;
-
-    const script = document.createElement("script");
-    script.src = "https://checkout.razorpay.com/v1/checkout.js";
-
-    document.body.appendChild(script);
-
-    return () => document.body.removeChild(script);
   }, [user?.uid]);
 
   function hanldeSubscription(obj = {}) {
@@ -47,6 +38,8 @@ export default function useHandleSubscription() {
         const subData = getSubscriptionDataObj(res);
 
         subData.isPopUpOpen = !subData?.razorpayPaymentId;
+        if (router.pathname.included("subscription"))
+          subData.isPopUpOpen = null;
 
         setSubscription(subData);
         return subData;

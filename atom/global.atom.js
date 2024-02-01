@@ -5,6 +5,11 @@ export const IsLoadingAtom = atom({
   default: null,
 });
 
+export const PlansAtom = atom({
+  key: "PlansAtom",
+  default: null,
+});
+
 export const SubscriptionAtom = atom({
   key: "SubscriptionAtom",
   default: getSubscriptionDataObj(),
