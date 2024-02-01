@@ -1,7 +1,4 @@
-import {
-  LocalNotifications,
-  PermissionState,
-} from "@capacitor/local-notifications";
+import { LocalNotifications } from "@capacitor/local-notifications";
 import { DEFAULTS, QUESTION_TIMES } from "./constants.helper";
 import { getFormatedDate } from "./utils.helper";
 
@@ -47,10 +44,15 @@ export async function scheduleNotifications() {
 }
 
 export async function requestPermissions() {
-  const { status } = await LocalNotifications?.requestPermissions();
-  if (status !== PermissionState?.GRANTED) {
-    console.error("Local notifications permission not granted");
-    // Handle permission denial
-    alert("Please enable notifications");
+  const permissions = await LocalNotifications.checkPermissions();
+  console.log("checkPermissions result:", permissions);
+  if (permissions.display !== "granted") {
+    const newPermissions = await LocalNotifications.requestPermissions();
+    console.log("requestPermissions result:", newPermissions);
+    if (newPermissions.display === "denied") {
+      // Always ends up here, without showing any notification permission prompt
+      alert("Please enable notifications");
+      // throw new Error(`No permission to show notifications`);
+    }
   }
 }

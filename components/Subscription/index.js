@@ -5,12 +5,12 @@ import {
   IonButtons,
   IonContent,
   IonHeader,
-  IonModal,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
 import { useRecoilValue } from "recoil";
 import Loader from "../Loader/index";
+import PopUp from "../PopUp/index";
 import NoSubscription from "./NoSubscription";
 
 export default function Subscription() {
@@ -21,35 +21,30 @@ export default function Subscription() {
   return (
     <>
       <IonContent className="ion-padding">
-        <IonModal
-          isOpen={subscription?.isPopUpOpen}
-          style={{ display: "flex" }}
-        >
-          <IonHeader>
-            <IonToolbar>
-              <IonTitle>Subscriptions</IonTitle>
+        <PopUp isOpen={!!subscription?.isPopUpOpen} style={{ display: "flex" }}>
+          <div style={{ height: "100vh", width: "100vw" }}>
+            <IonHeader>
+              <IonToolbar>
+                <IonTitle>Subscriptions</IonTitle>
 
-              <IonButtons slot="end">
-                <IonButton
-                  strong={true}
-                  onClick={() =>
-                    hanldeSubscription({
-                      isPopUpOpen: !subscription?.isPopUpOpen,
-                    })
-                  }
-                >
-                  Close
-                </IonButton>
-              </IonButtons>
-            </IonToolbar>
-          </IonHeader>
+                <IonButtons slot="end">
+                  <IonButton
+                    strong={true}
+                    onClick={() => hanldeSubscription({ isPopUpOpen: null })}
+                  >
+                    Close
+                  </IonButton>
+                </IonButtons>
+              </IonToolbar>
+            </IonHeader>
 
-          {isLoading && <Loader isFullPage={true} />}
+            {isLoading && <Loader isFullPage={true} />}
 
-          <IonContent>
-            <NoSubscription />
-          </IonContent>
-        </IonModal>
+            <IonContent>
+              <NoSubscription />
+            </IonContent>
+          </div>
+        </PopUp>
       </IonContent>
     </>
   );

@@ -54,7 +54,8 @@ export default function VpaInput() {
       if (!res || !!res?.error)
         return alertBox(res?.error || "Something went wrong");
 
-      setUser(getUserDataObj({ vpa: vpaData?.vpa, id: res?.fundId }));
+      setUser((prev) => getUserDataObj({ ...(prev || {}), vpa: vpaData?.vpa }));
+      setVpaData((prev) => ({ ...(prev || {}), id: res?.fundId }));
       alertBox("VPA added successfully");
     });
   }

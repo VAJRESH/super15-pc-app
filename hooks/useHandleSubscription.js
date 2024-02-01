@@ -6,6 +6,8 @@ import {
 import { CurrentUserAtom } from "@/atom/user.atom";
 import { DEFAULTS, SUBSCRIBTIONS } from "@/helper/constants.helper";
 import { loadSubscriptionData } from "@/services/queries.services";
+import { saveSubscription } from "@/services/razorpayX.services";
+import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 
@@ -13,22 +15,12 @@ export default function useHandleSubscription() {
   const user = useRecoilValue(CurrentUserAtom);
   const [subscription, setSubscription] = useRecoilState(SubscriptionAtom);
   const [isLoading, setIsLoading] = useRecoilState(IsLoadingAtom);
+  const router = useRouter();
 
   useEffect(() => {
     if (!user?.uid) return;
 
     loadUserSubscription();
-  }, [user?.uid]);
-
-  useEffect(() => {
-    if (!user?.uid) return;
-
-    const script = document.createElement("script");
-    script.src = "https://checkout.razorpay.com/v1/checkout.js";
-
-    document.body.appendChild(script);
-
-    return () => document.body.removeChild(script);
   }, [user?.uid]);
 
   function hanldeSubscription(obj = {}) {
@@ -47,6 +39,8 @@ export default function useHandleSubscription() {
         const subData = getSubscriptionDataObj(res);
 
         subData.isPopUpOpen = !subData?.razorpayPaymentId;
+        if (router.pathname.includes("subscription"))
+          subData.isPopUpOpen = null;
 
         setSubscription(subData);
         return subData;
@@ -73,7 +67,14 @@ export default function useHandleSubscription() {
           name: DEFAULTS?.appName,
           description: planData?.description,
           image: "/images/Super15 Logo.png",
-          callback_url: SUBSCRIBTIONS?.successUrl,
+          // callback_url: SUBSCRIBTIONS?.successUrl,
+          handler: async function (response) {
+            await saveSubscription(response)
+              .then(() => router.push("/payment-success"))
+              .catch(() => {
+                alert("Something went wrong");
+              });
+          },
           prefill: {
             name: user?.displayName,
             email: user.email,
