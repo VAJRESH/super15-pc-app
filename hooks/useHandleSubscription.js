@@ -5,8 +5,9 @@ import {
 } from "@/atom/global.atom";
 import { CurrentUserAtom } from "@/atom/user.atom";
 import { DEFAULTS, SUBSCRIBTIONS } from "@/helper/constants.helper";
-import { useRouter } from "next/router";
 import { loadSubscriptionData } from "@/services/queries.services";
+import { saveSubscription } from "@/services/razorpayX.services";
+import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 
@@ -66,7 +67,14 @@ export default function useHandleSubscription() {
           name: DEFAULTS?.appName,
           description: planData?.description,
           image: "/images/Super15 Logo.png",
-          callback_url: SUBSCRIBTIONS?.successUrl,
+          // callback_url: SUBSCRIBTIONS?.successUrl,
+          handler: async function (response) {
+            await saveSubscription(response)
+              .then(() => router.push("/payment-success"))
+              .catch(() => {
+                alert("Something went wrong");
+              });
+          },
           prefill: {
             name: user?.displayName,
             email: user.email,

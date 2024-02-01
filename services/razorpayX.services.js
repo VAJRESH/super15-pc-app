@@ -34,3 +34,25 @@ export function updateContact({ userId = null, name = null }) {
     .then((res) => console.log(res))
     .catch((err) => console.log(err));
 }
+
+export async function saveSubscription({
+  razorpay_signature = null,
+  razorpay_payment_id = null,
+  razorpay_subscription_id = null,
+}) {
+  await fetch(`${BASE_URL}/api/payment-success`, {
+    method: "POST",
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      razorpay_payment_id,
+      razorpay_signature,
+      razorpay_subscription_id,
+    }),
+  })
+    .then((res) => res.json())
+    .then((res) => console.log(res))
+    .catch((err) => console.log(err));
+}
