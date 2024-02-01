@@ -147,7 +147,7 @@ export default function useHandlePlayQuiz() {
         const isQuizPage = router.pathname.includes("/play-quiz");
 
         // user has no attempts and is on quiz page
-        if (!userQuizAttempt?.length) {
+        if (!userQuizAttempt?.length && currentQ !== 0) {
           if (isQuizPage) return router.push("/dashboard");
 
           return;

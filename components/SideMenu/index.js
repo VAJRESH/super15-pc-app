@@ -1,3 +1,9 @@
+import {
+  PlansAtom,
+  SubscriptionAtom,
+  getSubscriptionDataObj,
+} from "@/atom/global.atom";
+import { UserQuizMapAtom } from "@/atom/quiz.atom";
 import { CurrentUserAtom, getUserDataObj } from "@/atom/user.atom";
 import {
   IonContent,
@@ -18,6 +24,9 @@ import { SidebarMenu } from "../../helper/menu.helper";
 
 export default function SideMenu() {
   const [user, setUser] = useRecoilState(CurrentUserAtom);
+  const [plans, setPlans] = useRecoilState(PlansAtom);
+  const [subscription, setSubscription] = useRecoilState(SubscriptionAtom);
+  const [userQuizMap, setUserQuizMap] = useRecoilState(UserQuizMapAtom);
 
   const router = useRouter();
 
@@ -43,6 +52,9 @@ export default function SideMenu() {
                     onClick={() => {
                       if (menu.label === "Logout") {
                         setUser(getUserDataObj());
+                        setPlans(null);
+                        setSubscription(getSubscriptionDataObj());
+                        setUserQuizMap([]);
                         logOut();
                       }
                       router.push(menu.link);
