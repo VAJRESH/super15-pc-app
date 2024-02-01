@@ -10,9 +10,11 @@ import {
 } from "firebase/auth";
 import { useState } from "react";
 import { useRecoilState } from "recoil";
+import { IsLoadingAtom } from "@/atom/global.atom";
 
 export default function useHandleUserData() {
   const [user, setUser] = useRecoilState(CurrentUserAtom);
+  const [IsLoading, setIsLoading] = useRecoilState(IsLoadingAtom);
   const [userTemp, setUserTemp] = useState(getTempUserDataObj(user));
 
   const [present] = useIonToast();
@@ -74,6 +76,7 @@ export default function useHandleUserData() {
       return toaster("Passwords did not match!");
 
     try {
+      setIsLoading(true);
       await createUserWithEmailAndPassword(
         auth,
         email?.trim(),
@@ -96,10 +99,12 @@ export default function useHandleUserData() {
 
       handleUpdateUser({ displayName });
       toaster("Registration Successful.");
+      router.push("/dashboard");
     } catch (err) {
       console.log(err);
       toaster("Registration Failed.");
     }
+    setIsLoading(false);
   }
 
   async function handleLogin(e) {
@@ -109,6 +114,7 @@ export default function useHandleUserData() {
     if (validateEmail(email) === null) return toaster("Invalid Email");
 
     try {
+      setIsLoading(true);
       const signInResponse = await signInWithEmailAndPassword(
         auth,
         email?.trim(),
@@ -124,6 +130,8 @@ export default function useHandleUserData() {
 
       toaster("Login Failed.");
     }
+
+    setIsLoading(false);
   }
 
   return {
