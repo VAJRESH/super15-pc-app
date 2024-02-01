@@ -1,5 +1,3 @@
-import { IonInput, IonItem } from "@ionic/react";
-import "@ionic/react/css/core.css";
 import styles from "./formInput.module.css";
 
 export default function FormInput({
@@ -13,19 +11,15 @@ export default function FormInput({
   value = "",
 }) {
   return (
-    <IonItem style={{ margin: "20px auto" }}>
-      <IonInput
-        className={styles.input}
-        label={label}
-        labelPlacement="floating"
+    <div className={styles.input}>
+      <input
         type={type}
-        name={name}
         value={value}
-        placeholder={placeholder}
-        onIonInput={onIonInput}
-        onIonBlur={onIonBlur}
+        placeholder={label || " "}
         disabled={disabled}
-      ></IonInput>
-    </IonItem>
+        onChange={onIonInput}
+      />
+      <label>{label}</label>
+    </div>
   );
 }

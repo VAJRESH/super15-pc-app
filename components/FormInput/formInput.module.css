@@ -1,8 +1,36 @@
 .input {
+  --rounded: 5px;
+  --padding: 0.8em;
+
+  position: relative;
   width: 100%;
+  margin: 1em 0;
+  background-color: var(--white);
+  border-radius: var(--rounded);
 }
+
 .input input {
   border: 0px;
   outline: 0px;
   width: 100%;
+  padding: var(--padding);
+  border-radius: var(--rounded);
+}
+.input input::placeholder {
+  color: #b9b9b9;
+}
+
+.input label {
+  position: absolute;
+  top: var(--padding);
+  left: var(--padding);
+  color: #9f9f9f;
+  pointer-events: none;
+  transition: all 300ms ease-in-out;
+}
+
+.input input:focus ~ label,
+.input input:not(:placeholder-shown) ~ label {
+  top: -0.5em;
+  font-size: 0.8em;
 }
