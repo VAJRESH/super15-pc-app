@@ -7,8 +7,8 @@ function IconHeadingText({ img, heading, data, handleClick = () => {} }) {
         <img src={img || "/images/dashicons_email-alt2.png"} alt="image" />
       </div>
       <div className={styles.textWrapper}>
-        <h4>{heading || "Some Heading"}</h4>
-        <p>{data || "some data goes here"}</p>
+        <h4>{heading || ""}</h4>
+        <p>{data || ""}</p>
       </div>
     </div>
   );
