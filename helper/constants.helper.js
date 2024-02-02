@@ -27,12 +27,7 @@ export const BASE_URL = "https://super15-pc-app.vercel.app";
 // export const BASE_URL = "http://localhost:3000";
 
 export const SUBSCRIBTIONS = {
-  noOfDays: 30,
-  amount: 30,
-  currency: "INR",
   orderUrl: `${BASE_URL}/api/razorpay`,
-  successUrl: `${BASE_URL}/api/payment-success`,
-  cancelUrl: `http://localhost/dashboard`,
   accountNumber: "7878780080316316",
   razorpayKey: "rzp_test_9MvI1PsLSFtd6H",
 };
