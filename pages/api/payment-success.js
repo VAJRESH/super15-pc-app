@@ -4,7 +4,7 @@ import { DB_TABLES } from "@/helper/constants.helper";
 export default function PaymentSuccess(req, res) {
   const razorpayData = req?.body;
 
-  if (req.method === "OPTIONS") return res.status(200).end();
+  if (req?.method === "OPTIONS") return res.status(200).end();
 
   return new Promise(async (resolve, reject) => {
     const result = await excuteQuery({
