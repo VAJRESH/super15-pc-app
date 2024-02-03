@@ -4,7 +4,7 @@ import { DB_TABLES, SUBSCRIBTION_STATUS } from "@/helper/constants.helper";
 export default function cancelSubscription(req, res) {
   const { id } = req?.query;
 
-  if (req.method === "OPTIONS") return res.status(200).json({});
+  if (req.method === "OPTIONS") return res.status(200).json({ id });
 
   return new Promise(async (resolve, reject) => {
     const response = await razorpay.subscriptions.cancel(id, true);
