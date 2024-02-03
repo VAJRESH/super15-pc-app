@@ -4,6 +4,8 @@ import { DB_TABLES } from "@/helper/constants.helper";
 export default async function handle(req, res) {
   const { userId } = req.query;
   const isGet = req.method === "GET";
+
+  if (req.method === "OPTIONS") return res.status(200).json({});
   if (!userId) return res.status(400).json({ error: "UserId is required" });
 
   const result = await excuteQuery({

@@ -4,6 +4,8 @@ import { DB_TABLES, SUBSCRIBTION_STATUS } from "@/helper/constants.helper";
 export default function subscriptions(req, res) {
   const userId = req?.query?.userId;
 
+  if (req.method === "OPTIONS") return res.status(200).json({});
+
   return new Promise(async (resolve, reject) => {
     const result = await excuteQuery({
       query: `

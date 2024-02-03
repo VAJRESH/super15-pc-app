@@ -6,6 +6,7 @@ import { DB_TABLES, SUBSCRIBTION_STATUS } from "@/helper/constants.helper";
 export default async function createSubscription(req, res) {
   // Initialize razorpay object
 
+  if (req.method === "OPTIONS") return res.status(200).json({});
   const subscriptionData = parseJson(req.body);
 
   // Create a subscription -> generate the subscriptionID -> Send it to the Front-end
