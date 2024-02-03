@@ -72,6 +72,7 @@ export default function VpaInput() {
           onIonInput={(e) =>
             setVpaData((prev) => ({ ...(prev || {}), vpa: e.target.value }))
           }
+          disabled={!!vpaData?.id || isLoading}
         />
 
         <div>

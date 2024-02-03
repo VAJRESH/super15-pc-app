@@ -70,7 +70,18 @@ export default function useHandleSubscription() {
           // callback_url: SUBSCRIBTIONS?.successUrl,
           handler: async function (response) {
             await saveSubscription(response)
-              .then(() => router.push("/payment-success"))
+              .then(async () => {
+                setSubscription((prev) =>
+                  getSubscriptionDataObj({
+                    ...(prev || {}),
+                    signature: response?.razorpay_signature,
+                    razorpayPaymentId: response?.razorpay_payment_id,
+                    id: response?.razorpay_subscription_id,
+                  }),
+                );
+
+                router.push("/payment-success");
+              })
               .catch(() => {
                 alert("Something went wrong");
               });

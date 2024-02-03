@@ -4,6 +4,8 @@ import Invoice from "@/components/Invoice/index";
 import SideMenu from "@/components/SideMenu";
 import NoSubscription from "@/components/Subscription/NoSubscription";
 import useHandleSubscription from "@/hooks/useHandleSubscription";
+import { cancelSubscription } from "@/services/razorpayX.services";
+import { Filesystem } from "@capacitor/filesystem";
 import {
   IonButton,
   IonButtons,
@@ -19,14 +21,25 @@ import {
 } from "@ionic/react";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import { ellipsisVertical } from "ionicons/icons";
+import { useEffect } from "react";
 import { useRecoilValue } from "recoil";
 import styles from "./subscriptions.module.css";
+import { SUBSCRIBTION_STATUS } from "@/helper/constants.helper";
 
 export default function Subscriptions() {
   const user = useRecoilValue(CurrentUserAtom);
   const subscription = useRecoilValue(SubscriptionAtom);
 
   useHandleSubscription();
+
+  useEffect(() => {
+    Filesystem.addListener("progress", (res) =>
+      console.log(res, JSON.stringify(res)),
+    );
+  }, []);
+  console.log(subscription);
+
+  const isCancelled = subscription?.status === SUBSCRIBTION_STATUS?.cancelled;
 
   return (
     <IonSplitPane when="sm" contentId="main-content">
@@ -70,39 +83,57 @@ export default function Subscriptions() {
                 </div>
               </div>
 
-              <PDFDownloadLink
-                document={
-                  <Invoice
-                    invoiceId={subscription?.id}
-                    amountInINR={subscription?.amount}
-                    paidOn={new Date(
-                      subscription?.startAt * 1000,
-                    ).toDateString()}
-                    renewOn={new Date(
-                      subscription?.endAt * 1000,
-                    ).toDateString()}
-                    paidTo={user?.displayName}
-                    transactionId={subscription?.razorpayPaymentId}
-                    billingDetails={{
-                      name: user?.displayName,
-                      address: user?.address,
-                      contact: `${user?.email}`,
-                    }}
-                  />
-                }
-                fileName="invoice.pdf"
-              >
-                {({ blob, url, loading, error }) => (
-                  <IonButton
-                    style={{
-                      margin: "10px 50%",
-                      transform: "translateX(-50%)",
-                    }}
-                  >
-                    {loading ? "Loading document..." : "Download Invoice"}
-                  </IonButton>
-                )}
-              </PDFDownloadLink>
+              <div className={styles.btnContainer}>
+                <PDFDownloadLink
+                  document={
+                    <Invoice
+                      invoiceId={subscription?.id}
+                      amountInINR={subscription?.amount}
+                      paidOn={new Date(
+                        subscription?.startAt * 1000,
+                      ).toDateString()}
+                      renewOn={new Date(
+                        subscription?.endAt * 1000,
+                      ).toDateString()}
+                      paidTo={user?.displayName}
+                      transactionId={subscription?.razorpayPaymentId}
+                      billingDetails={{
+                        name: user?.displayName,
+                        address: user?.address,
+                        contact: `${user?.email}`,
+                      }}
+                    />
+                  }
+                  fileName="invoice.pdf"
+                >
+                  {({ blob, url, loading, error }) => (
+                    <IonButton
+                      onClick={async () => {
+                        const options = {
+                          url,
+                          //  headers: this.defaultHeaders,
+                          //  directory: Directory.Data,
+                          path: "downloads/invoice.pdf",
+                          progress: true,
+                        };
+                        const response = await Filesystem.downloadFile(options);
+                        console.log(response, JSON.stringify(response));
+                      }}
+                    >
+                      {loading ? "Loading document..." : "Download Invoice"}
+                    </IonButton>
+                  )}
+                </PDFDownloadLink>
+
+                <IonButton
+                  color="danger"
+                  fill="outline"
+                  onClick={() => cancelSubscription(subscription?.id)}
+                  disabled={isCancelled}
+                >
+                  {isCancelled ? "Cancelled" : "Cancel Subscription"}
+                </IonButton>
+              </div>
             </>
           ) : (
             <>

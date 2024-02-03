@@ -31,6 +31,10 @@
 
 .input input:focus ~ label,
 .input input:not(:placeholder-shown) ~ label {
-  top: -0.5em;
-  font-size: 0.8em;
+  top: 0em;
+  font-size: 0.7em;
+}
+
+.input input:disabled {
+  color: var(--grey);
 }

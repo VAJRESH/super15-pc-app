@@ -40,7 +40,7 @@ export async function saveSubscription({
   razorpay_payment_id = null,
   razorpay_subscription_id = null,
 }) {
-  await fetch(`${BASE_URL}/api/payment-success`, {
+  await fetch(`${BASE_URL}/api/subscriptions/payment-success`, {
     method: "POST",
     headers: {
       "Access-Control-Allow-Origin": "*",
@@ -51,6 +51,20 @@ export async function saveSubscription({
       razorpay_signature,
       razorpay_subscription_id,
     }),
+  })
+    .then((res) => res.json())
+    .then((res) => console.log(res))
+    .catch((err) => console.log(err));
+}
+
+export async function cancelSubscription(id) {
+  if (!id) return;
+
+  await fetch(`${BASE_URL}/api/subscriptions/${id}`, {
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Content-Type": "application/json",
+    },
   })
     .then((res) => res.json())
     .then((res) => console.log(res))

@@ -30,7 +30,7 @@ export function getSubscriptionDataObj(data = {}) {
     name: data?.name || null,
 
     // razorpay subscription data
-    status: data?.status || null,
+    razorpayStatus: data?.razorpayStatus || null,
     remainingCount: data?.remainingCount || null,
     totalCount: data?.totalCount || null,
     currentStart: data?.currentStart || null,
@@ -39,6 +39,7 @@ export function getSubscriptionDataObj(data = {}) {
     endAt: data?.endAt || null,
 
     createdAt: data?.createdAt || null,
+    status: data?.status || null,
     updatedAt: data?.updatedAt || null,
     isPopUpOpen:
       typeof data?.isPopUpOpen === "boolean" ? data?.isPopUpOpen : null,

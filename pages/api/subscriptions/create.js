@@ -1,9 +1,9 @@
 import excuteQuery, { parseJson, razorpay } from "@/helper/backend.helper";
-import { DB_TABLES } from "@/helper/constants.helper";
+import { DB_TABLES, SUBSCRIBTION_STATUS } from "@/helper/constants.helper";
 
 // https://www.freecodecamp.org/news/integrate-a-payment-gateway-in-next-js-and-react-with-razorpay-and-tailwindcss/
 
-export default async function handler(req, res) {
+export default async function createSubscription(req, res) {
   // Initialize razorpay object
 
   const subscriptionData = parseJson(req.body);
@@ -19,11 +19,12 @@ export default async function handler(req, res) {
     const response = await razorpay.subscriptions.create(options);
 
     const result = await excuteQuery({
-      query: `INSERT INTO ${DB_TABLES?.subscriptions} (subscriptionId, userId, planId) VALUES (?, ?, ?)`,
+      query: `INSERT INTO ${DB_TABLES?.subscriptions} (subscriptionId, userId, planId, status) VALUES (?, ?, ?)`,
       values: [
         response?.id,
         subscriptionData?.userId,
         subscriptionData?.planId,
+        SUBSCRIBTION_STATUS?.initailized,
       ],
     });
 

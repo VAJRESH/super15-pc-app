@@ -147,7 +147,7 @@ export default function Profile() {
                 <FormInput
                   label="User Name"
                   placeholder="User Name"
-                  value={userTemp?.displayName || user?.displayName}
+                  value={userTemp?.displayName}
                   onIonInput={(e) =>
                     hanldeChange({ displayName: e.target.value })
                   }
@@ -155,7 +155,7 @@ export default function Profile() {
                 <FormInput
                   label="Email"
                   disabled={true}
-                  value={userTemp?.email || user?.email}
+                  value={userTemp?.email}
                   // onIonBlur={(e) => setConfirmPassword(e.target.value)}
                 />
                 <FormInput
