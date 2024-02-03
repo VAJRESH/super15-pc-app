@@ -27,7 +27,7 @@ export const BASE_URL = "https://super15-pc-app.vercel.app";
 // export const BASE_URL = "http://localhost:3000";
 
 export const SUBSCRIBTIONS = {
-  orderUrl: `${BASE_URL}/api/razorpay`,
+  orderUrl: `${BASE_URL}/api/subscriptions/create`,
   accountNumber: "7878780080316316",
   razorpayKey: "rzp_test_9MvI1PsLSFtd6H",
 };
@@ -252,4 +252,11 @@ export const DB_TABLES = {
   subscriptions: "subscriptions",
   razorpayXData: "razorpayXData",
   payoutData: "payoutData",
+};
+
+export const SUBSCRIBTION_STATUS = {
+  active: "active",
+  initailized: "initailized",
+  cancelled: "cancelled",
+  inactive: "inactive",
 };

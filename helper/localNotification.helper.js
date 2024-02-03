@@ -45,7 +45,7 @@ export async function scheduleNotifications() {
 
 export async function requestPermissions() {
   const permissions = await LocalNotifications.checkPermissions();
-  console.log("checkPermissions result:", permissions);
+  console.log("checkPermissions result:", JSON.stringify(permissions));
   if (permissions.display !== "granted") {
     const newPermissions = await LocalNotifications.requestPermissions();
     console.log("requestPermissions result:", newPermissions);

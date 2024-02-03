@@ -21,8 +21,12 @@ export default function Subscription() {
   return (
     <>
       <IonContent className="ion-padding">
-        <PopUp isOpen={!!subscription?.isPopUpOpen} style={{ display: "flex" }}>
-          <div style={{ height: "100vh", width: "100vw" }}>
+        <PopUp
+          isOpen={!!subscription?.isPopUpOpen}
+          style={{ display: "flex" }}
+          contentStyle={{ height: "100vh", width: "100vw" }}
+        >
+          <div style={{ height: "100%", width: "100%" }}>
             <IonHeader>
               <IonToolbar>
                 <IonTitle>Subscriptions</IonTitle>

@@ -18,7 +18,11 @@ export default function PopUp({
           backgroundColor: "transparent",
           ...(overlayStyle || {}),
         }}
-        contentStyle={{ margin: "0", ...(contentStyle || {}) }}
+        contentStyle={{
+          margin: "0",
+          width: "fit-content",
+          ...(contentStyle || {}),
+        }}
       >
         {children}
       </Popup>

@@ -1,5 +1,5 @@
 import excuteQuery, { razorpay } from "@/helper/backend.helper";
-import { DB_TABLES } from "@/helper/constants.helper";
+import { DB_TABLES, SUBSCRIBTION_STATUS } from "@/helper/constants.helper";
 
 export default function subscriptions(req, res) {
   const userId = req?.query?.userId;
@@ -8,9 +8,13 @@ export default function subscriptions(req, res) {
     const result = await excuteQuery({
       query: `
         SELECT * FROM ${DB_TABLES?.subscriptions} 
-        WHERE  userId=? && razorpayPaymentId IS NOT NULL
+        WHERE  userId=? && status IN (?, ?) && razorpayPaymentId IS NOT NULL
         ORDER BY coalesce(updatedAt, createdAt) DESC`,
-      values: [userId],
+      values: [
+        userId,
+        SUBSCRIBTION_STATUS?.active,
+        SUBSCRIBTION_STATUS?.cancelled,
+      ],
     });
     if (!result?.[0]?.id) {
       res.status(200).json({});
@@ -19,16 +23,23 @@ export default function subscriptions(req, res) {
     const subData = await razorpay.subscriptions.fetch(
       result?.[0]?.subscriptionId,
     );
+
+    if (subData?.status !== "active") {
+      await excuteQuery({
+        query: `UPDATE ${DB_TABLES?.subscriptions} SET status=? WHERE subscriptionId=?`,
+        values: [SUBSCRIBTION_STATUS?.inactive, id],
+      });
+
+      res.status(200).json({});
+
+      return resolve();
+    }
+
     const planData = await razorpay.plans.fetch(result?.[0]?.planId);
 
     if (!!result?.error) {
       res.status(400).json({ error: result?.error || "Something went wrong" });
       return reject();
-    }
-
-    if (subData?.status !== "active") {
-      res.status(400).json({ error: "Subscription Not Active" });
-      return resolve();
     }
 
     res.status(200).json({
@@ -37,8 +48,9 @@ export default function subscriptions(req, res) {
       planId: result?.[0]?.planId || null,
       razorpayPaymentId: result?.[0]?.razorpayPaymentId || null,
       signature: result?.[0]?.signature || null,
+      status: result?.[0]?.status || null,
 
-      status: subData?.status || null,
+      razorpayStatus: subData?.status || null,
       remainingCount: subData?.remaining_count || null,
       totalCount: subData?.total_count || null,
       currentStart: subData?.current_start || null,

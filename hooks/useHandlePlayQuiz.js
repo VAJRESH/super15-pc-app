@@ -195,8 +195,9 @@ export default function useHandlePlayQuiz() {
     if (typeof cuttOff !== "number" || typeof leaderboardCount !== "number")
       return;
     if (cuttOff > leaderboardCount) return;
+    if (router.pathname !== "/play-quiz") return;
 
-    router.push("/lose?message=You are knocked out of quiz");
+    router.push("/lose?message=You  are knocked out of quiz");
   }, [leaderboardCount, cuttOff]);
 
   // helper functions
