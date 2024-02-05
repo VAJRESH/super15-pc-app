@@ -19,9 +19,10 @@ export default function useHandleSubscription() {
 
   useEffect(() => {
     if (!user?.uid) return;
+    if (subscription?.isPopUpOpen === false) return;
 
     loadUserSubscription();
-  }, [user?.uid]);
+  }, [user?.uid, subscription?.isPopUpOpen]);
 
   function hanldeSubscription(obj = {}) {
     setSubscription((prev) =>

@@ -151,7 +151,7 @@ export default function Invoice({
               </View>
 
               <Text style={{ margin: "20px 0px" }}>
-                Your subscription will be renewed on {renewOn}
+                Your subscription will last till {renewOn}
               </Text>
               <Text>Sincerely,</Text>
               <Text>Super15 Team</Text>
