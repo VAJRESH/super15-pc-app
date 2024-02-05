@@ -5,8 +5,14 @@ import { getFormatedDate } from "./utils.helper";
 export async function scheduleNotifications() {
   const notifications =
     (await LocalNotifications?.getPending())?.notifications || [];
-  console.log("notifications", notifications, !!notifications?.length);
-  if (!!notifications?.length) return;
+
+  LocalNotifications?.removeAllDeliveredNotifications();
+  if (
+    notifications?.some(
+      (obj) => new Date(obj?.schedule?.at).getTime() > new Date().getTime(),
+    )
+  )
+    return;
 
   const quizStartTime = new Date(
     `${getFormatedDate()}T${DEFAULTS?.quizStartTime}`,
@@ -18,24 +24,16 @@ export async function scheduleNotifications() {
     const notificationTime = new Date(quizStartTime + timeToEnd + totalTime);
     totalTime += question.timeLimit;
 
-    console.log(
-      "Notif",
-      question,
-      question?.questionNumber,
-      timeToEnd,
-      notificationTime,
-      totalTime,
-    );
+    if (notificationTime.getTime() < new Date().getTime()) return;
 
     const notification = {
       id: question.questionNumber,
       title: `Question ${question.questionNumber} Reminder`,
-      body: `Time is running out! Answer quickly. Only ${
-        question.cuttOff ?? 5
-      } seconds left!`, // Use cuttOff if provided, else default to 5 seconds
+      body: `Time is running out! Answer quickly. Only 5 minutes left!`,
       schedule: {
         at: notificationTime,
         repeats: false,
+        allowWhileIdle: true,
       },
     };
 
