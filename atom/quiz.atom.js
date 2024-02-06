@@ -90,3 +90,15 @@ export const LeaderBoardAtom = atom({
   key: "LeaderBoardAtom",
   default: null,
 });
+
+export const PlayerHistoryAtom = atom({
+  key: "PlayerHistoryAtom",
+  default: null,
+});
+
+export function getHistoryDataObj(data = {}) {
+  return {
+    quizIds: data?.quizIds || [],
+    history: data?.history || null,
+  };
+}

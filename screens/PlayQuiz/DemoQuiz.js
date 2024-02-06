@@ -53,7 +53,7 @@ export default function DemoQuiz() {
 
                 {currentQuestionIndex <= 14 && (
                   <IonBadge
-                    slot="start"
+                    slot="end"
                     style={{ display: "flex", gap: "0.2em" }}
                   >
                     <IonIcon icon={timeOutline}></IonIcon>
