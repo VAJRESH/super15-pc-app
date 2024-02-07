@@ -20,7 +20,7 @@ export default async function createSubscription(req, res) {
     const response = await razorpay.subscriptions.create(options);
 
     const result = await excuteQuery({
-      query: `INSERT INTO ${DB_TABLES?.subscriptions} (subscriptionId, userId, planId, status) VALUES (?, ?, ?)`,
+      query: `INSERT INTO ${DB_TABLES?.subscriptions} (subscriptionId, userId, planId, status) VALUES (?, ?, ?, ?)`,
       values: [
         response?.id,
         subscriptionData?.userId,

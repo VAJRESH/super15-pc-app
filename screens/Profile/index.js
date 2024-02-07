@@ -1,4 +1,11 @@
-import { IsLoadingAtom } from "@/atom/global.atom";
+import {
+  IsLoadingAtom,
+  PlansAtom,
+  SubscriptionAtom,
+  getSubscriptionDataObj,
+} from "@/atom/global.atom";
+import { UserQuizMapAtom } from "@/atom/quiz.atom";
+import PopUp from "@/components/PopUp/index";
 import VpaInput from "@/components/VpaInput/index";
 import { COLLECTIONS, DEFAULTS } from "@/helper/constants.helper";
 import { useAuth } from "@/hooks/useAuth";
@@ -19,7 +26,8 @@ import {
   useIonToast,
 } from "@ionic/react";
 import { updateProfile } from "firebase/auth";
-import { ellipsisVertical } from "ionicons/icons";
+import { ellipsisVertical, trashOutline } from "ionicons/icons";
+import { useRouter } from "next/router";
 import { useState } from "react";
 import { useRecoilState } from "recoil";
 import { CurrentUserAtom, getUserDataObj } from "../../atom/user.atom";
@@ -35,11 +43,16 @@ import styles from "./profile.module.css";
 export default function Profile() {
   const [user, setUser] = useRecoilState(CurrentUserAtom);
   const [loading, setLoading] = useRecoilState(IsLoadingAtom);
+  const [plans, setPlans] = useRecoilState(PlansAtom);
+  const [subscription, setSubscription] = useRecoilState(SubscriptionAtom);
+  const [userQuizMap, setUserQuizMap] = useRecoilState(UserQuizMapAtom);
 
   const currentUser = useAuth();
   const [present] = useIonToast();
+  const router = useRouter();
 
   const [userTemp, setUserTemp] = useState(user);
+  const [deleteConfirm, setDeleteConfirm] = useState(null);
   const [avatar, setAvatar] = useState(user?.photoURL || DEFAULTS?.profilePic);
 
   function hanldeChange(obj = {}) {
@@ -75,6 +88,7 @@ export default function Profile() {
               {/* <IonTitle>Profile</IonTitle> */}
             </IonToolbar>
           </IonHeader>
+
           <IonContent className="ion-padding">
             <div className={styles.profileContainer}>
               <img src={avatar} alt="Avatar" className={styles.avatar} />
@@ -90,9 +104,11 @@ export default function Profile() {
                 }
               />
             </div>
+
             <h4 style={{ textAlign: "center" }}>
               Hello, {user?.displayName || "username"}
             </h4>
+
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -200,6 +216,72 @@ export default function Profile() {
             <br />
 
             <VpaInput />
+
+            <br />
+            <br />
+
+            <IonButton
+              color="danger"
+              expand="full"
+              shape="round"
+              onClick={() => setDeleteConfirm(true)}
+            >
+              <IonIcon slot="start" icon={trashOutline}></IonIcon>
+              Delete Account
+            </IonButton>
+
+            <PopUp
+              isOpen={!!deleteConfirm}
+              overlayStyle={{ backgroundColor: "#252525a9" }}
+              contentStyle={{
+                margin: "auto 10px",
+                borderRadius: "5px",
+                padding: "10px",
+              }}
+            >
+              <div>
+                <h4>Delete your account</h4>
+
+                <p>
+                  You cannot undo this action! Are you sure you want to Delete
+                  Your Account Permantantly?
+                </p>
+
+                <IonButton
+                  color="danger"
+                  onClick={() => {
+                    // delete user firebase account
+                    setLoading(true);
+
+                    auth.currentUser
+                      .delete()
+                      .then(async (res) => {
+                        setLoading(false);
+                        setUser(getUserDataObj());
+                        setPlans(null);
+                        setSubscription(getSubscriptionDataObj());
+                        setUserQuizMap([]);
+                        router.push("/login");
+                      })
+                      .catch((err) => {
+                        setLoading(false);
+                        toaster(err?.message);
+                        console.log(err, err?.message);
+                      });
+                  }}
+                >
+                  Delete
+                </IonButton>
+
+                <IonButton
+                  color="medium"
+                  style={{ marginLeft: "20px" }}
+                  onClick={() => setDeleteConfirm(false)}
+                >
+                  Close
+                </IonButton>
+              </div>
+            </PopUp>
           </IonContent>
         </IonPage>
       </IonSplitPane>

@@ -51,8 +51,8 @@ export async function loadUserQuizMap(userId = null, quizId = null) {
 
   return await getSubCollectionData(
     COLLECTIONS.userQuizAttempts,
-    quizId,
     userId,
+    quizId,
   )
     .then((res) => res?.sort((q1, q2) => (q1?.qId < q2?.qId ? -1 : 1)) || [])
     .catch((err) => console.error(err));
@@ -64,6 +64,19 @@ export async function loadSubscriptionData(userId) {
   return await fetch(`${BASE_URL}/api/subscriptions?userId=${userId}`, {
     headers: { "Content-Type": "application/json" },
   })
+    .then((res) => (res?.body == null ? null : res?.json()))
+    .catch((err) => console.log(err));
+}
+
+export async function loadUserQuizIds(userId) {
+  if (!userId) return null;
+
+  return await fetch(
+    `${BASE_URL}/api/getUserAttemptsQuizIds?userId=${userId}`,
+    {
+      headers: { "Content-Type": "application/json" },
+    },
+  )
     .then((res) => (res?.body == null ? null : res?.json()))
     .catch((err) => console.log(err));
 }

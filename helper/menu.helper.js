@@ -1,9 +1,10 @@
 import {
+  cardOutline,
+  documentTextOutline,
   home,
   libraryOutline,
   logOut,
   person,
-  cardOutline,
 } from "ionicons/icons";
 
 export const SidebarMenu = [
@@ -27,13 +28,19 @@ export const SidebarMenu = [
   },
   {
     id: 4,
+    label: "History",
+    icon: documentTextOutline,
+    link: "/history",
+  },
+  {
+    id: 5,
     label: "Create Quiz",
     icon: libraryOutline,
     link: "/create-quiz",
     isAdmin: true,
   },
   {
-    id: 5,
+    id: 6,
     label: "Logout",
     icon: logOut,
     link: "/login",

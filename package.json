@@ -19,6 +19,7 @@
     "@capacitor/local-notifications": "^5.0.7",
     "@capacitor/splash-screen": "^5.0.0",
     "@capacitor/status-bar": "^5.0.0",
+    "@capawesome-team/capacitor-file-opener": "^5.0.4",
     "@ionic/react": "^7.6.3",
     "@ionic/react-router": "^7.6.3",
     "@react-pdf/renderer": "^3.3.4",

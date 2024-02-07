@@ -308,7 +308,7 @@ export default function useHandlePlayQuiz() {
     addUpdateFirestoreData(
       COLLECTIONS.userQuizAttempts,
       userQuizAttempt,
-      `${quizData?.quizId}/${user.uid}/${currentQuestion?.qSeq}`,
+      `${user.uid}/${quizData?.quizId}/${currentQuestion?.qSeq}`,
       {},
       { createNew: true },
     )

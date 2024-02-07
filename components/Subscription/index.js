@@ -34,7 +34,7 @@ export default function Subscription() {
                 <IonButtons slot="end">
                   <IonButton
                     strong={true}
-                    onClick={() => hanldeSubscription({ isPopUpOpen: null })}
+                    onClick={() => hanldeSubscription({ isPopUpOpen: false })}
                   >
                     Close
                   </IonButton>

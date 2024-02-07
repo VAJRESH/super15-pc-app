@@ -19,9 +19,10 @@ export default function useHandleSubscription() {
 
   useEffect(() => {
     if (!user?.uid) return;
+    if (subscription?.isPopUpOpen === false) return;
 
     loadUserSubscription();
-  }, [user?.uid]);
+  }, [user?.uid, subscription?.isPopUpOpen]);
 
   function hanldeSubscription(obj = {}) {
     setSubscription((prev) =>
@@ -61,6 +62,8 @@ export default function useHandleSubscription() {
     })
       .then((res) => res.json())
       .then(async (res) => {
+        if (!res.id) return alert(res?.error || "Something went wrong");
+
         const options = {
           key: SUBSCRIBTIONS?.razorpayKey,
           subscription_id: res?.id,
@@ -74,6 +77,7 @@ export default function useHandleSubscription() {
                 setSubscription((prev) =>
                   getSubscriptionDataObj({
                     ...(prev || {}),
+                    isPopUpOpen: false,
                     signature: response?.razorpay_signature,
                     razorpayPaymentId: response?.razorpay_payment_id,
                     id: response?.razorpay_subscription_id,

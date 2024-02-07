@@ -3,9 +3,11 @@ import { CurrentUserAtom } from "@/atom/user.atom";
 import Invoice from "@/components/Invoice/index";
 import SideMenu from "@/components/SideMenu";
 import NoSubscription from "@/components/Subscription/NoSubscription";
+import { SUBSCRIBTION_STATUS } from "@/helper/constants.helper";
 import useHandleSubscription from "@/hooks/useHandleSubscription";
 import { cancelSubscription } from "@/services/razorpayX.services";
-import { Filesystem } from "@capacitor/filesystem";
+import { Directory, Filesystem } from "@capacitor/filesystem";
+import { FileOpener } from "@capawesome-team/capacitor-file-opener";
 import {
   IonButton,
   IonButtons,
@@ -21,10 +23,8 @@ import {
 } from "@ionic/react";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import { ellipsisVertical } from "ionicons/icons";
-import { useEffect } from "react";
 import { useRecoilValue } from "recoil";
 import styles from "./subscriptions.module.css";
-import { SUBSCRIBTION_STATUS } from "@/helper/constants.helper";
 
 export default function Subscriptions() {
   const user = useRecoilValue(CurrentUserAtom);
@@ -32,14 +32,25 @@ export default function Subscriptions() {
 
   useHandleSubscription();
 
-  useEffect(() => {
-    Filesystem.addListener("progress", (res) =>
-      console.log(res, JSON.stringify(res)),
-    );
-  }, []);
-  console.log(subscription);
-
   const isCancelled = subscription?.status === SUBSCRIBTION_STATUS?.cancelled;
+
+  async function base64FromPath(path) {
+    const response = await fetch(path);
+    const blob = await response.blob();
+
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onerror = reject;
+      reader.onload = () => {
+        if (typeof reader.result === "string") {
+          resolve(reader.result);
+        } else {
+          reject("method did not return a string");
+        }
+      };
+      reader.readAsDataURL(blob);
+    });
+  }
 
   return (
     <IonSplitPane when="sm" contentId="main-content">
@@ -107,21 +118,29 @@ export default function Subscriptions() {
                   fileName="invoice.pdf"
                 >
                   {({ blob, url, loading, error }) => (
-                    <IonButton
-                      onClick={async () => {
-                        const options = {
-                          url,
-                          //  headers: this.defaultHeaders,
-                          //  directory: Directory.Data,
-                          path: "downloads/invoice.pdf",
-                          progress: true,
-                        };
-                        const response = await Filesystem.downloadFile(options);
-                        console.log(response, JSON.stringify(response));
-                      }}
-                    >
-                      {loading ? "Loading document..." : "Download Invoice"}
-                    </IonButton>
+                    <>
+                      <IonButton
+                        onClick={async () => {
+                          const photoURL = URL.createObjectURL(blob);
+                          const base64Data = await base64FromPath(photoURL);
+                          const options = {
+                            data: base64Data,
+                            directory: Directory.Documents,
+                            path: "invoice.pdf",
+                          };
+
+                          const response = await Filesystem.writeFile(options);
+                          if (!response?.uri)
+                            return alert(
+                              "File not saved. Something went wrong",
+                            );
+
+                          await FileOpener.openFile({ path: response?.uri });
+                        }}
+                      >
+                        {loading ? "Loading document..." : "Download Invoice"}
+                      </IonButton>
+                    </>
                   )}
                 </PDFDownloadLink>
 
