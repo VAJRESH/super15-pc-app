@@ -1,0 +1,30 @@
+.offlineScreen {
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  height: 100lvh;
+  width: 100lvw;
+  background-color: var(--white);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 6em;
+  z-index: 10;
+}
+
+.offlineScreen > img {
+  max-width: 60vw;
+  min-width: 150px;
+}
+
+.splashTxt {
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: 400;
+}
+.splashTxt p {
+  font-size: 1rem;
+  margin-top: 1em;
+}
