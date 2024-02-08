@@ -1,44 +1,26 @@
 import { LocalNotifications } from "@capacitor/local-notifications";
-import { DEFAULTS, QUESTION_TIMES } from "./constants.helper";
-import { getFormatedDate } from "./utils.helper";
 
-export async function scheduleNotifications() {
+export async function scheduleNotification({
+  id = 0,
+  title = "",
+  body = "",
+  at = null,
+}) {
+  LocalNotifications?.removeAllDeliveredNotifications();
+  if (!title || !body || !at) return;
+
   const notifications =
     (await LocalNotifications?.getPending())?.notifications || [];
 
-  LocalNotifications?.removeAllDeliveredNotifications();
-  if (
-    notifications?.some(
-      (obj) => new Date(obj?.schedule?.at).getTime() > new Date().getTime(),
-    )
-  )
-    return;
+  if (notifications?.some((obj) => obj?.id === id)) return;
+  const notification = {
+    id,
+    title,
+    body,
+    schedule: { at, repeats: false, allowWhileIdle: true },
+  };
 
-  const quizStartTime = new Date(
-    `${getFormatedDate()}T${DEFAULTS?.quizStartTime}`,
-  ).getTime();
-  let totalTime = 0;
-
-  QUESTION_TIMES?.slice(0, 10)?.forEach((question) => {
-    const timeToEnd = question.timeLimit - 5 * 60 * 1000; // 5 minutes before time end
-    const notificationTime = new Date(quizStartTime + timeToEnd + totalTime);
-    totalTime += question.timeLimit;
-
-    if (notificationTime.getTime() < new Date().getTime()) return;
-
-    const notification = {
-      id: question.questionNumber,
-      title: `Question ${question.questionNumber} Reminder`,
-      body: `Time is running out! Answer quickly. Only 5 minutes left!`,
-      schedule: {
-        at: notificationTime,
-        repeats: false,
-        allowWhileIdle: true,
-      },
-    };
-
-    LocalNotifications?.schedule({ notifications: [notification] });
-  });
+  LocalNotifications?.schedule({ notifications: [notification] });
 }
 
 export async function requestPermissions() {

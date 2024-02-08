@@ -60,3 +60,24 @@ export function formatTime(milliseconds, isLongFormat = false) {
   if (hours === 0) return `${minutes}m ${seconds}s`;
   return `${hours}h ${minutes}m ${seconds}s`;
 }
+
+export function getNextQuestionTime(
+  questionNumber = null,
+  secondsToReduce = 5 * 60 * 1000, // 5 minutes before
+) {
+  if (!questionNumber) return null;
+
+  const quizStartTime = new Date(
+    `${getFormatedDate()}T${DEFAULTS?.quizStartTime}`,
+  ).getTime();
+  let totalTime = 0;
+
+  for (const question of QUESTION_TIMES) {
+    const timeToEnd = question.timeLimit - secondsToReduce;
+
+    if (questionNumber === question.questionNumber)
+      return new Date(quizStartTime + timeToEnd + totalTime);
+
+    totalTime += question.timeLimit;
+  }
+}
