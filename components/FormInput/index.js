@@ -14,7 +14,7 @@ export default function FormInput({
     <div className={styles.input}>
       <input
         type={type}
-        value={value}
+        value={value || ""}
         placeholder={label || " "}
         disabled={disabled}
         onChange={onIonInput}
