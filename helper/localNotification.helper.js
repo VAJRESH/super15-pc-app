@@ -13,6 +13,7 @@ export async function scheduleNotification({
     (await LocalNotifications?.getPending())?.notifications || [];
 
   if (notifications?.some((obj) => obj?.id === id)) return;
+
   const notification = {
     id,
     title,
