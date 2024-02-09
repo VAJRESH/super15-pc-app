@@ -1,10 +1,7 @@
 import { CurrentUserAtom, getUserDataObj } from "@/atom/user.atom";
 import { COLLECTIONS } from "@/helper/constants.helper";
 import { auth, getDataWithId } from "@/helper/firebase.helper";
-import {
-  requestPermissions,
-  scheduleNotifications,
-} from "@/helper/localNotification.helper";
+import { requestPermissions } from "@/helper/localNotification.helper";
 import { loadVpaData } from "@/services/queries.services";
 import { onAuthStateChanged } from "firebase/auth";
 import { useRouter } from "next/router";
@@ -36,7 +33,6 @@ export function useAuth() {
     loadUserData();
 
     requestPermissions();
-    scheduleNotifications();
   }, [user?.uid]);
 
   async function loadUserData() {

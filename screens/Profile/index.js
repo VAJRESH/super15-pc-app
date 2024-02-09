@@ -8,7 +8,7 @@ import { UserQuizMapAtom } from "@/atom/quiz.atom";
 import PopUp from "@/components/PopUp/index";
 import VpaInput from "@/components/VpaInput/index";
 import { COLLECTIONS, DEFAULTS } from "@/helper/constants.helper";
-import { useAuth } from "@/hooks/useAuth";
+import UploadImage from "@/lib/UploadImage";
 import { updateContact } from "@/services/razorpayX.services";
 import {
   IonButton,
@@ -36,7 +36,7 @@ import SideMenu from "../../components/SideMenu";
 import {
   addUpdateFirestoreData,
   auth,
-  upload,
+  uploadFileInFirabse,
 } from "../../helper/firebase.helper";
 import styles from "./profile.module.css";
 
@@ -47,13 +47,11 @@ export default function Profile() {
   const [subscription, setSubscription] = useRecoilState(SubscriptionAtom);
   const [userQuizMap, setUserQuizMap] = useRecoilState(UserQuizMapAtom);
 
-  const currentUser = useAuth();
   const [present] = useIonToast();
   const router = useRouter();
 
   const [userTemp, setUserTemp] = useState(user);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
-  const [avatar, setAvatar] = useState(user?.photoURL || DEFAULTS?.profilePic);
 
   function hanldeChange(obj = {}) {
     setUserTemp((prev) => ({ ...(prev || {}), ...(obj || {}) }));
@@ -91,17 +89,27 @@ export default function Profile() {
 
           <IonContent className="ion-padding">
             <div className={styles.profileContainer}>
-              <img src={avatar} alt="Avatar" className={styles.avatar} />
+              <img
+                src={user?.photoURL || DEFAULTS?.profilePic}
+                alt="Avatar"
+                className={styles.avatar}
+              />
               <label className={styles.uploadBtn} htmlFor="uploadPhoto">
                 <img src="/images/carbon_edit (1).png" alt="" />
               </label>
-              <input
-                className={styles.uploadPhoto}
-                id="uploadPhoto"
-                type="file"
-                onChange={(e) =>
-                  upload(e.target.files[0], currentUser, setLoading, setAvatar)
-                }
+              <UploadImage
+                inputId="uploadPhoto"
+                onUpload={async (blob) => {
+                  setLoading(true);
+                  const photoURL = await uploadFileInFirabse(blob).catch(
+                    (err) => console.log(err),
+                  );
+
+                  setUser((prev) =>
+                    getUserDataObj({ ...(prev || {}), photoURL }),
+                  );
+                  setLoading(false);
+                }}
               />
             </div>
 

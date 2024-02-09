@@ -19,9 +19,11 @@ import {
   getDataWithId,
   listenToCollectionWithId,
 } from "@/helper/firebase.helper";
+import { scheduleNotification } from "@/helper/localNotification.helper";
 import {
   getCurrentQuestionIndex,
   getFormatedDate,
+  getNextQuestionTime,
 } from "@/helper/utils.helper";
 import {
   loadLeaderBoardData,
@@ -211,12 +213,27 @@ export default function useHandlePlayQuiz() {
 
   function loadInitialTime() {
     const currentQ = getCurrentQuestionIndex();
-    const currentTime = new Date();
-    const timeElapsed =
-      currentTime.getTime() -
-      new Date(
-        `${new Date().toDateString()} ${DEFAULTS.quizStartTime}`,
-      ).getTime();
+    const currentTime = new Date().getTime();
+    const qStartTime = new Date(
+      `${new Date().toDateString()} ${DEFAULTS.quizStartTime}`,
+    ).getTime();
+    const timeElapsed = currentTime - qStartTime;
+
+    const msBeforeQuizStart = 15 * 60 * 1000;
+    const reminderTime = new Date(qStartTime - msBeforeQuizStart);
+
+    if (
+      currentQ === 0 &&
+      timeElapsed < 0 &&
+      reminderTime.getTime() > currentTime
+    ) {
+      scheduleNotification({
+        id: 0,
+        title: "Quiz Time",
+        body: "Today's Quiz will start in 15 minutes",
+        at: reminderTime,
+      });
+    }
 
     let totalTimeForPreviousQuestions = 0;
     for (const questionTime of QUESTION_TIMES.slice(0, currentQ)) {
@@ -314,7 +331,15 @@ export default function useHandlePlayQuiz() {
     )
       .then(async () => {
         let shouldSaveToLeaderBoard = null;
-        if (isCorrect) shouldSaveToLeaderBoard = true;
+        if (isCorrect) {
+          scheduleNotification({
+            id: currentQuestion?.qSeq,
+            title: `Question ${currentQuestion?.qSeq} Reminder`,
+            body: `Only 5 minutes left unitl next question starts!`,
+            at: getNextQuestionTime(currentQuestion?.qSeq),
+          });
+          shouldSaveToLeaderBoard = true;
+        }
         if (currentQuestion === 0) shouldSaveToLeaderBoard = true;
         if (shouldSaveToLeaderBoard) {
           const isLeaderboardPresent = await getDataWithId(

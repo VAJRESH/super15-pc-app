@@ -1,0 +1,42 @@
+.overlay {
+  height: 100vh;
+  width: 100vw;
+  background-color: #000;
+
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9;
+}
+
+.input {
+  height: 0;
+}
+
+.uploadImageContainer {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  height: 60lvh;
+  width: 80lvw;
+
+  background-color: var(--black, #000);
+  z-index: 10;
+}
+
+.cropper {
+  height: 100%;
+  width: 100%;
+}
+
+.btnContainer {
+  position: absolute;
+  bottom: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  display: flex;
+  gap: 1em;
+}

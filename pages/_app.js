@@ -21,6 +21,7 @@ import "@ionic/react/css/structure.css"; // Remove if nothing is visible
 
 /* Optional CSS utils that can be commented out */
 import Layout from "@/components/Layout";
+import OfflineScreen from "@/screens/OfflineScreen";
 import { App as CapacitorApp } from "@capacitor/app";
 import { IonApp, setupIonicReact } from "@ionic/react";
 import { useEffect } from "react";
@@ -31,15 +32,6 @@ import NonSSRWrapper from "../components/NonSSRWrapper";
 setupIonicReact();
 
 function MyApp({ Component, pageProps }) {
-  useEffect(() => {
-    const script = document.createElement("script");
-    script.src = "https://checkout.razorpay.com/v1/checkout.js";
-
-    document.body.appendChild(script);
-
-    return () => document.body.removeChild(script);
-  }, []);
-
   useEffect(() => {
     // https://stackoverflow.com/a/69084017
     CapacitorApp.addListener("backButton", ({ canGoBack }) => {
@@ -62,6 +54,9 @@ function MyApp({ Component, pageProps }) {
         />
         <link rel="icon" href="/images/Super15 Logo.png" />
       </Head>
+
+      <OfflineScreen />
+
       <NonSSRWrapper>
         <RecoilRoot>
           <IonApp>

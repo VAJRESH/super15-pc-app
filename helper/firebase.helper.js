@@ -27,22 +27,22 @@ import { generateRandomId } from "./utils.helper";
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
-// const firebaseConfig = {
-//   apiKey: "AIzaSyDMD3zd5omVb1twzM_1ujonXo8-FrAslOA",
-//   authDomain: "pcapp-d2486.firebaseapp.com",
-//   projectId: "pcapp-d2486",
-//   storageBucket: "pcapp-d2486.appspot.com",
-//   messagingSenderId: "612218298030",
-//   appId: "1:612218298030:web:345a4049c0cea7fae5573f",
-// };
-export const firebaseConfig = {
-  apiKey: "AIzaSyAWgMG1LQg4Eq-EqK_f5Q9Z8-ek9j9BUus",
-  authDomain: "temp-365806.firebaseapp.com",
-  projectId: "temp-365806",
-  storageBucket: "temp-365806.appspot.com",
-  messagingSenderId: "739789056678",
-  appId: "1:739789056678:web:c0d582ae78f0b08cf12267",
+const firebaseConfig = {
+  apiKey: "AIzaSyDMD3zd5omVb1twzM_1ujonXo8-FrAslOA",
+  authDomain: "pcapp-d2486.firebaseapp.com",
+  projectId: "pcapp-d2486",
+  storageBucket: "pcapp-d2486.appspot.com",
+  messagingSenderId: "612218298030",
+  appId: "1:612218298030:web:345a4049c0cea7fae5573f",
 };
+// export const firebaseConfig = {
+//   apiKey: "AIzaSyAWgMG1LQg4Eq-EqK_f5Q9Z8-ek9j9BUus",
+//   authDomain: "temp-365806.firebaseapp.com",
+//   projectId: "temp-365806",
+//   storageBucket: "temp-365806.appspot.com",
+//   messagingSenderId: "739789056678",
+//   appId: "1:739789056678:web:c0d582ae78f0b08cf12267",
+// };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
@@ -78,21 +78,26 @@ export const logOut = () => {
     });
 };
 
-export async function upload(file, currentUser, setLoading, setAvatar) {
+export async function uploadFileInFirabse(file) {
+  const currentUser = auth.currentUser;
+  if (!currentUser?.uid) {
+    alert("No User Data Found");
+    return null;
+  }
+
   const fileRef = ref(storage, currentUser.uid + ".png");
-  setLoading(true);
   try {
-    const snapshot = await uploadBytes(fileRef, file);
+    const res = await uploadBytes(fileRef, file);
+
     const photoURL = await getDownloadURL(fileRef);
-    updateProfile(currentUser, { photoURL });
-    setAvatar(photoURL);
+    await updateProfile(currentUser, { photoURL });
+
+    return photoURL;
   } catch (error) {
     console.log(error);
     alert("Something went wrong");
+    return null;
   }
-
-  setLoading(false);
-  return photoURL;
 }
 
 export async function addUpdateFirestoreData(
