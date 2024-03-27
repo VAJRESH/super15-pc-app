@@ -16,7 +16,12 @@ export default function NoSubscription() {
   useEffect(() => {
     if (plans != null) return;
 
-    loadPlans().then((res) => setPlans(res || []));
+    loadPlans().then((res) =>
+      setPlans(
+        res?.sort((p1, p2) => (p1?.item?.amount > p2?.item?.amount ? 1 : -1)) ||
+          [],
+      ),
+    );
   }, []);
 
   // setup razorpay checkout
@@ -42,7 +47,11 @@ export default function NoSubscription() {
           name={plan?.item?.name}
           description={plan?.item?.description}
           amount={+plan?.item?.amount / 100}
-          type={plan?.period === "yearly" ? "secondary" : "medium"}
+          type={
+            plan?.notes?.[0] || plan?.period === "yearly"
+              ? "secondary"
+              : "medium"
+          }
           handleClick={() => payWithRazorpay(plan)}
         />
       ))}
