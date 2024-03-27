@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import Loader from "../Loader/index";
 import Card from "./Card";
+import { DELETED_PLAN_IDS } from "@/helper/constants.helper";
 
 export default function NoSubscription() {
   const isLoading = useRecoilValue(IsLoadingAtom);
@@ -18,7 +19,9 @@ export default function NoSubscription() {
 
     loadPlans().then((res) =>
       setPlans(
-        res?.sort((p1, p2) => (p1?.item?.amount > p2?.item?.amount ? 1 : -1)) ||
+        res
+          ?.filter((plan) => !DELETED_PLAN_IDS?.includes(plan?.id))
+          ?.sort((p1, p2) => (p1?.item?.amount > p2?.item?.amount ? 1 : -1)) ||
           [],
       ),
     );
@@ -44,6 +47,8 @@ export default function NoSubscription() {
     return () => document.body.removeChild(script);
   }, []);
 
+  const cardColors = ["secondary", "primary", "tertiary"];
+
   return (
     <>
       <IonText style={{ textAlign: "center" }}>
@@ -51,17 +56,13 @@ export default function NoSubscription() {
       </IonText>
 
       {plans == null && !isLoading && <Loader />}
-      {plans?.map((plan) => (
+      {plans?.map((plan, i) => (
         <Card
           key={plan?.id}
           name={plan?.item?.name}
           description={plan?.item?.description}
           amount={+plan?.item?.amount / 100}
-          type={
-            plan?.notes?.[0] || plan?.period === "yearly"
-              ? "secondary"
-              : "medium"
-          }
+          type={plan?.notes?.[0] || cardColors?.[i]}
           handleClick={() => payWithRazorpay(plan)}
         />
       ))}

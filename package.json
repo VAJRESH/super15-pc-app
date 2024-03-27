@@ -6,7 +6,8 @@
     "start": "next start",
     "static": "next build",
     "ionic:build": "npm run build",
-    "ionic:serve": "npm run start"
+    "ionic:serve": "npm run start",
+    "postinstall": "npx cap sync && npm run static"
   },
   "dependencies": {
     "@capacitor/android": "^5.0.0",
