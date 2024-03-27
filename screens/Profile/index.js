@@ -36,9 +36,11 @@ import SideMenu from "../../components/SideMenu";
 import {
   addUpdateFirestoreData,
   auth,
+  resetPassword,
   uploadFileInFirabse,
 } from "../../helper/firebase.helper";
 import styles from "./profile.module.css";
+import IconHeadingText from "@/components/IconHeadingText/index";
 
 export default function Profile() {
   const [user, setUser] = useRecoilState(CurrentUserAtom);
@@ -219,6 +221,21 @@ export default function Profile() {
                 Update
               </IonButton>
             </form>
+
+            <br />
+
+            <div>
+              <IconHeadingText
+                img="/images/carbon_password.png"
+                heading="Change Password"
+                data="* * * * * * * * * *"
+                handleClick={() =>
+                  resetPassword(user?.email).then(() =>
+                    toaster("Reset Password Link sent to your email"),
+                  )
+                }
+              />
+            </div>
 
             <br />
             <br />
