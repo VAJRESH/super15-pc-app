@@ -18,10 +18,8 @@ import {
 import { ellipsisVertical } from "ionicons/icons";
 import { useRouter } from "next/router";
 import { useRecoilValue } from "recoil";
-import IconHeadingText from "../../components/IconHeadingText";
 import SideMenu from "../../components/SideMenu";
 import styles from "./dashboard.module.css";
-import { showFullScreenAd } from "@/components/Admob";
 
 export default function Dashboard() {
   const user = useRecoilValue(CurrentUserAtom);
@@ -65,10 +63,7 @@ export default function Dashboard() {
             <div className={styles.dashboardBtns}>
               <IonButton
                 size="large"
-                onClick={() => {
-                  showFullScreenAd();
-                  router.push("/play-quiz-demo");
-                }}
+                onClick={() => router.push("/play-quiz-demo")}
               >
                 Play Demo
               </IonButton>
