@@ -20,8 +20,13 @@ export default function Card({
     <>
       <IonCard color={type}>
         <IonCardHeader>
-          <IonCardTitle>{name}</IonCardTitle>
-          <IonCardSubtitle>&#8377; {amount} /- Only</IonCardSubtitle>
+          <IonCardTitle
+            style={{ display: "flex", justifyContent: "space-between" }}
+          >
+            {name}
+
+            <span style={{ fontSize: "1.5rem" }}>&#8377; {amount}</span>
+          </IonCardTitle>
         </IonCardHeader>
 
         <IonCardContent>

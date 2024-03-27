@@ -31,6 +31,7 @@ export const SUBSCRIBTIONS = {
   accountNumber: "7878780080316316",
   razorpayKey: "rzp_test_9MvI1PsLSFtd6H",
 };
+export const DELETED_PLAN_IDS = ["plan_NVIOcafNLoz3ID", "plan_NVINDUfpcw91Di"];
 
 export const MONTHS = [
   "January",
