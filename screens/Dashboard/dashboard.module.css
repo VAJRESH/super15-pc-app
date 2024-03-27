@@ -22,10 +22,14 @@
   height: 80vh;
 }
 .dashboardKpis {
-  height: 20vh;
+  /* height: 20vh; */
   background-color: #d5d5ff;
   border-radius: 10px;
   margin-bottom: 40px;
+}
+.dashboardKpis img {
+  height: 100%;
+  width: 100%;
 }
 .dashboardBtns {
   display: flex;

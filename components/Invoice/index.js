@@ -62,11 +62,9 @@ const styles = StyleSheet.create({
 });
 
 export default function Invoice({
-  invoiceId = "",
   amountInINR = 0,
   paidOn = new Date().toDateString(),
   renewOn = new Date().toDateString(),
-  paidTo = "",
   transactionId = "",
   billingDetails = {},
 }) {
@@ -75,7 +73,7 @@ export default function Invoice({
       <Document>
         <Page size="A4" style={styles.page} wrap>
           <View style={styles.container}>
-            <Text style={styles.header}>Invoice {invoiceId}</Text>
+            <Text style={styles.header}>Invoice</Text>
 
             <View style={styles.sectionHeader}>
               <View style={{ flexDirection: "column" }}>
@@ -112,7 +110,7 @@ export default function Invoice({
                 </Text>
                 <Text style={styles.bold}>
                   Paid To:
-                  <Text style={styles.normal}> {paidTo}</Text>
+                  <Text style={styles.normal}>BS SOBHA SUPERTECH PVT LTD</Text>
                 </Text>
                 <Text style={styles.bold}>
                   Date: <Text style={styles.normal}> {paidOn}</Text>

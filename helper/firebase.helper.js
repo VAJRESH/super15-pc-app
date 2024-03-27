@@ -3,6 +3,7 @@ import { initializeApp } from "firebase/app";
 import {
   createUserWithEmailAndPassword,
   getAuth,
+  sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signOut,
   updateProfile,
@@ -78,6 +79,13 @@ export const logOut = () => {
     });
 };
 
+export async function resetPassword(email) {
+  if (!email) return null;
+
+  return await sendPasswordResetEmail(auth, email).catch((error) => {
+    console.log(error);
+  });
+}
 export async function uploadFileInFirabse(file) {
   const currentUser = auth.currentUser;
   if (!currentUser?.uid) {

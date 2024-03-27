@@ -21,6 +21,7 @@ import { useRecoilValue } from "recoil";
 import IconHeadingText from "../../components/IconHeadingText";
 import SideMenu from "../../components/SideMenu";
 import styles from "./dashboard.module.css";
+import { showFullScreenAd } from "@/components/Admob";
 
 export default function Dashboard() {
   const user = useRecoilValue(CurrentUserAtom);
@@ -57,11 +58,17 @@ export default function Dashboard() {
         <IonContent className="ion-padding">
           {/* Not compatible with firebase 9. Please update your app. */}
           <div className={styles.dashboardBody}>
-            <div className={styles.dashboardKpis}></div>
+            <div className={styles.dashboardKpis}>
+              <img src="/images/dashboard-img.jpg" alt="" />
+            </div>
+
             <div className={styles.dashboardBtns}>
               <IonButton
                 size="large"
-                onClick={() => router.push("/play-quiz-demo")}
+                onClick={() => {
+                  showFullScreenAd();
+                  router.push("/play-quiz-demo");
+                }}
               >
                 Play Demo
               </IonButton>
@@ -71,16 +78,6 @@ export default function Dashboard() {
             </div>
 
             <div className={styles.dashboardEdits}>
-              <IconHeadingText
-                img="/images/dashicons_email-alt2.png"
-                heading="Your Email Address"
-                data={user?.email}
-              />
-              <IconHeadingText
-                img="/images/carbon_password.png"
-                heading="Change Password"
-                data="* * * * * * * * * *"
-              />
               <p style={{ margin: "20px", textAlign: "center" }}>
                 Rules and Guidelines?{" "}
                 <button onClick={() => router.push("/details")}>
