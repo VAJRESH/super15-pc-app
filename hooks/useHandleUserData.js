@@ -124,6 +124,7 @@ export default function useHandleUserData() {
       handleUpdateUser(signInResponse?.user);
       router.push("/dashboard");
     } catch (error) {
+      setIsLoading(false);
       console.log(error, error?.message);
       if (error?.message?.includes("wrong-password"))
         return toaster(ERROR_MSG?.wrongPassword);

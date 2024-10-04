@@ -1,27 +1,40 @@
-.question{
-    position: relative;
-    background-image: url('/images/RectangleQuestion.png');
-    background-size: contain;
-    height: 20vh;
-    font-size: 18px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.questionBlock {
+  background-color: #fff;
+  box-shadow: 0px 0px 10px #d3d3d3;
+  border-radius: 10px;
+  padding: 10px;
 }
 
-.options{
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
+.question {
+  position: relative;
+
+  height: 20vh;
+  font-size: 18px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  border-radius: 10px;
+  background-color: color-mix(in srgb, var(--primary) 10%, transparent 0%);
 }
-.option{
-    padding: 15px 20px;
-    border: 1px solid grey;
-    border-radius: 10px;
-    margin: 10px;
+
+.options {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 10px;
 }
-.correct{
-    background-color: #16FF72;
+
+.option {
+  border-radius: 10px;
+  padding: 15px 20px;
+  border: 1px solid var(--primary);
+
+  background-color: color-mix(in srgb, var(--grey) 10%, transparent 50%);
 }
-.incorrect{
-    background-color: #FF6967;
+.correct {
+  background-color: #16ff72;
+}
+.incorrect {
+  background-color: #ff6967;
 }

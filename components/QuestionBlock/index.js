@@ -14,8 +14,9 @@ export default function QuestionBlock({
 
   return (
     <>
+      <h3 style={{ textAlign: "center", fontWeight: "bold" }}>Super 15</h3>
+
       <div className={styles.questionBlock}>
-        <h3 style={{ textAlign: "center", fontWeight: "bold" }}>Super 15</h3>
         <div className={styles.question}>{qText || "Loading..."}</div>
 
         <h4 style={{ textAlign: "center" }}>Choose your answer</h4>

@@ -39,7 +39,7 @@ export default function VpaInput() {
   function addUpdateVpa() {
     if (!user?.uid) return alertBox("User Id is missing");
     if (!user?.email) return alertBox("Email is missing");
-    if (!vpaData) return alertBox("Enter VPA");
+    if (!vpaData) return alertBox("Enter UPI Id");
 
     setIsLoading(true);
     createContactAccount({
@@ -48,7 +48,6 @@ export default function VpaInput() {
       name: user?.displayName,
       vpa: vpaData?.vpa,
     }).then((res) => {
-      console.log(res);
       setIsLoading(false);
 
       if (!res || !!res?.error)
@@ -56,17 +55,17 @@ export default function VpaInput() {
 
       setUser((prev) => getUserDataObj({ ...(prev || {}), vpa: vpaData?.vpa }));
       setVpaData((prev) => ({ ...(prev || {}), id: res?.fundId }));
-      alertBox("VPA added successfully");
+      alertBox("UPI id added successfully");
     });
   }
 
   return (
     <>
       <div className={`${styles.vpaInputBox} ion-padding`}>
-        <h4>Enter VPA</h4>
+        <h4>Enter UPI Id</h4>
 
         <FormInput
-          label="VPA"
+          label="UPI ID"
           placeholder="upi_name@okhdfc"
           value={vpaData?.vpa}
           onIonInput={(e) =>
@@ -76,7 +75,7 @@ export default function VpaInput() {
         />
 
         <div>
-          <small>Enter VPA mindfully, it cannot be updated</small>
+          <small>Enter UPI Id mindfully, it cannot be updated</small>
         </div>
 
         <IonButton onClick={addUpdateVpa} disabled={!!vpaData?.id || isLoading}>

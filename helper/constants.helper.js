@@ -15,9 +15,10 @@ export const DEFAULTS = {
   appName: "Super 15",
   profilePic:
     "https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png",
-  quizStartTime: "10:00:00",
+  quizStartTime: "12:00:00",
   totalQuestions: 15,
   demoQuizQuestionTime: 10 * 1000,
+  gapTime: 2 * 60 * 1000, // 2 mins
 };
 
 export const RAZOR_PAY_BASE_URL = "https://api.razorpay.com/v1";
@@ -49,21 +50,22 @@ export const MONTHS = [
 ];
 
 export const QUESTION_TIMES = [
-  // { questionNumber: 1, timeLimit: 30 * 1000 }, // 4 hours in milliseconds //12
+  // { questionNumber: 1, timeLimit: 8 * 60 * 1000 }, // 4 hours in milliseconds //12
   // { questionNumber: 2, timeLimit: 30 * 1000 },
-  // { questionNumber: 3, timeLimit: 30 * 1000 },
-  // { questionNumber: 4, timeLimit: 30 * 1000 },
+  // { questionNumber: 3, timeLimit: 10 * 1000 },
+  // { questionNumber: 4, timeLimit: 10 * 1000 },
   // { questionNumber: 5, timeLimit: 30 * 1000 },
   // { questionNumber: 6, timeLimit: 30 * 1000 },
-  // { questionNumber: 7, timeLimit: 30 * 1000 },
-  // { questionNumber: 8, timeLimit: 30 * 1000 },
-  // { questionNumber: 9, timeLimit: 30 * 1000 },
-  // { questionNumber: 10, timeLimit: 30 * 1000 },
+  // { questionNumber: 7, timeLimit: 10 * 1000 },
+  // { questionNumber: 8, timeLimit: 3 * 60 * 1000 },
+  // { questionNumber: 9, timeLimit: 20 * 60 * 1000 },
+  // { questionNumber: 10, timeLimit: 30 * 60 * 1000 },
   // { questionNumber: 11, timeLimit: 30 * 1000, cuttOff: 100 },
   // { questionNumber: 12, timeLimit: 30 * 1000, cuttOff: 50 },
   // { questionNumber: 13, timeLimit: 30 * 1000, cuttOff: 20 },
   // { questionNumber: 14, timeLimit: 30 * 1000, cuttOff: 10 },
   // { questionNumber: 15, timeLimit: 30 * 1000, cuttOff: 1 },
+
   { questionNumber: 1, timeLimit: 4 * 60 * 60 * 1000 }, // 4 hours in milliseconds
   { questionNumber: 2, timeLimit: 2 * 60 * 60 * 1000 },
   { questionNumber: 3, timeLimit: 60 * 60 * 1000 },
@@ -79,7 +81,7 @@ export const QUESTION_TIMES = [
   { questionNumber: 13, timeLimit: 10 * 1000, cuttOff: 20 },
   { questionNumber: 14, timeLimit: 10 * 1000, cuttOff: 10 },
   { questionNumber: 15, timeLimit: 10 * 1000, cuttOff: 1 },
-];
+].map((q) => ({ ...q, timeLimit: q.timeLimit + DEFAULTS.gapTime }));
 
 export const DEMO_QUIZ_DATA = [
   {

@@ -9,7 +9,7 @@ export default function subscriptions(req, res) {
   return new Promise(async (resolve, reject) => {
     const result = await excuteQuery({
       query: `
-        SELECT * FROM ${DB_TABLES?.subscriptions} 
+        SELECT * FROM ${DB_TABLES?.subscriptions}
         WHERE  userId=? && status IN (?, ?) && razorpayPaymentId IS NOT NULL
         ORDER BY coalesce(updatedAt, createdAt) DESC`,
       values: [
@@ -18,6 +18,7 @@ export default function subscriptions(req, res) {
         SUBSCRIBTION_STATUS?.cancelled,
       ],
     });
+
     if (!result?.[0]?.id) {
       res.status(200).json({});
       return resolve();
@@ -29,7 +30,7 @@ export default function subscriptions(req, res) {
     if (subData?.status !== "active") {
       await excuteQuery({
         query: `UPDATE ${DB_TABLES?.subscriptions} SET status=? WHERE subscriptionId=?`,
-        values: [SUBSCRIBTION_STATUS?.inactive, id],
+        values: [SUBSCRIBTION_STATUS?.inactive, result?.[0]?.subscriptionId],
       });
 
       res.status(200).json({});

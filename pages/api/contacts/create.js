@@ -10,6 +10,10 @@ export default async function createContactAndVPA(req, res) {
   if (!email) return res.status(400).json({ error: "Email is required" });
   if (!userId) return res.status(400).json({ error: "UserId is required" });
   if (!name) return res.status(400).json({ error: "Name is required" });
+  if (name?.length < 3 || name?.length > 50)
+    return res
+      .status(400)
+      .json({ error: "Name should be between 3 to 50 characters" });
 
   try {
     const contactData = await razorpayX?.Contact.create({
