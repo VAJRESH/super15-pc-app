@@ -1,5 +1,5 @@
 import IconHeadingText from "@/components/IconHeadingText/index";
-import { QUESTION_TIMES } from "@/helper/constants.helper";
+import { DEFAULTS, QUESTION_TIMES } from "@/helper/constants.helper";
 import { formatTime } from "@/helper/utils.helper";
 import {
   IonButton,
@@ -124,31 +124,31 @@ export default function Details() {
                 </h5>
                 <IonItem>
                   <IonLabel>
-                    Question 11: SUPER 100 – Top {QUESTION_TIMES?.[10]?.cuttOff}{" "}
+                    Question 11: SUPER 100 - Top {QUESTION_TIMES?.[10]?.cuttOff}{" "}
                     users will be allowed in Question 12.
                   </IonLabel>
                 </IonItem>
                 <IonItem>
                   <IonLabel>
-                    Question 12: SUPER 50 – Top {QUESTION_TIMES?.[11]?.cuttOff}{" "}
+                    Question 12: SUPER 50 - Top {QUESTION_TIMES?.[11]?.cuttOff}{" "}
                     users will be allowed in Question 13.
                   </IonLabel>
                 </IonItem>
                 <IonItem>
                   <IonLabel>
-                    Question 13: SUPER 20 – Top {QUESTION_TIMES?.[12]?.cuttOff}{" "}
+                    Question 13: SUPER 20 - Top {QUESTION_TIMES?.[12]?.cuttOff}{" "}
                     users will be allowed in Question 14.
                   </IonLabel>
                 </IonItem>
                 <IonItem>
                   <IonLabel>
-                    Question 14: SUPER 10 – Top {QUESTION_TIMES?.[13]?.cuttOff}{" "}
+                    Question 14: SUPER 10 - Top {QUESTION_TIMES?.[13]?.cuttOff}{" "}
                     users will be allowed in Question 15.
                   </IonLabel>
                 </IonItem>
                 <IonItem>
                   <IonLabel>
-                    Question 15: SUPER FINALE – One winner is declared.
+                    Question 15: SUPER FINALE - One winner is declared.
                   </IonLabel>
                 </IonItem>
               </>
@@ -157,18 +157,49 @@ export default function Details() {
             {activeSection === 2 && (
               <>
                 <IonGrid>
-                  {QUESTION_TIMES?.map((q) => (
-                    <IonRow>
-                      <IonCol style={{ border: "1px solid black" }}>
-                        {q?.questionNumber}
-                      </IonCol>
-                      <IonCol style={{ border: "1px solid black" }}>
-                        {formatTime(q?.timeLimit, true)}
-                      </IonCol>
-                    </IonRow>
-                  ))}
+                  {QUESTION_TIMES?.map((q, i) => {
+                    const qStartTime = new Date(
+                      `${new Date().toDateString()} ${DEFAULTS.quizStartTime}`,
+                    ).getTime();
+                    const startTime = new Date(qStartTime);
+                    const endTime = new Date(qStartTime);
+
+                    let totalTimeForPreviousQuestions = 0;
+                    for (const questionTime of QUESTION_TIMES.slice(0, i)) {
+                      totalTimeForPreviousQuestions += questionTime.timeLimit;
+                    }
+
+                    if (i > 0)
+                      startTime.setMilliseconds(totalTimeForPreviousQuestions);
+                    endTime.setMilliseconds(
+                      totalTimeForPreviousQuestions +
+                        QUESTION_TIMES?.[i]?.timeLimit -
+                        DEFAULTS.gapTime,
+                    );
+
+                    return (
+                      <IonRow>
+                        <IonCol size="4" style={{ border: "1px solid black" }}>
+                          {q?.questionNumber}
+                        </IonCol>
+                        <IonCol style={{ border: "1px solid black" }}>
+                          {startTime.toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            second: "2-digit",
+                          })}
+                          {" to "}
+                          {endTime.toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            second: "2-digit",
+                          })}
+                        </IonCol>
+                      </IonRow>
+                    );
+                  })}
                   <IonRow>
-                    <IonCol style={{ border: "1px solid black" }}>
+                    <IonCol size="4" style={{ border: "1px solid black" }}>
                       Total Time
                     </IonCol>
                     <IonCol style={{ border: "1px solid black" }}>

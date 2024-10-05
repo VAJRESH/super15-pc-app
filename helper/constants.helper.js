@@ -80,7 +80,7 @@ export const QUESTION_TIMES = [
   { questionNumber: 12, timeLimit: 15 * 1000, cuttOff: 50 },
   { questionNumber: 13, timeLimit: 10 * 1000, cuttOff: 20 },
   { questionNumber: 14, timeLimit: 10 * 1000, cuttOff: 10 },
-  { questionNumber: 15, timeLimit: 10 * 1000, cuttOff: 1 },
+  { questionNumber: 15, timeLimit: 5 * 1000, cuttOff: 1 },
 ].map((q) => ({ ...q, timeLimit: q.timeLimit + DEFAULTS.gapTime }));
 
 export const DEMO_QUIZ_DATA = [
