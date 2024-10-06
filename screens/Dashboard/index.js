@@ -60,6 +60,17 @@ export default function Dashboard() {
               <img src="/images/dashboard-img.jpg" alt="" />
             </div>
 
+            <div className={styles.stats}>
+              <div>
+                <strong>10,000+</strong>
+                <p>players</p>
+              </div>
+              <div>
+                <strong>₹100,000</strong>
+                <p>prize won</p>
+              </div>
+            </div>
+
             <div className={styles.dashboardBtns}>
               <IonButton
                 size="large"

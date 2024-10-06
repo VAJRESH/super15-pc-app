@@ -38,3 +38,22 @@
 .dashboardBtns {
   margin-bottom: 20px;
 }
+
+.stats {
+  display: flex;
+  justify-content: space-evenly;
+  margin-bottom: 20px;
+}
+.stats > div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.stats strong {
+  font-size: 20px;
+}
+.stats p {
+  text-transform: uppercase;
+  line-height: 5px;
+}
