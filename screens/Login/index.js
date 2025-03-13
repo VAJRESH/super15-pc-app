@@ -14,14 +14,12 @@ export default function Login() {
           <IonImg
             src="/images/Super15 Logo.png"
             alt="Logo"
-            className="logo"
-          ></IonImg>
+            className="logo"></IonImg>
           <h4 style={{ textAlign: "center" }}>Login to Super 15</h4>
 
           <form
             onSubmit={handleLogin}
-            style={{ maxWidth: "350px", margin: "20px auto" }}
-          >
+            style={{ maxWidth: "350px", margin: "20px auto" }}>
             <IonList>
               <FormInput
                 type="email"
@@ -48,7 +46,13 @@ export default function Login() {
             </ion-button>
           </form>
 
-          <p style={{ margin: "20px", textAlign: "center" }}>
+          <p style={{ margin: "20px 0 10px", textAlign: "center" }}>
+            Forgot Password?{" "}
+            <button onClick={() => router.push("/reset-password")}>
+              RESET
+            </button>
+          </p>
+          <p style={{ margin: "0px", textAlign: "center" }}>
             Don't have an account?{" "}
             <button onClick={() => router.push("/register")}>REGISTER</button>
           </p>
