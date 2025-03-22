@@ -1,4 +1,4 @@
-package com.super15;
+package com.super15.app;
 
 import com.getcapacitor.BridgeActivity;
 

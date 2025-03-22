@@ -1,5 +1,6 @@
 const nextConfig = {
-  // output: "export",
+  output: "export",
+  distDir: "out",
   reactStrictMode: true,
   swcMinify: true,
   images: { unoptimized: true },

@@ -1,3 +1,4 @@
+import Footer from "@/components/Footer/index";
 import useHandleUserData from "@/hooks/useHandleUserData";
 import { IonContent, IonImg, IonList, IonPage } from "@ionic/react";
 import { useRouter } from "next/router";
@@ -56,6 +57,8 @@ export default function Login() {
             Don't have an account?{" "}
             <button onClick={() => router.push("/register")}>REGISTER</button>
           </p>
+
+          <Footer />
         </IonContent>
       </IonPage>
     </>

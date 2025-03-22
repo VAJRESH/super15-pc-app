@@ -5,13 +5,17 @@ import {
   IonList,
   IonPage,
   IonSplitPane,
+  IonCheckbox,
 } from "@ionic/react";
 import { useRouter } from "next/router";
 import FormInput from "../../components/FormInput";
 import { logo } from "./register.module.css";
+import Footer from "@/components/Footer/index";
+import { useState } from "react";
 
 export default function Register() {
   const router = useRouter();
+  const [isChecked, setIsChecked] = useState(true);
   const { userTemp, handleUpdateUserTemp, handleRegister } =
     useHandleUserData();
 
@@ -23,8 +27,7 @@ export default function Register() {
             <IonImg
               src="/images/Super15 Logo.png"
               alt="Logo"
-              className={logo}
-            ></IonImg>
+              className={logo}></IonImg>
             <h4 style={{ textAlign: "center" }}>Register on Super 15</h4>
 
             <form onSubmit={handleRegister}>
@@ -63,9 +66,22 @@ export default function Register() {
                   }
                   value={userTemp?.cnfPassword}
                 />
+
+                <IonCheckbox
+                  labelPlacement="end"
+                  checked={isChecked}
+                  style={{ margin: "10px 50%", transform: "translateX(-50%)" }}
+                  onIonChange={() => setIsChecked(!isChecked)}>
+                  I agree to the below terms
+                </IonCheckbox>
               </IonList>
+
               <br />
-              <ion-button type="submit" expand="full" shape="round">
+              <ion-button
+                disabled={!isChecked}
+                type="submit"
+                expand="full"
+                shape="round">
                 Submit
               </ion-button>
             </form>
@@ -74,6 +90,8 @@ export default function Register() {
               Already have an account?{" "}
               <button onClick={() => router.push("/login")}>LOGIN</button>
             </p>
+
+            <Footer />
           </IonContent>
         </IonPage>
       </IonSplitPane>
