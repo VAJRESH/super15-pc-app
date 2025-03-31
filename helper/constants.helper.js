@@ -263,3 +263,22 @@ export const SUBSCRIBTION_STATUS = {
   cancelled: "cancelled",
   inactive: "inactive",
 };
+
+export const FOOTER_LINKS = {
+  tAndC: {
+    title: "Terms and Conditions",
+    link: "https://super15.in/terms-and-conditions/",
+  },
+  privacy: {
+    title: "Privacy Policy",
+    link: "https://super15.in/privacy-policy/",
+  },
+  refund: {
+    title: "Refund Policy",
+    link: "https://super15.in/refund-policy/",
+  },
+  withdrawal: {
+    title: "Withdrawal Policy",
+    link: "https://super15.in/withdrawal-policy/",
+  },
+};

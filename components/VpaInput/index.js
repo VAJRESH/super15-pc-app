@@ -1,14 +1,17 @@
 import { CurrentUserAtom, getUserDataObj } from "@/atom/user.atom";
 import { loadVpaData } from "@/services/queries.services";
 import { createContactAccount } from "@/services/razorpayX.services";
-import { IonButton, useIonToast } from "@ionic/react";
-import { useEffect, useState } from "react";
+import { IonButton, useIonToast, IonCheckbox } from "@ionic/react";
+import { useEffect, useRef, useState } from "react";
 import { useRecoilState } from "recoil";
 import FormInput from "../FormInput/index";
 import styles from "./vpaInput.module.css";
+import { FOOTER_LINKS } from "@/helper/constants.helper";
 
 export default function VpaInput() {
   const [user, setUser] = useRecoilState(CurrentUserAtom);
+
+  const [isChecked, setIsChecked] = useState(true);
   const [isLoading, setIsLoading] = useState(null);
   const [vpaData, setVpaData] = useState({
     id: null,
@@ -16,6 +19,18 @@ export default function VpaInput() {
   });
 
   const [present] = useIonToast();
+  const ref = useRef(null);
+
+  /**
+   * IonCheckbox will be listening for the native click event here so we need
+   * to call stopPropagation when the native click event instead of when the
+   * synthetic click event fires.
+   */
+  useEffect(() => {
+    ref.current?.addEventListener("click", (event) => {
+      event.stopPropagation();
+    });
+  }, [ref]);
 
   // load vpa
   useEffect(() => {
@@ -73,12 +88,24 @@ export default function VpaInput() {
           }
           disabled={!!vpaData?.id || isLoading}
         />
+        <IonCheckbox
+          labelPlacement="end"
+          checked={isChecked}
+          style={{ margin: "0 5px", fontSize: "small" }}
+          onIonChange={() => setIsChecked(!isChecked)}>
+          I agree to the{" "}
+          <a href={FOOTER_LINKS.tAndC.link} ref={ref}>
+            terms and conditions
+          </a>
+        </IonCheckbox>
 
         <div>
           <small>Enter UPI Id mindfully, it cannot be updated</small>
         </div>
 
-        <IonButton onClick={addUpdateVpa} disabled={!!vpaData?.id || isLoading}>
+        <IonButton
+          onClick={addUpdateVpa}
+          disabled={!isChecked || !!vpaData?.id || isLoading}>
           Submit
         </IonButton>
       </div>
