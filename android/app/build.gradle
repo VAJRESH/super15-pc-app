@@ -1,5 +1,5 @@
 apply plugin: 'com.android.application'
-def sysBuildNumber = 6
+def sysBuildNumber = 7
 
 android {
     namespace "com.super15.app"

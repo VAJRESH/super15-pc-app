@@ -7,7 +7,35 @@ export const IsLoadingAtom = atom({
 
 export const PlansAtom = atom({
   key: "PlansAtom",
-  default: null,
+  default: [
+    {
+      id: "1",
+      item: {
+        name: "Weekly",
+        description: null,
+        amount: 10000,
+        noOfDays: 7,
+      },
+    },
+    {
+      id: "2",
+      item: {
+        name: "Monthly",
+        description: null,
+        amount: 45000,
+        noOfDays: 30,
+      },
+    },
+    {
+      id: "3",
+      item: {
+        name: "Yearly",
+        description: null,
+        amount: 525000,
+        noOfDays: 365,
+      },
+    },
+  ],
 });
 
 export const SubscriptionAtom = atom({

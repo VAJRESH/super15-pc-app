@@ -4,6 +4,21 @@
   border-radius: 10px;
   padding: 10px;
 }
+.header {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  justify-content: center;
+  align-items: center;
+}
+
+.header div {
+  width: fit-content;
+  margin: auto;
+  font-size: small;
+}
+.header div * {
+  font-size: small;
+}
 
 .question {
   position: relative;

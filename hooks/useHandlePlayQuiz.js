@@ -434,6 +434,7 @@ export default function useHandlePlayQuiz() {
   }
 
   return {
+    quizId,
     breakTime,
     timer,
     currentQuestionIndex,

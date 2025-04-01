@@ -72,8 +72,7 @@ export default function CreateQuiz() {
                     justifyContent: "center",
                     alignItems: "center",
                     gap: "1em",
-                  }}
-                >
+                  }}>
                   <h4>Select Quiz Date</h4>
                   <IonDatetime
                     ref={ionDatetimePickerRef}
@@ -92,19 +91,18 @@ export default function CreateQuiz() {
                     })}
                     onIonChange={(e) =>
                       handleDateConfirm(e?.detail?.value?.split("T")?.[0])
-                    }
-                  >
+                    }>
                     <IonButtons slot="buttons">
                       <IonButton
                         color="danger"
-                        onClick={() => ionDatetimePickerRef?.current?.reset()}
-                      >
+                        onClick={() => ionDatetimePickerRef?.current?.reset()}>
                         Reset
                       </IonButton>
                       <IonButton
                         color="primary"
-                        onClick={() => ionDatetimePickerRef?.current?.confirm()}
-                      >
+                        onClick={() =>
+                          ionDatetimePickerRef?.current?.confirm()
+                        }>
                         Confirm
                       </IonButton>
                     </IonButtons>
@@ -153,16 +151,14 @@ export default function CreateQuiz() {
                                 qSeq,
                               }),
                             );
-                          }}
-                        >
+                          }}>
                           {Array(DEFAULTS?.totalQuestions)
                             .fill()
                             .map((_, index) => (
                               <IonSelectOption
                                 key={index}
                                 value={index + 1}
-                                disabled={quizData?.totalQuestions < index}
-                              >
+                                disabled={quizData?.totalQuestions < index}>
                                 {index + 1}
                               </IonSelectOption>
                             ))}
@@ -181,8 +177,7 @@ export default function CreateQuiz() {
                         value={questionData.qText}
                         onIonChange={(e) =>
                           handleQuestionDataUpdate({ qText: e.target?.value })
-                        }
-                      ></IonTextarea>
+                        }></IonTextarea>
                     </IonItem>
 
                     <h4>Enter options and choose correct answer</h4>
@@ -192,8 +187,7 @@ export default function CreateQuiz() {
                         handleQuestionDataUpdate({
                           qOptCorrectIndex: e.target?.value,
                         })
-                      }
-                    >
+                      }>
                       {Array(4)
                         .fill()
                         .map((_, index) => (
@@ -212,8 +206,9 @@ export default function CreateQuiz() {
                               mode="md"
                               slot="end"
                               value={index + 1}
-                              disabled={!questionData?.[`qOpt${index + 1}`]}
-                            ></IonRadio>
+                              disabled={
+                                !questionData?.[`qOpt${index + 1}`]
+                              }></IonRadio>
                           </div>
                         ))}
                     </IonRadioGroup>
@@ -221,8 +216,7 @@ export default function CreateQuiz() {
                     <div className={styles.buttonGrp}>
                       <button
                         className={styles.back}
-                        onClick={() => handleQuizDataUpdate({ date: null })}
-                      >
+                        onClick={() => handleQuizDataUpdate({ date: null })}>
                         Back
                       </button>
 
@@ -238,8 +232,7 @@ export default function CreateQuiz() {
                           !questionData?.qOpt4 ||
                           !questionData?.qOptCorrectIndex
                         }
-                        onClick={handleSaveQuestion}
-                      >
+                        onClick={handleSaveQuestion}>
                         {questionData?.qSeq <= quizData?.totalQuestions
                           ? "Update"
                           : "Save & Next"}
@@ -273,16 +266,14 @@ export default function CreateQuiz() {
                                   qSeq,
                                 }),
                               );
-                            }}
-                          >
+                            }}>
                             {Array(DEFAULTS?.totalQuestions)
                               .fill()
                               .map((_, index) => (
                                 <IonSelectOption
                                   key={index}
                                   value={index + 1}
-                                  disabled={quizData?.totalQuestions < index}
-                                >
+                                  disabled={quizData?.totalQuestions < index}>
                                   {index + 1}
                                 </IonSelectOption>
                               ))}
@@ -292,8 +283,7 @@ export default function CreateQuiz() {
 
                       <IonButton
                         color="danger"
-                        onClick={() => handleQuizDataUpdate({ date: null })}
-                      >
+                        onClick={() => handleQuizDataUpdate({ date: null })}>
                         Select a new date
                       </IonButton>
                     </>

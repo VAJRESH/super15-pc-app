@@ -1,51 +1,48 @@
 import { IsLoadingAtom, PlansAtom } from "@/atom/global.atom";
-import useHandleSubscription from "@/hooks/useHandleSubscription";
-import { loadPlans } from "@/services/queries.services";
 import { IonText } from "@ionic/react";
-import { useEffect } from "react";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilValue } from "recoil";
 import Loader from "../Loader/index";
 import Card from "./Card";
-import { DELETED_PLAN_IDS } from "@/helper/constants.helper";
 
 export default function NoSubscription() {
   const isLoading = useRecoilValue(IsLoadingAtom);
-  const [plans, setPlans] = useRecoilState(PlansAtom);
+  const plans = useRecoilValue(PlansAtom);
+  // const [plans, setPlans] = useRecoilState(PlansAtom);
 
-  const { payWithRazorpay } = useHandleSubscription();
+  // const { payWithRazorpay } = useHandleSubscription();
 
-  useEffect(() => {
-    if (plans != null) return;
+  // useEffect(() => {
+  //   if (plans != null) return;
 
-    loadPlans().then((res) =>
-      setPlans(
-        res
-          ?.filter((plan) => !DELETED_PLAN_IDS?.includes(plan?.id))
-          ?.sort((p1, p2) => (p1?.item?.amount > p2?.item?.amount ? 1 : -1)) ||
-          [],
-      ),
-    );
-  }, []);
+  //   loadPlans().then((res) =>
+  //     setPlans(
+  //       res
+  //         ?.filter((plan) => !DELETED_PLAN_IDS?.includes(plan?.id))
+  //         ?.sort((p1, p2) => (p1?.item?.amount > p2?.item?.amount ? 1 : -1)) ||
+  //         [],
+  //     ),
+  //   );
+  // }, []);
 
-  // setup razorpay checkout
-  useEffect(() => {
-    const script = document.createElement("script");
-    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+  // // setup razorpay checkout
+  // useEffect(() => {
+  //   const script = document.createElement("script");
+  //   script.src = "https://checkout.razorpay.com/v1/checkout.js";
 
-    document.body.appendChild(script);
+  //   document.body.appendChild(script);
 
-    return () => document.body.removeChild(script);
-  }, []);
+  //   return () => document.body.removeChild(script);
+  // }, []);
 
-  // setup razorpay checkout
-  useEffect(() => {
-    const script = document.createElement("script");
-    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+  // // setup razorpay checkout
+  // useEffect(() => {
+  //   const script = document.createElement("script");
+  //   script.src = "https://checkout.razorpay.com/v1/checkout.js";
 
-    document.body.appendChild(script);
+  //   document.body.appendChild(script);
 
-    return () => document.body.removeChild(script);
-  }, []);
+  //   return () => document.body.removeChild(script);
+  // }, []);
 
   const cardColors = ["secondary", "primary", "tertiary"];
 
@@ -63,7 +60,7 @@ export default function NoSubscription() {
           description={plan?.item?.description}
           amount={+plan?.item?.amount / 100}
           type={plan?.notes?.[0] || cardColors?.[i]}
-          handleClick={() => payWithRazorpay(plan)}
+          // handleClick={() => payWithRazorpay(plan)}
         />
       ))}
     </>

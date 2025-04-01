@@ -1,7 +1,9 @@
-import { useIonToast } from "@ionic/react";
+import { useIonToast, IonChip } from "@ionic/react";
 import styles from "./questionBlock.module.css";
 
 export default function QuestionBlock({
+  prizePool,
+  currentUsersCount,
   qText = null,
   options = Array(4).fill(),
   selectedOp = null,
@@ -14,7 +16,15 @@ export default function QuestionBlock({
 
   return (
     <>
-      <h3 style={{ textAlign: "center", fontWeight: "bold" }}>Super 15</h3>
+      <div className={styles.header}>
+        <div>
+          <IonChip color="tertiary">Users: {currentUsersCount}</IonChip>
+        </div>
+        <h3 style={{ textAlign: "center", fontWeight: "bold" }}>Super 15</h3>
+        <div>
+          <IonChip color="tertiary">Prize: ₹{prizePool}</IonChip>
+        </div>
+      </div>
 
       <div className={styles.questionBlock}>
         <div className={styles.question}>{qText || "Loading..."}</div>
@@ -41,8 +51,7 @@ export default function QuestionBlock({
                     });
 
                   handleOpSelection(op);
-                }}
-              >
+                }}>
                 {op?.value || "Loading..."}
               </button>
             );
