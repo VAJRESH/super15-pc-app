@@ -10,10 +10,14 @@ export const razorpayX = require("razorpayx-nodejs-sdk")(
 
 export const db = mysql({
   config: {
-    host: "109.106.254.1",
-    user: "u169097824_super15",
-    password: "SkylineMeridian@2024",
-    database: "u169097824_Super15",
+    // host: "109.106.254.1",
+    // user: "u169097824_super15",
+    // password: "SkylineMeridian@2024",
+    // database: "u169097824_Super15",
+    host: "109.106.254.101",
+    user: "u169097824_skinclinics",
+    password: "Skinclinics@2025",
+    database: "u169097824_skinclinics",
   },
 });
 

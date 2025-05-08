@@ -9,6 +9,8 @@ export const COLLECTIONS = {
   userQuizAttempts: "userQuizAttempts",
   leaderboards: "leaderboards",
   userData: "userData",
+  subscription: "subscription",
+  vpa: "vpa",
 };
 
 export const DEFAULTS = {
@@ -30,7 +32,7 @@ export const BASE_URL = "https://super15-pc-app.vercel.app";
 export const SUBSCRIBTIONS = {
   orderUrl: `${BASE_URL}/api/subscriptions/create`,
   accountNumber: "7878780080316316",
-  razorpayKey: "rzp_test_9MvI1PsLSFtd6H",
+  razorpayKey: "rzp_live_GEw6hg7mOTY3QN",
 };
 export const DELETED_PLAN_IDS = ["plan_NVIOcafNLoz3ID", "plan_NVINDUfpcw91Di"];
 

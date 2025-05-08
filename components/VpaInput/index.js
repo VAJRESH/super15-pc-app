@@ -1,12 +1,12 @@
 import { CurrentUserAtom, getUserDataObj } from "@/atom/user.atom";
+import { COLLECTIONS, FOOTER_LINKS } from "@/helper/constants.helper";
+import { addUpdateFirestoreData } from "@/helper/firebase.helper";
 import { loadVpaData } from "@/services/queries.services";
-import { createContactAccount } from "@/services/razorpayX.services";
-import { IonButton, useIonToast, IonCheckbox } from "@ionic/react";
+import { IonButton, IonCheckbox, useIonToast } from "@ionic/react";
 import { useEffect, useRef, useState } from "react";
 import { useRecoilState } from "recoil";
 import FormInput from "../FormInput/index";
 import styles from "./vpaInput.module.css";
-import { FOOTER_LINKS } from "@/helper/constants.helper";
 
 export default function VpaInput() {
   const [user, setUser] = useRecoilState(CurrentUserAtom);
@@ -37,7 +37,7 @@ export default function VpaInput() {
     if (!user?.uid) return;
 
     loadVpaData(user?.uid)
-      .then((res) => setVpaData({ id: res?.id, vpa: res?.vpa?.address || "" }))
+      .then((res) => setVpaData({ id: res?.userId, vpa: res?.vpa || "" }))
       .catch((err) => console.log(err));
   }, [user?.uid]);
 
@@ -57,19 +57,25 @@ export default function VpaInput() {
     if (!vpaData) return alertBox("Enter UPI Id");
 
     setIsLoading(true);
-    createContactAccount({
-      userId: user?.uid,
-      email: user?.email,
-      name: user?.displayName,
-      vpa: vpaData?.vpa,
-    }).then((res) => {
+    addUpdateFirestoreData(
+      COLLECTIONS.vpa,
+      {
+        userId: user?.uid,
+        email: user?.email,
+        name: user?.displayName,
+        vpa: vpaData?.vpa,
+      },
+      user.uid,
+      {},
+      { createNew: true },
+    ).then((res) => {
       setIsLoading(false);
 
       if (!res || !!res?.error)
         return alertBox(res?.error || "Something went wrong");
 
       setUser((prev) => getUserDataObj({ ...(prev || {}), vpa: vpaData?.vpa }));
-      setVpaData((prev) => ({ ...(prev || {}), id: res?.fundId }));
+      setVpaData((prev) => ({ ...(prev || {}), id: user?.uid }));
       alertBox("UPI id added successfully");
     });
   }

@@ -102,9 +102,7 @@ export async function loadPlanById(planId = null) {
 export async function loadVpaData(userId) {
   if (!userId) return null;
 
-  return await fetch(`${BASE_URL}/api/contacts/${userId}`, {
-    headers: { "Content-Type": "application/json" },
-  })
-    .then((res) => (res?.body == null ? null : res?.json()))
-    .catch((err) => console.log("err", err));
+  return await getDataWithId(COLLECTIONS?.vpa, userId)
+    .then((res) => res)
+    .catch((err) => console.error(err));
 }
