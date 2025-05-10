@@ -25,8 +25,8 @@ export const DEFAULTS = {
 
 export const RAZOR_PAY_BASE_URL = "https://api.razorpay.com/v1";
 
-// export const BASE_URL = "https://super15-pc-app-sage.vercel.app";
-export const BASE_URL = "https://super15-pc-app.vercel.app";
+export const BASE_URL = "https://super15-pc-app-sage.vercel.app";
+// export const BASE_URL = "https://super15-pc-app.vercel.app";
 // export const BASE_URL = "http://localhost:3000";
 
 export const SUBSCRIBTIONS = {

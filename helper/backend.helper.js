@@ -29,6 +29,7 @@ export default async function excuteQuery({ query, values }) {
 
     return results;
   } catch (error) {
+    console.log("MySql Error", error);
     return { error };
   }
 }
