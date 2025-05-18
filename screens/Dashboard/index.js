@@ -1,6 +1,8 @@
 import { CurrentUserAtom } from "@/atom/user.atom";
-import { DEFAULTS } from "@/helper/constants.helper";
+import { DEFAULTS, COLLECTIONS } from "@/helper/constants.helper";
 import useHandlePlayQuiz from "@/hooks/useHandlePlayQuiz";
+import { getDataWithId } from "@/helper/firebase.helper";
+import { getFormatedDate } from "@/helper/utils.helper";
 import {
   IonAvatar,
   IonButton,
@@ -18,15 +20,43 @@ import {
 import { ellipsisVertical } from "ionicons/icons";
 import { useRouter } from "next/router";
 import { useRecoilValue } from "recoil";
+import { useEffect, useState } from "react";
 import SideMenu from "../../components/SideMenu";
 import styles from "./dashboard.module.css";
 
 export default function Dashboard() {
   const user = useRecoilValue(CurrentUserAtom);
   const router = useRouter();
+  const [activeSubscribers, setActiveSubscribers] = useState(0);
+  const [todayPrize, setTodayPrize] = useState(0);
 
   const { handlePlayQuiz } = useHandlePlayQuiz();
   const userName = user?.displayName?.split(" ")[0] || "";
+
+  useEffect(() => {
+    const fetchActiveSubscribers = async () => {
+      try {
+        const response = await fetch("/api/active-subscribers");
+        const data = await response.json();
+        setActiveSubscribers(data.activeSubscribers);
+      } catch (error) {
+        console.error("Error fetching active subscribers:", error);
+      }
+    };
+
+    const fetchTodayPrize = async () => {
+      try {
+        const today = getFormatedDate();
+        const prize = await getDataWithId(COLLECTIONS.dailyPrizes, today);
+        setTodayPrize(prize?.amount || 0);
+      } catch (error) {
+        console.error("Error fetching today's prize:", error);
+      }
+    };
+
+    fetchActiveSubscribers();
+    fetchTodayPrize();
+  }, []);
 
   return (
     <IonSplitPane when="sm" contentId="main-content">
@@ -54,7 +84,6 @@ export default function Dashboard() {
         </IonHeader>
 
         <IonContent className="ion-padding">
-          {/* Not compatible with firebase 9. Please update your app. */}
           <div className={styles.dashboardBody}>
             <div className={styles.dashboardKpis}>
               <img src="/images/dashboard-img.jpg" alt="" />
@@ -62,12 +91,12 @@ export default function Dashboard() {
 
             <div className={styles.stats}>
               <div>
-                <strong>10,000+</strong>
-                <p>players</p>
+                <strong>{activeSubscribers.toLocaleString()}+</strong>
+                <p>active subscribers</p>
               </div>
               <div>
-                <strong>₹100,000</strong>
-                <p>prize won</p>
+                <strong>₹{todayPrize.toLocaleString()}</strong>
+                <p>today's prize</p>
               </div>
             </div>
 

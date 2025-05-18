@@ -1,8 +1,11 @@
 import { LeaderBoardAtom, QuizAtom, UserQuizMapAtom } from "@/atom/quiz.atom";
 import { CurrentUserAtom } from "@/atom/user.atom";
 import { COLLECTIONS, SUBSCRIBTIONS } from "@/helper/constants.helper";
-import { listenToCollectionWithId } from "@/helper/firebase.helper";
-import { formatTime } from "@/helper/utils.helper";
+import {
+  listenToCollectionWithId,
+  getDataWithId,
+} from "@/helper/firebase.helper";
+import { formatTime, getFormatedDate } from "@/helper/utils.helper";
 import useHandlePlayQuiz from "@/hooks/useHandlePlayQuiz";
 import {
   IonBadge,
@@ -22,7 +25,7 @@ import {
 } from "@ionic/react";
 import { ellipsisVertical, timeOutline } from "ionicons/icons";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import Leaderboard from "../../components/Leaderboard";
 import QuestionBlock from "../../components/QuestionBlock";
@@ -52,6 +55,8 @@ export default function PlayQuiz() {
     quizId,
   } = useHandlePlayQuiz();
 
+  const [dailyPrize, setDailyPrize] = useState(0);
+
   useEffect(() => {
     if (!quizId) return;
 
@@ -63,6 +68,19 @@ export default function PlayQuiz() {
 
     return unsubscribe;
   }, [quizId]);
+
+  useEffect(() => {
+    const fetchDailyPrize = async () => {
+      try {
+        const prize = await getDataWithId(COLLECTIONS.dailyPrizes, quizId);
+        setDailyPrize(prize?.amount || 0);
+      } catch (error) {
+        console.error("Error fetching daily prize:", error);
+      }
+    };
+
+    fetchDailyPrize();
+  }, []);
 
   const isQuizActive = currentQuestionIndex <= 14 && isSuperRoundActive;
   const totalVotes = pollData?.continue?.length + pollData?.quit.length;
@@ -77,9 +95,7 @@ export default function PlayQuiz() {
     pollData?.continue?.includes(user?.uid) ||
     pollData?.quit?.includes(user?.uid);
 
-  const prizePool =
-    (leaderboard?.[1]?.length || 1) *
-    (plans?.[1]?.item?.amount / 1000 / plans?.[1]?.item?.noOfDays);
+  const prizePool = dailyPrize;
 
   return (
     <>
@@ -96,7 +112,8 @@ export default function PlayQuiz() {
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
-                  }}>
+                  }}
+                >
                   <IonItem>
                     Next Question Will start at
                     <IonBadge
@@ -104,7 +121,8 @@ export default function PlayQuiz() {
                         display: "flex",
                         margin: "10px",
                         gap: "0.2em",
-                      }}>
+                      }}
+                    >
                       <IonIcon icon={timeOutline}></IonIcon>
                       {formatTime(breakTime)}
                     </IonBadge>
@@ -121,7 +139,8 @@ export default function PlayQuiz() {
                       <IonButton>
                         <IonIcon
                           slot="icon-only"
-                          icon={ellipsisVertical}></IonIcon>
+                          icon={ellipsisVertical}
+                        ></IonIcon>
                       </IonButton>
                     </IonMenuToggle>
                   </IonButtons>
@@ -136,7 +155,8 @@ export default function PlayQuiz() {
                     {!!isQuizActive && (
                       <IonBadge
                         slot="end"
-                        style={{ display: "flex", gap: "0.2em" }}>
+                        style={{ display: "flex", gap: "0.2em" }}
+                      >
                         <IonIcon icon={timeOutline}></IonIcon>
                         {formatTime(timer)}
                       </IonBadge>
@@ -150,7 +170,8 @@ export default function PlayQuiz() {
                   <>
                     <IonContent
                       className="ion-padding"
-                      key={currentQuestionIndex}>
+                      key={currentQuestionIndex}
+                    >
                       <SuperIcons qSeq={currentQuestionIndex + 1} />
                       <QuestionBlock
                         prizePool={prizePool}
@@ -182,7 +203,8 @@ export default function PlayQuiz() {
                 ) : (
                   <>
                     <IonContent
-                      style={{ textAlign: "center", fontWeight: "bold" }}>
+                      style={{ textAlign: "center", fontWeight: "bold" }}
+                    >
                       <IonText color="secondary">
                         <h1>You Won</h1>
                       </IonText>
@@ -217,7 +239,8 @@ export default function PlayQuiz() {
             isOpen={true}
             showBackdrop={true}
             className={styles.superRoundModal}
-            style={{ display: "flex" }}>
+            style={{ display: "flex" }}
+          >
             <div>
               <h4 className={styles.title}>Quit or Continue</h4>
 
@@ -233,7 +256,8 @@ export default function PlayQuiz() {
                   style={{
                     background: `linear-gradient(to right, var(--danger) ${quitPercentage}%, transparent 0%)`,
                   }}
-                  onClick={() => handleVote(true)}>
+                  onClick={() => handleVote(true)}
+                >
                   Quit ({quitPercentage}%)
                 </IonButton>
                 <IonButton
@@ -242,7 +266,8 @@ export default function PlayQuiz() {
                     background: `linear-gradient(to right, var(--success) ${continuePercentage}%, transparent 0%)`,
                   }}
                   disabled={isPollDisabled}
-                  onClick={() => handleVote(false)}>
+                  onClick={() => handleVote(false)}
+                >
                   Continue ({continuePercentage}%)
                 </IonButton>
               </div>

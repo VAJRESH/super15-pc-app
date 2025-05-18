@@ -45,7 +45,7 @@ export function useAuth() {
       const vpaData = await loadVpaData(userId).catch((err) =>
         console.log(err),
       );
-      userData.vpa = vpaData?.vpa?.address;
+      userData.vpa = vpaData?.vpa;
     }
 
     const _userData = await getDataWithId(COLLECTIONS?.userData, userId).catch(

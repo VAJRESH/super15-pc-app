@@ -11,6 +11,7 @@ export const COLLECTIONS = {
   userData: "userData",
   subscription: "subscription",
   vpa: "vpa",
+  dailyPrizes: "dailyPrizes",
 };
 
 export const DEFAULTS = {

@@ -19,7 +19,7 @@ export default function subscriptions(req, res) {
       ],
     });
 
-    if (!result?.[0]?.id) {
+    if (!result?.[0]?.subscriptionId) {
       res.status(200).json({});
       return resolve();
     }
