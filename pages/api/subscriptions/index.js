@@ -10,12 +10,12 @@ export default function subscriptions(req, res) {
     const result = await excuteQuery({
       query: `
         SELECT * FROM ${DB_TABLES?.subscriptions}
-        WHERE  userId=? && status IN (?, ?) && razorpayPaymentId IS NOT NULL
+        WHERE  userId=? && status IN (?) && razorpayPaymentId IS NOT NULL
         ORDER BY coalesce(updatedAt, createdAt) DESC`,
       values: [
         userId,
         SUBSCRIBTION_STATUS?.active,
-        SUBSCRIBTION_STATUS?.cancelled,
+        // SUBSCRIBTION_STATUS?.cancelled,
       ],
     });
 

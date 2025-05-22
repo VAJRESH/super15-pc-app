@@ -23,12 +23,12 @@ import {
 } from "@ionic/react";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import { ellipsisVertical } from "ionicons/icons";
-import { useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import styles from "./subscriptions.module.css";
 
 export default function Subscriptions() {
   const user = useRecoilValue(CurrentUserAtom);
-  const subscription = useRecoilValue(SubscriptionAtom);
+  const [subscription, setSubscription] = useRecoilState(SubscriptionAtom);
 
   useHandleSubscription();
 
@@ -147,7 +147,14 @@ export default function Subscriptions() {
                 <IonButton
                   color="danger"
                   fill="outline"
-                  onClick={() => cancelSubscription(subscription?.id)}
+                  onClick={() => {
+                    cancelSubscription(subscription?.id).then(() =>
+                      setSubscription({
+                        ...subscription,
+                        status: SUBSCRIBTION_STATUS?.cancelled,
+                      }),
+                    );
+                  }}
                   disabled={isCancelled}
                 >
                   {isCancelled ? "Cancelled" : "Cancel Subscription"}
