@@ -1,8 +1,8 @@
 import { CurrentUserAtom } from "@/atom/user.atom";
-import { DEFAULTS, COLLECTIONS } from "@/helper/constants.helper";
-import useHandlePlayQuiz from "@/hooks/useHandlePlayQuiz";
+import { BASE_URL, COLLECTIONS, DEFAULTS } from "@/helper/constants.helper";
 import { getDataWithId } from "@/helper/firebase.helper";
 import { getFormatedDate } from "@/helper/utils.helper";
+import useHandlePlayQuiz from "@/hooks/useHandlePlayQuiz";
 import {
   IonAvatar,
   IonButton,
@@ -19,8 +19,8 @@ import {
 } from "@ionic/react";
 import { ellipsisVertical } from "ionicons/icons";
 import { useRouter } from "next/router";
-import { useRecoilValue } from "recoil";
 import { useEffect, useState } from "react";
+import { useRecoilValue } from "recoil";
 import SideMenu from "../../components/SideMenu";
 import styles from "./dashboard.module.css";
 
@@ -36,7 +36,7 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchActiveSubscribers = async () => {
       try {
-        const response = await fetch("/api/active-subscribers");
+        const response = await fetch(`${BASE_URL}/api/active-subscribers`);
         const data = await response.json();
         setActiveSubscribers(data.activeSubscribers);
       } catch (error) {

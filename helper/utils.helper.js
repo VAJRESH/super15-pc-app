@@ -29,6 +29,7 @@ export function getCurrentQuestionIndex() {
 
   const currentTime = new Date();
   const timeElapsed = currentTime.getTime() - quizStartTime.getTime();
+  if (timeElapsed < 0) return null;
 
   let currentQuestionIndex = 0;
   let totalTimeElapsed = 0;
