@@ -72,5 +72,6 @@ export function getSubscriptionDataObj(data = {}) {
     updatedAt: data?.updatedAt || null,
     isPopUpOpen:
       typeof data?.isPopUpOpen === "boolean" ? data?.isPopUpOpen : null,
+    isDataLoaded: data?.isDataLoaded || false,
   };
 }

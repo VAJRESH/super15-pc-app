@@ -20,9 +20,10 @@ export default function useHandleSubscription() {
   useEffect(() => {
     if (!user?.uid) return;
     if (subscription?.isPopUpOpen === false) return;
+    if (subscription?.isDataLoaded) return;
 
     loadUserSubscription();
-  }, [user?.uid, subscription?.isPopUpOpen]);
+  }, [user?.uid, subscription?.isPopUpOpen, subscription?.isDataLoaded]);
 
   function hanldeSubscription(obj = {}) {
     setSubscription((prev) =>
@@ -43,6 +44,7 @@ export default function useHandleSubscription() {
         if (router.pathname.includes("subscription"))
           subData.isPopUpOpen = null;
 
+        subData.isDataLoaded = true;
         setSubscription(subData);
         return subData;
       })
