@@ -105,6 +105,15 @@ export default function PlayQuiz() {
         <IonPage id="main-content">
           {timer === null ? (
             <IonPage id="main-content">
+              <IonModal
+                isOpen={breakTime != null}
+                showBackdrop={true}
+                className={styles.superRoundModal}
+                style={{ display: "flex" }}
+              >
+                <video src="/video/ad-video.mp4" autoPlay></video>
+              </IonModal>
+
               <IonContent>
                 <div
                   style={{
