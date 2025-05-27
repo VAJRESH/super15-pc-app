@@ -74,23 +74,33 @@ export default function useHandleSubscription() {
           image: "/images/Super15 Logo.png",
           // callback_url: SUBSCRIBTIONS?.successUrl,
           handler: async function (response) {
-            await saveSubscription(response)
-              .then(async () => {
-                setSubscription((prev) =>
-                  getSubscriptionDataObj({
-                    ...(prev || {}),
-                    isPopUpOpen: false,
-                    signature: response?.razorpay_signature,
-                    razorpayPaymentId: response?.razorpay_payment_id,
-                    id: response?.razorpay_subscription_id,
-                  }),
-                );
+            // await saveSubscription(response)
+            //   .then(async () => {
+            //     setSubscription((prev) =>
+            //       getSubscriptionDataObj({
+            //         ...(prev || {}),
+            //         isPopUpOpen: false,
+            //         signature: response?.razorpay_signature,
+            //         razorpayPaymentId: response?.razorpay_payment_id,
+            //         id: response?.razorpay_subscription_id,
+            //       }),
+            //     );
 
-                router.push("/payment-success");
-              })
-              .catch(() => {
-                alert("Something went wrong");
-              });
+            //   })
+            //   .catch(() => {
+            //     alert("Something went wrong");
+            //   });
+
+            router.push("/payment-success");
+            setSubscription((prev) =>
+              getSubscriptionDataObj({
+                ...(prev || {}),
+                isPopUpOpen: false,
+                signature: response?.razorpay_signature,
+                razorpayPaymentId: response?.razorpay_payment_id,
+                id: response?.razorpay_subscription_id,
+              }),
+            );
           },
           prefill: {
             name: user?.displayName,

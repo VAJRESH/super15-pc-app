@@ -11,6 +11,7 @@ export default function subscriptions(req, res) {
       query: `
         SELECT * FROM ${DB_TABLES?.subscriptions}
         WHERE  userId=? && status IN (?) && razorpayPaymentId IS NOT NULL
+        AND endDate > UNIX_TIMESTAMP()
         ORDER BY coalesce(updatedAt, createdAt) DESC`,
       values: [
         userId,

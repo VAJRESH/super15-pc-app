@@ -292,6 +292,9 @@ export default function CreateQuiz() {
                               );
                             }}
                           >
+                            <IonSelectOption value={-1}>
+                              Set Prize
+                            </IonSelectOption>
                             {Array(DEFAULTS?.totalQuestions)
                               .fill()
                               .map((_, index) => (

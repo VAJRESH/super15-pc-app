@@ -8,7 +8,6 @@ export default async function createSubscription(req, res) {
 
   if (req.method === "OPTIONS") return res.status(200).json({});
   const subscriptionData = parseJson(req.body);
-  console.log(subscriptionData);
 
   // Create a subscription -> generate the subscriptionID -> Send it to the Front-end
   const options = {
@@ -19,12 +18,6 @@ export default async function createSubscription(req, res) {
 
   try {
     const response = await razorpay.subscriptions.create(options);
-    console.log({
-      id: response?.id,
-      userId: subscriptionData?.userId,
-      planId: subscriptionData?.planId,
-      status: SUBSCRIBTION_STATUS?.initailized,
-    });
 
     const result = await excuteQuery({
       query: `INSERT INTO ${DB_TABLES?.subscriptions} (subscriptionId, userId, planId, status) VALUES (?, ?, ?, ?)`,
@@ -35,7 +28,6 @@ export default async function createSubscription(req, res) {
         SUBSCRIBTION_STATUS?.initailized,
       ],
     });
-    console.log(result);
 
     if (result?.error)
       return res.status(400).json({ error: "Something went wrong" });

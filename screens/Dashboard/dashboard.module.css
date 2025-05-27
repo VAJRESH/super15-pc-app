@@ -57,3 +57,18 @@
   text-transform: uppercase;
   line-height: 5px;
 }
+
+.closed {
+  margin: 5px auto;
+  background-color: brown;
+  color: white;
+  padding: 5px 15px;
+  border-radius: 10px;
+}
+.quizTime {
+  margin: auto;
+  background-color: white;
+  font-weight: bold;
+  padding: 5px 15px;
+  border-radius: 10px;
+}

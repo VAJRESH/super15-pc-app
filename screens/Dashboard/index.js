@@ -1,5 +1,10 @@
 import { CurrentUserAtom } from "@/atom/user.atom";
-import { BASE_URL, COLLECTIONS, DEFAULTS } from "@/helper/constants.helper";
+import {
+  BASE_URL,
+  COLLECTIONS,
+  DEFAULTS,
+  QUESTION_TIMES,
+} from "@/helper/constants.helper";
 import { getDataWithId } from "@/helper/firebase.helper";
 import { getFormatedDate } from "@/helper/utils.helper";
 import useHandlePlayQuiz from "@/hooks/useHandlePlayQuiz";
@@ -100,6 +105,8 @@ export default function Dashboard() {
               </div>
             </div>
 
+            <div className={styles.closed}>Closed on Monday & Tuesday</div>
+
             <div className={styles.dashboardBtns}>
               <IonButton
                 size="large"
@@ -110,6 +117,10 @@ export default function Dashboard() {
               <IonButton size="large" onClick={handlePlayQuiz}>
                 Play Quiz
               </IonButton>
+            </div>
+
+            <div className={styles.quizTime}>
+              Quiz Time | 11:45 am to 08:45 pm
             </div>
 
             <div className={styles.dashboardEdits}>
