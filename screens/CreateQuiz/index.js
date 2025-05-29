@@ -179,12 +179,6 @@ export default function CreateQuiz() {
                       </IonItem>
                     </IonList>
 
-                    <DailyPrize
-                      isOpen={dailyPrize}
-                      onClose={() => setDailyPrize(false)}
-                      date={quizData?.date}
-                    />
-
                     <h4>Add Question</h4>
                     <IonItem>
                       <IonTextarea
@@ -321,6 +315,12 @@ export default function CreateQuiz() {
                 )}
               </>
             )}
+
+            <DailyPrize
+              isOpen={dailyPrize}
+              onClose={() => setDailyPrize(false)}
+              date={quizData?.date}
+            />
           </IonContent>
         </IonPage>
       </IonSplitPane>
