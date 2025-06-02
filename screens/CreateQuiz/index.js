@@ -275,6 +275,8 @@ export default function CreateQuiz() {
                             value={questionData?.qSeq}
                             onIonChange={(e) => {
                               const qSeq = e.target?.value;
+                              if (qSeq < 0) return setDailyPrize(true);
+
                               const questionData =
                                 quizData?.questions?.[qSeq - 1];
 

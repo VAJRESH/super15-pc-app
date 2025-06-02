@@ -28,6 +28,7 @@ import { useEffect, useState } from "react";
 import { useRecoilValue } from "recoil";
 import SideMenu from "../../components/SideMenu";
 import styles from "./dashboard.module.css";
+import Footer from "@/components/Footer/index";
 
 export default function Dashboard() {
   const user = useRecoilValue(CurrentUserAtom);
@@ -131,6 +132,8 @@ export default function Dashboard() {
                 </button>
               </p>
             </div>
+
+            <Footer />
           </div>
         </IonContent>
       </IonPage>
