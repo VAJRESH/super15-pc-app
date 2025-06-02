@@ -59,7 +59,9 @@ export default function useHandleSubscription() {
       method: "POST",
       body: JSON.stringify({
         userId: user?.uid,
-        planId: planData?.id,
+        planId: planData?.item.name,
+        amount: planData?.item?.amount,
+        noOfDays: planData?.item?.noOfDays,
       }),
     })
       .then((res) => res.json())
@@ -67,29 +69,33 @@ export default function useHandleSubscription() {
         if (!res.id) return alert(res?.error || "Something went wrong");
 
         const options = {
-          key: SUBSCRIBTIONS?.razorpayKey,
-          subscription_id: res?.id,
-          name: DEFAULTS?.appName,
-          description: planData?.description,
+          key: SUBSCRIBTIONS.razorpayKey, // Enter the Key ID generated from the Dashboard
+          amount: planData?.item?.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+          currency: "INR",
+          name: "Super15",
           image: "/images/Super15 Logo.png",
-          // callback_url: SUBSCRIBTIONS?.successUrl,
+          order_id: res.id,
           handler: async function (response) {
-            // await saveSubscription(response)
-            //   .then(async () => {
-            //     setSubscription((prev) =>
-            //       getSubscriptionDataObj({
-            //         ...(prev || {}),
-            //         isPopUpOpen: false,
-            //         signature: response?.razorpay_signature,
-            //         razorpayPaymentId: response?.razorpay_payment_id,
-            //         id: response?.razorpay_subscription_id,
-            //       }),
-            //     );
-
-            //   })
-            //   .catch(() => {
-            //     alert("Something went wrong");
-            //   });
+            await saveSubscription({
+              razorpay_signature: response.razorpay_signature,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_subscription_id: response.razorpay_order_id,
+            })
+              .then(async () => {
+                setSubscription((prev) =>
+                  getSubscriptionDataObj({
+                    ...(prev || {}),
+                    isPopUpOpen: false,
+                    planId: planData?.item.name,
+                    signature: response?.razorpay_signature,
+                    razorpayPaymentId: response?.razorpay_payment_id,
+                    id: response?.razorpay_subscription_id,
+                  }),
+                );
+              })
+              .catch(() => {
+                alert("Something went wrong");
+              });
 
             router.push("/payment-success");
             setSubscription((prev) =>
@@ -111,6 +117,52 @@ export default function useHandleSubscription() {
             color: "#F37254",
           },
         };
+
+        // const options = {
+        //   key: SUBSCRIBTIONS?.razorpayKey,
+        //   subscription_id: res?.id,
+        //   name: DEFAULTS?.appName,
+        //   description: planData?.description,
+        //   image: "/images/Super15 Logo.png",
+        //   // callback_url: SUBSCRIBTIONS?.successUrl,
+        //   handler: async function (response) {
+        //     // await saveSubscription(response)
+        //     //   .then(async () => {
+        //     //     setSubscription((prev) =>
+        //     //       getSubscriptionDataObj({
+        //     //         ...(prev || {}),
+        //     //         isPopUpOpen: false,
+        //     //         signature: response?.razorpay_signature,
+        //     //         razorpayPaymentId: response?.razorpay_payment_id,
+        //     //         id: response?.razorpay_subscription_id,
+        //     //       }),
+        //     //     );
+
+        //     //   })
+        //     //   .catch(() => {
+        //     //     alert("Something went wrong");
+        //     //   });
+
+        //     router.push("/payment-success");
+        //     setSubscription((prev) =>
+        //       getSubscriptionDataObj({
+        //         ...(prev || {}),
+        //         isPopUpOpen: false,
+        //         signature: response?.razorpay_signature,
+        //         razorpayPaymentId: response?.razorpay_payment_id,
+        //         id: response?.razorpay_subscription_id,
+        //       }),
+        //     );
+        //   },
+        //   prefill: {
+        //     name: user?.displayName,
+        //     email: user.email,
+        //     contact: user?.phoneNumber,
+        //   },
+        //   theme: {
+        //     color: "#F37254",
+        //   },
+        // };
 
         const rzp1 = new Razorpay(options);
         rzp1.open();

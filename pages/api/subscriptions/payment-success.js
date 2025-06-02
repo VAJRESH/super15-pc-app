@@ -9,12 +9,11 @@ export default function paymentSuccess(req, res) {
 
   return new Promise(async (resolve, reject) => {
     const result = await excuteQuery({
-      query: `UPDATE ${DB_TABLES?.subscriptions} SET razorpayPaymentId=?, status=?, endDate=? WHERE subscriptionId=?`,
+      query: `UPDATE ${DB_TABLES?.subscriptions} SET razorpayPaymentId=?, status=? WHERE subscriptionId=?`,
       values: [
-        paymentData?.id,
+        paymentData?.id || req.body.razorpay_payment_id,
         SUBSCRIBTION_STATUS?.active,
-        subscriptionData?.current_end,
-        subscriptionData?.id,
+        subscriptionData?.id || req.body.razorpay_subscription_id,
       ],
     });
 

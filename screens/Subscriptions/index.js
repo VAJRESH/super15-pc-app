@@ -1,4 +1,4 @@
-import { SubscriptionAtom } from "@/atom/global.atom";
+import { PlansAtom, SubscriptionAtom } from "@/atom/global.atom";
 import { CurrentUserAtom } from "@/atom/user.atom";
 import Invoice from "@/components/Invoice/index";
 import SideMenu from "@/components/SideMenu";
@@ -28,6 +28,7 @@ import styles from "./subscriptions.module.css";
 
 export default function Subscriptions() {
   const user = useRecoilValue(CurrentUserAtom);
+  const plans = useRecoilValue(PlansAtom);
   const [subscription, setSubscription] = useRecoilState(SubscriptionAtom);
 
   useHandleSubscription();
@@ -51,6 +52,10 @@ export default function Subscriptions() {
       reader.readAsDataURL(blob);
     });
   }
+
+  const currentPlan = plans?.find(
+    (plan) => plan?.item?.name === subscription?.planId,
+  );
 
   return (
     <IonSplitPane when="sm" contentId="main-content">
@@ -85,8 +90,10 @@ export default function Subscriptions() {
                 </div>
 
                 <div>
-                  <h5>{subscription?.name}</h5>
-                  <b>Amount: ₹{subscription?.amount || 0} /-</b>
+                  {/* <h5>{subscription?.name}</h5> */}
+                  {/* <b>Amount: ₹{subscription?.amount || 0} /-</b> */}
+                  <h5>{currentPlan?.item?.name}</h5>
+                  <b>Amount: ₹{currentPlan?.item?.amount / 100 || 0} /-</b>
                   <p>
                     Renew on{" "}
                     {new Date(subscription?.endAt * 1000).toDateString()}
@@ -95,7 +102,7 @@ export default function Subscriptions() {
               </div>
 
               <div className={styles.btnContainer}>
-                <PDFDownloadLink
+                {/* <PDFDownloadLink
                   document={
                     <Invoice
                       invoiceId={subscription?.id}
@@ -142,7 +149,7 @@ export default function Subscriptions() {
                       </IonButton>
                     </>
                   )}
-                </PDFDownloadLink>
+                </PDFDownloadLink> */}
 
                 <IonButton
                   color="danger"

@@ -7,14 +7,14 @@ export default function cancelSubscription(req, res) {
   if (req.method === "OPTIONS") return res.status(200).json({ id });
 
   return new Promise(async (resolve, reject) => {
-    const response = await razorpay.subscriptions.cancel(id, true);
-    console.log(response);
+    // const response = await razorpay.subscriptions.cancel(id, true);
+    // console.log(response);
 
-    if (!response?.id) {
-      res.status(400).json({ error: "Something went wrong" });
+    // if (!response?.id) {
+    //   res.status(400).json({ error: "Something went wrong" });
 
-      return reject();
-    }
+    //   return reject();
+    // }
 
     const result = await excuteQuery({
       query: `UPDATE ${DB_TABLES?.subscriptions} SET status=? WHERE subscriptionId=?`,
