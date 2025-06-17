@@ -5,6 +5,7 @@ import {
   libraryOutline,
   logOut,
   person,
+  trophyOutline,
 } from "ionicons/icons";
 
 export const SidebarMenu = [
@@ -41,6 +42,13 @@ export const SidebarMenu = [
   },
   {
     id: 6,
+    label: "Winners",
+    icon: trophyOutline,
+    link: "/winners",
+    isAdmin: true,
+  },
+  {
+    id: 7,
     label: "Logout",
     icon: logOut,
     link: "/login",

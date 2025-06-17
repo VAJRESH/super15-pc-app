@@ -4,48 +4,54 @@ import styles from "./leaderboard.module.css";
 import { CurrentUserAtom } from "@/atom/user.atom";
 import { useRecoilValue } from "recoil";
 
-export default function Leaderboard({ leaderboard = [] }) {
+export default function Leaderboard({
+  leaderboard = [],
+  title = "Leaderboard",
+  isAdmin = false,
+}) {
   const user = useRecoilValue(CurrentUserAtom);
-  const userIndex = leaderboard.findIndex((item) => item.userId === user?.uid);
+  const userIndex = leaderboard?.findIndex((item) => item.userId === user?.uid);
 
   return (
     <>
-      <h4 style={{ textAlign: "center" }}>Leaderboard</h4>
+      <h4 style={{ textAlign: "center" }}>{title}</h4>
 
-      <IonItem
-        key={user?.userId}
-        style={{
-          width: "100%",
-          marginBottom: "5px",
-        }}
-      >
-        <div
+      {!isAdmin && (
+        <IonItem
+          key={user?.userId}
           style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
             width: "100%",
-            height: "100%",
-            background: "rgb(136, 255, 136)",
-            padding: "10px",
+            marginBottom: "5px",
           }}
         >
-          <IonLabel style={{ width: "100%" }}>
-            {leaderboard?.[userIndex]?.name || (
-              <span
-                style={{
-                  textAlign: "center",
-                  width: "100%",
-                  display: "inline-block",
-                }}
-              >
-                Answer the question to get rank
-              </span>
-            )}
-          </IonLabel>
-          <IonLabel style={{ width: "30px" }}>{userIndex + 1 || ""}</IonLabel>
-        </div>
-      </IonItem>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              width: "100%",
+              height: "100%",
+              background: "rgb(136, 255, 136)",
+              padding: "10px",
+            }}
+          >
+            <IonLabel style={{ width: "100%" }}>
+              {leaderboard?.[userIndex]?.name || (
+                <span
+                  style={{
+                    textAlign: "center",
+                    width: "100%",
+                    display: "inline-block",
+                  }}
+                >
+                  Answer the question to get rank
+                </span>
+              )}
+            </IonLabel>
+            <IonLabel style={{ width: "30px" }}>{userIndex + 1 || ""}</IonLabel>
+          </div>
+        </IonItem>
+      )}
 
       <div className={styles.board}>
         <IonItem
@@ -80,7 +86,12 @@ export default function Leaderboard({ leaderboard = [] }) {
               </IonThumbnail>
               <div style={{ display: "flex", width: "100%" }}>
                 <IonLabel style={{ width: "100%" }}>
-                  {user?.name || ""}
+                  <div style={{ display: "flex", flexDirection: "column" }}>
+                    <span>{user?.name || ""}</span>
+                    {isAdmin && (
+                      <span style={{ color: "grey" }}>{user?.vpa || ""}</span>
+                    )}
+                  </div>
                 </IonLabel>
                 <IonLabel style={{ width: "40px" }}>{i + 1 || ""}</IonLabel>
               </div>
