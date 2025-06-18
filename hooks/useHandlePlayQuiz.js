@@ -52,6 +52,7 @@ export default function useHandlePlayQuiz() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(null);
   const [timer, setTimer] = useState(null);
   const [breakTime, setBreakTime] = useState(null);
+  const [isDisabled, setIsDisabled] = useState(null);
   const router = useRouter();
 
   const [present] = useIonToast();
@@ -109,6 +110,14 @@ export default function useHandlePlayQuiz() {
 
     return unsub;
   }, [currentQuestionIndex]);
+
+  // redirect out after quiz over
+  useEffect(() => {
+    if (currentQuestionIndex <= 14) return;
+    if (!isDisabled) return;
+
+    router.push("/lose?message=You lost today's quiz");
+  }, [currentQuestionIndex, isDisabled]);
 
   // update timeleft
   useEffect(() => {
@@ -187,7 +196,8 @@ export default function useHandlePlayQuiz() {
 
         // user has no attempts and is on quiz page
         if (!userQuizAttempt?.length && currentQ !== 0) {
-          if (isQuizPage) return router.push("/dashboard");
+          // if (isQuizPage) return router.push("/dashboard");
+          if (isQuizPage) return setIsDisabled(true);
 
           return;
         }
@@ -207,7 +217,8 @@ export default function useHandlePlayQuiz() {
             currentQ >= 15 ||
             userQuizAttempt?.[currentQ - 1]?.result !== 1)
         )
-          router.push("/dashboard?noLastAttempt");
+          setIsDisabled(true);
+        // router.push("/dashboard?noLastAttempt");
       })
       .catch((err) => console.log(err));
   }, [user?.uid, userQuizMap?.length, quizData?.quizId]);
@@ -223,8 +234,11 @@ export default function useHandlePlayQuiz() {
       (userQuizMap?.some((quizMap) => quizMap?.result === 0) ||
         userQuizMap?.[currentQuestionIndex - 1]?.result !== 1) &&
       router.pathname === "/play-quiz"
-    )
-      router.push("/lose?message=You are knocked out of quiz");
+    ) {
+      // alertBox("Lost", "You are knocked out of quiz");
+      setIsDisabled(true);
+    }
+    // router.push("/lose?message=You are knocked out of quiz");
   }, [currentQuestionIndex]);
 
   // leaderboard check
@@ -236,7 +250,9 @@ export default function useHandlePlayQuiz() {
     if (cuttOff > leaderboardCount) return;
     if (router.pathname !== "/play-quiz") return;
 
-    router.push("/lose?message=You are knocked out of quiz&lost");
+    // alertBox("Lost", "You are knocked out of quiz");
+    setIsDisabled(true);
+    // router.push("/lose?message=You are knocked out of quiz&lost");
   }, [leaderboardCount, cuttOff]);
 
   // helper functions
@@ -409,8 +425,11 @@ export default function useHandlePlayQuiz() {
           ),
         );
 
-        if (!isCorrect)
-          router.push("/lose?message=You are knocked out of today's quiz");
+        if (!isCorrect) {
+          alertBox("Lost", "You are knocked out of today's quiz");
+          setIsDisabled(true);
+          // router.push("/lose?message=You are knocked out of today's quiz");
+        }
       })
       .catch((err) => console.log(err))
       .finally(() => setIsLoading(false));
@@ -444,5 +463,6 @@ export default function useHandlePlayQuiz() {
     superRoundPoll,
     isSuperRoundActive,
     pollData,
+    isDisabled,
   };
 }

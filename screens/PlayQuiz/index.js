@@ -53,6 +53,7 @@ export default function PlayQuiz() {
     isSuperRoundActive,
     pollData,
     quizId,
+    isDisabled,
   } = useHandlePlayQuiz();
 
   const [dailyPrize, setDailyPrize] = useState(0);
@@ -106,7 +107,7 @@ export default function PlayQuiz() {
           {timer === null ? (
             <IonPage id="main-content">
               <IonModal
-                isOpen={breakTime != null}
+                isOpen={breakTime != null && currentQuestionIndex < 10}
                 showBackdrop={true}
                 className={styles.superRoundModal}
                 style={{ display: "flex" }}
@@ -117,7 +118,7 @@ export default function PlayQuiz() {
               <IonContent>
                 <div
                   style={{
-                    height: "100%",
+                    height: "200px",
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
@@ -136,6 +137,12 @@ export default function PlayQuiz() {
                       {formatTime(breakTime)}
                     </IonBadge>
                   </IonItem>
+                </div>
+
+                <div style={{ margin: "20px", height: "300px" }}>
+                  <Leaderboard
+                    leaderboard={leaderboard?.[currentQuestionIndex + 1]}
+                  />
                 </div>
               </IonContent>
             </IonPage>
@@ -200,6 +207,7 @@ export default function PlayQuiz() {
                               ],
                           }))}
                         handleOpSelection={hanldeOpSelection}
+                        isDisabled={isDisabled}
                         selectedOp={userQuizMap?.[currentQuestionIndex]?.answer}
                         isCorrect={userQuizMap?.[currentQuestionIndex]?.result}
                       />
@@ -243,6 +251,7 @@ export default function PlayQuiz() {
           )}
         </IonPage>
 
+        {/* 
         {!!superRoundPoll && (
           <IonModal
             isOpen={true}
@@ -282,7 +291,7 @@ export default function PlayQuiz() {
               </div>
             </div>
           </IonModal>
-        )}
+        )} */}
       </IonSplitPane>
     </>
   );

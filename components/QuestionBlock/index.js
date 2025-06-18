@@ -8,6 +8,7 @@ export default function QuestionBlock({
   options = Array(4).fill(),
   selectedOp = null,
   isCorrect = null,
+  isDisabled = null,
   handleOpSelection = () => {},
 }) {
   const selectedOpIndex = options?.findIndex((op) => op?.value === selectedOp);
@@ -41,7 +42,10 @@ export default function QuestionBlock({
               <button
                 key={op?.id}
                 className={`${styles.option} ${styleClass}`}
+                disabled={isDisabled}
                 onClick={() => {
+                  if (isDisabled) return;
+
                   if (!!selectedOp)
                     return present({
                       header: "Alert",
@@ -51,7 +55,8 @@ export default function QuestionBlock({
                     });
 
                   handleOpSelection(op);
-                }}>
+                }}
+              >
                 {op?.value || "Loading..."}
               </button>
             );

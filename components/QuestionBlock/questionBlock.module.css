@@ -47,6 +47,9 @@
 
   background-color: color-mix(in srgb, var(--grey) 10%, transparent 50%);
 }
+.option:disabled {
+  opacity: 0.8;
+}
 .correct {
   background-color: #16ff72;
 }

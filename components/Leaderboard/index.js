@@ -16,7 +16,7 @@ export default function Leaderboard({
     <>
       <h4 style={{ textAlign: "center" }}>{title}</h4>
 
-      {!isAdmin && (
+      {!isAdmin && userIndex !== -1 && (
         <IonItem
           key={user?.userId}
           style={{
