@@ -41,6 +41,9 @@ export function getCurrentQuestionIndex() {
     currentQuestionIndex++;
   }
 
+  // question index should not exceed 14
+  if (currentQuestionIndex >= 15) return 14;
+
   return currentQuestionIndex;
 }
 

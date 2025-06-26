@@ -61,10 +61,11 @@ export default function useHandlePlayQuiz() {
   // const quizId = "2024-10-04";
   const quizId = getFormatedDate();
 
-  const isSuperRoundActive =
-    currentQuestionIndex < 9
-      ? true
-      : pollData?.continue?.length > pollData?.quit?.length;
+  const isSuperRoundActive = true;
+  // const isSuperRoundActive =
+  //   currentQuestionIndex < 9
+  //     ? true
+  //     : pollData?.continue?.length > pollData?.quit?.length;
 
   const superRoundPoll =
     currentQuestionIndex === 9 &&
@@ -338,11 +339,11 @@ export default function useHandlePlayQuiz() {
 
     // if user has not played quiz within first question time limit
     const currentQ = getCurrentQuestionIndex();
-    if (currentQ !== 0 && !userQuizMap?.length)
-      return alertBox(
-        "Quiz Time Up",
-        "The time to participate in quiz is over for today. Please come back tomorrow",
-      );
+    if (currentQ !== 0 && !userQuizMap?.length) setIsDisabled(true);
+    // return alertBox(
+    //   "Quiz Time Up",
+    //   "The time to participate in quiz is over for today. Please come back tomorrow",
+    // );
 
     // user has failed today
     if (
@@ -351,10 +352,11 @@ export default function useHandlePlayQuiz() {
       (userQuizMap?.some((quizMap) => quizMap?.result === 0) ||
         userQuizMap?.[currentQ - 1]?.result !== 1)
     )
-      return alertBox(
-        "Quiz Failed",
-        "You were knocked out for today. Please come back tomorrow",
-      );
+      setIsDisabled(true);
+    // return alertBox(
+    //   "Quiz Failed",
+    //   "You were knocked out for today. Please come back tomorrow",
+    // );
 
     router.push("/play-quiz");
   }

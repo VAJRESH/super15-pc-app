@@ -107,7 +107,7 @@ export default function PlayQuiz() {
           {timer === null ? (
             <IonPage id="main-content">
               <IonModal
-                isOpen={breakTime != null && currentQuestionIndex < 10}
+                isOpen={breakTime != null && currentQuestionIndex < 9}
                 showBackdrop={true}
                 className={styles.superRoundModal}
                 style={{ display: "flex" }}
