@@ -1,10 +1,5 @@
 import { BASE_URL, COLLECTIONS } from "@/helper/constants.helper";
-import {
-  getDataWithFilter,
-  getDataWithId,
-  getSubCollectionData,
-} from "@/helper/firebase.helper";
-import { where } from "firebase/firestore";
+import { getDataWithId, getSubCollectionData } from "@/helper/firebase.helper";
 
 export async function loadQuestionsData(quizId = null) {
   if (!quizId) return null;
@@ -29,12 +24,14 @@ export async function loadQuizData(quizId = null) {
 export async function loadLeaderBoardData(quizId = null) {
   if (!quizId) return null;
 
-  return await getDataWithFilter(COLLECTIONS?.leaderboards, [
-    where("quizId", "==", quizId),
-    where("isCorrect", "==", true),
-  ])
+  return await getDataWithId(COLLECTIONS?.leaderboards, quizId)
     .then((res) => res)
     .catch((err) => console.error(err));
+  // return await getDataWithFilter(COLLECTIONS?.leaderboards, [
+  //   // where("quizId", "==", quizId),
+  // ])
+  //   .then((res) => res)
+  //   .catch((err) => console.error(err));
 }
 
 export async function loadPollData(quizId = null) {

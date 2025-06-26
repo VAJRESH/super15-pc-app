@@ -56,8 +56,9 @@ export default function Leaderboard({
       <div className={styles.board}>
         <IonItem
           style={{
-            // display: "flex",
-            // gridTemplateColumns: "auto 1fr 20px",
+            position: "sticky",
+            top: 0,
+            zIndex: 2,
             width: "100%",
             height: "40px",
             borderBottom: "1px solid gray",
@@ -68,6 +69,12 @@ export default function Leaderboard({
             <IonLabel style={{ width: "40px" }}>Rank</IonLabel>
           </div>
         </IonItem>
+
+        {!leaderboard?.length && (
+          <IonItem>
+            <IonLabel style={{ textAlign: "center" }}>No Player Data</IonLabel>
+          </IonItem>
+        )}
 
         {leaderboard?.map((user, i) => {
           if (!user?.isCorrect) return;

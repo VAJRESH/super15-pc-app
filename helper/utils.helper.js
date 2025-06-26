@@ -82,3 +82,34 @@ export function getNextQuestionTime(
     totalTime += question.timeLimit;
   }
 }
+
+// Returns the start (Monday) of the week for a given date
+export function getWeekStartDate(dateObj = new Date()) {
+  const date = new Date(dateObj);
+  const day = date.getDay();
+  // getDay() returns 0 for Sunday, so adjust to Monday as start
+  const diff = date.getDate() - day + (day === 0 ? -6 : 1);
+  const weekStart = new Date(date.setDate(diff));
+  weekStart.setHours(0, 0, 0, 0);
+  return getFormatedDate(weekStart);
+}
+
+// Returns an array of week start dates (YYYY-MM-DD) for the last N weeks, including this week
+export function getLastNWeekStartDates(n = 8) {
+  const weeks = [];
+  const today = new Date();
+  let currentWeekStart = new Date(today);
+  currentWeekStart.setHours(0, 0, 0, 0);
+  // Move to the start of this week
+  const day = currentWeekStart.getDay();
+  const diff = currentWeekStart.getDate() - day + (day === 0 ? -6 : 1);
+  currentWeekStart.setDate(diff);
+
+  for (let i = 0; i < n; i++) {
+    weeks.push(getFormatedDate(currentWeekStart));
+    // Go to previous week
+    currentWeekStart = new Date(currentWeekStart);
+    currentWeekStart.setDate(currentWeekStart.getDate() - 7);
+  }
+  return weeks;
+}

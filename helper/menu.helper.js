@@ -27,11 +27,18 @@ export const SidebarMenu = [
     icon: cardOutline,
     link: "/subscription",
   },
+  // {
+  //   id: 4,
+  //   label: "History",
+  //   icon: documentTextOutline,
+  //   link: "/history",
+  // },
   {
     id: 4,
-    label: "History",
-    icon: documentTextOutline,
-    link: "/history",
+    label: "Winners",
+    icon: trophyOutline,
+    link: "/winners",
+    // isAdmin: true,
   },
   {
     id: 5,
@@ -42,13 +49,6 @@ export const SidebarMenu = [
   },
   {
     id: 6,
-    label: "Winners",
-    icon: trophyOutline,
-    link: "/winners",
-    isAdmin: true,
-  },
-  {
-    id: 7,
     label: "Logout",
     icon: logOut,
     link: "/login",

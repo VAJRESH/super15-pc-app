@@ -1,66 +1,99 @@
+import { CurrentUserAtom } from "@/atom/user.atom";
 import { COLLECTIONS } from "@/helper/constants.helper";
 import {
   getDataWithFilter,
   listenToCollectionWithId,
 } from "@/helper/firebase.helper";
-import { getFormatedDate } from "@/helper/utils.helper";
 import { loadLeaderBoardData } from "@/services/queries.services";
 import { where } from "firebase/firestore";
 import { useEffect, useState } from "react";
+import { useRecoilValue } from "recoil";
 
-export default function useLoadWinners() {
-  const [leaderboard, setLeaderboard] = useState([]);
+export default function useLoadWinners(selectedQuizIds) {
+  const user = useRecoilValue(CurrentUserAtom);
+
+  // Accepts a single id or array
+  const quizIds = Array.isArray(selectedQuizIds)
+    ? selectedQuizIds.filter(Boolean)
+    : [selectedQuizIds].filter(Boolean);
+
+  const [leaderboard, setLeaderboard] = useState({});
   const [vpaData, setVpaData] = useState([]);
 
-  const leaderboardData = Object.values(leaderboard)?.filter((item) =>
-    Array.isArray(item),
-  );
+  const LAST_QUESTION_INDEX = 14;
 
-  // const quizId = "2024-10-04";
-  const quizId = getFormatedDate();
+  // Helper to flatten all leaderboard arrays
+  const winnerUserIds = Object.values(leaderboard || {})
+    ?.map((item) => item?.[LAST_QUESTION_INDEX]?.[0]?.userId || null)
+    ?.filter((id) => !!id);
 
-  // load quiz data
+  // Load quiz data for all quizIds
   useEffect(() => {
-    loadLeaderBoardData(quizId)
-      .then((res) => setLeaderboard)
+    if (!quizIds.length) return;
+    let isMounted = true;
+    Promise.all(
+      quizIds.map((quizId) =>
+        loadLeaderBoardData(quizId).then((res) => [quizId, res]),
+      ),
+    )
+      .then((results) => {
+        if (!isMounted) return;
+        const data = {};
+        results.forEach(([quizId, res]) => {
+          data[quizId] = res || {};
+        });
+
+        setLeaderboard(data);
+      })
       .catch((err) => console.log(err));
-  }, []);
+    return () => {
+      isMounted = false;
+    };
+  }, [quizIds.join(",")]);
 
+  // // Listen to all quizIds for real-time updates
+  // useEffect(() => {
+  //   if (!quizIds.length) return;
+  //   const unsubscribes = quizIds.map((quizId) =>
+  //     listenToCollectionWithId(COLLECTIONS.leaderboards, quizId, (data) => {
+  //       setLeaderboard((prev) => ({ ...prev, [quizId]: data }));
+  //     }),
+  //   );
+  //   return () => {
+  //     unsubscribes.forEach((unsub) => unsub && unsub());
+  //   };
+  // }, [quizIds.join(",")]);
+
+  // Load vpa for all users in all leaderboards
   useEffect(() => {
-    if (!quizId) return;
+    if (!user?.isAdmin) return;
+    if (!winnerUserIds.length) return;
 
-    const unsubscribe = listenToCollectionWithId(
-      COLLECTIONS.leaderboards,
-      quizId,
-      setLeaderboard,
-    );
+    const userIds = [...new Set(winnerUserIds)];
 
-    return unsubscribe;
-  }, [quizId]);
-
-  // load vpa
-  useEffect(() => {
-    if (!leaderboardData.length) return;
-    const userIds = [];
-    leaderboardData?.forEach((item) =>
-      item?.forEach((user) => userIds.push(user.userId)),
-    );
+    if (!userIds.length) return;
 
     getDataWithFilter(COLLECTIONS?.vpa, [
       where("userId", "in", [...new Set(userIds)]),
     ])
       .then(setVpaData)
       .catch((err) => console.log(err));
-  }, [leaderboardData.length]);
+  }, [winnerUserIds?.length, selectedQuizIds?.length, user?.isAdmin]);
+
+  // Attach vpa to users in all leaderboards
+  const leaderboardWithVpa = {};
+  Object.entries(leaderboard).forEach(([quizId, item]) => {
+    leaderboardWithVpa[quizId] = item?.[LAST_QUESTION_INDEX];
+    const firstUser = leaderboardWithVpa?.[quizId]?.[0];
+
+    if (firstUser)
+      leaderboardWithVpa[quizId][0].vpa = vpaData?.find(
+        (item) => item.userId === firstUser?.userId,
+      )?.vpa;
+  });
 
   return {
-    quizId,
-    leaderboard: leaderboardData?.map((item) => {
-      item.forEach((user) => {
-        user.vpa = vpaData.find((vpa) => vpa.userId === user?.userId)?.vpa;
-      });
-
-      return item;
-    }),
+    quizIds,
+    leaderboard: leaderboardWithVpa,
   };
 }
