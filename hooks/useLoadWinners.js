@@ -1,9 +1,6 @@
 import { CurrentUserAtom } from "@/atom/user.atom";
 import { COLLECTIONS } from "@/helper/constants.helper";
-import {
-  getDataWithFilter,
-  listenToCollectionWithId,
-} from "@/helper/firebase.helper";
+import { getDataWithFilter, getDataWithId } from "@/helper/firebase.helper";
 import { loadLeaderBoardData } from "@/services/queries.services";
 import { where } from "firebase/firestore";
 import { useEffect, useState } from "react";
@@ -19,6 +16,7 @@ export default function useLoadWinners(selectedQuizIds) {
 
   const [leaderboard, setLeaderboard] = useState({});
   const [vpaData, setVpaData] = useState([]);
+  const [prizeAmt, setPrizeAmt] = useState({});
 
   const LAST_QUESTION_INDEX = 14;
 
@@ -44,6 +42,30 @@ export default function useLoadWinners(selectedQuizIds) {
         });
 
         setLeaderboard(data);
+      })
+      .catch((err) => console.log(err));
+    return () => {
+      isMounted = false;
+    };
+  }, [quizIds.join(",")]);
+
+  // Load quiz prize for all quizIds
+  useEffect(() => {
+    if (!quizIds.length) return;
+    let isMounted = true;
+    Promise.all(
+      quizIds.map(async (quizId) => {
+        const prize = await getDataWithId(COLLECTIONS.dailyPrizes, quizId);
+        return [quizId, prize?.amount || 0];
+      }),
+    )
+      .then((results) => {
+        if (!isMounted) return;
+        const prizeData = {};
+        results.forEach(([quizId, amount]) => {
+          prizeData[quizId] = amount;
+        });
+        setPrizeAmt(prizeData);
       })
       .catch((err) => console.log(err));
     return () => {
@@ -80,20 +102,25 @@ export default function useLoadWinners(selectedQuizIds) {
       .catch((err) => console.log(err));
   }, [winnerUserIds?.length, selectedQuizIds?.length, user?.isAdmin]);
 
-  // Attach vpa to users in all leaderboards
-  const leaderboardWithVpa = {};
+  // Attach vpa and prize to users in all leaderboards
+  const leaderboardWithVpaAndPrize = {};
   Object.entries(leaderboard).forEach(([quizId, item]) => {
-    leaderboardWithVpa[quizId] = item?.[LAST_QUESTION_INDEX];
-    const firstUser = leaderboardWithVpa?.[quizId]?.[0];
-
+    leaderboardWithVpaAndPrize[quizId] = item?.[LAST_QUESTION_INDEX];
+    const firstUser = leaderboardWithVpaAndPrize?.[quizId]?.[0];
     if (firstUser)
-      leaderboardWithVpa[quizId][0].vpa = vpaData?.find(
+      leaderboardWithVpaAndPrize[quizId][0].vpa = vpaData?.find(
         (item) => item.userId === firstUser?.userId,
       )?.vpa;
+    // Attach prize amount
+    if (leaderboardWithVpaAndPrize[quizId]) {
+      leaderboardWithVpaAndPrize[quizId].forEach((entry) => {
+        entry.prize = prizeAmt[quizId] || null;
+      });
+    }
   });
 
   return {
     quizIds,
-    leaderboard: leaderboardWithVpa,
+    leaderboard: leaderboardWithVpaAndPrize,
   };
 }

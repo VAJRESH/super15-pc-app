@@ -135,6 +135,7 @@ export default function Winners() {
                     month: "long",
                     day: "numeric",
                   })}
+                  prizeAmt={`Prize Amount: ₹${leaderboard?.[quizId]?.[0]?.prize}`}
                 />
               ))}
         </IonContent>

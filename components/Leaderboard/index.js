@@ -1,13 +1,14 @@
+import { CurrentUserAtom } from "@/atom/user.atom";
 import { DEFAULTS } from "@/helper/constants.helper";
 import { IonItem, IonLabel, IonThumbnail } from "@ionic/react";
-import styles from "./leaderboard.module.css";
-import { CurrentUserAtom } from "@/atom/user.atom";
 import { useRecoilValue } from "recoil";
+import styles from "./leaderboard.module.css";
 
 export default function Leaderboard({
   leaderboard = [],
   title = "Leaderboard",
   isAdmin = false,
+  prizeAmt = null,
 }) {
   const user = useRecoilValue(CurrentUserAtom);
   const userIndex = leaderboard?.findIndex((item) => item.userId === user?.uid);
@@ -97,6 +98,9 @@ export default function Leaderboard({
                     <span>{user?.name || ""}</span>
                     {isAdmin && (
                       <span style={{ color: "grey" }}>{user?.vpa || ""}</span>
+                    )}
+                    {!!prizeAmt && i === 0 && (
+                      <span style={{ color: "grey" }}>{prizeAmt || ""}</span>
                     )}
                   </div>
                 </IonLabel>
