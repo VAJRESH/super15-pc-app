@@ -98,6 +98,8 @@ export default function PlayQuiz() {
 
   const prizePool = dailyPrize;
 
+  const winner = leaderboard?.[currentQuestionIndex + 1]?.[0]?.name;
+
   return (
     <>
       <IonSplitPane when="sm" contentId="main-content">
@@ -115,36 +117,76 @@ export default function PlayQuiz() {
                 <video src="/video/ad-video.mp4" autoPlay></video>
               </IonModal>
 
-              <IonContent>
-                <div
-                  style={{
-                    height: "200px",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <IonItem>
-                    Next Question Will start at
-                    <IonBadge
-                      style={{
-                        display: "flex",
-                        margin: "10px",
-                        gap: "0.2em",
-                      }}
-                    >
-                      <IonIcon icon={timeOutline}></IonIcon>
-                      {formatTime(breakTime)}
-                    </IonBadge>
-                  </IonItem>
-                </div>
+              {currentQuestionIndex === 14 ? (
+                <IonContent>
+                  <div
+                    style={{
+                      height: "200px",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <IonItem>
+                      {!!winner ? (
+                        <>
+                          Congratulations 🎉{" "}
+                          {leaderboard?.[currentQuestionIndex + 1]?.[0]?.name}
+                          has won
+                          <IonBadge
+                            style={{
+                              display: "flex",
+                              margin: "10px",
+                              gap: "0.2em",
+                            }}
+                          >
+                            ₹{dailyPrize}
+                          </IonBadge>
+                        </>
+                      ) : (
+                        <>Today&apos;s Quiz Completed</>
+                      )}
+                    </IonItem>
+                  </div>
 
-                <div style={{ margin: "20px", height: "300px" }}>
-                  <Leaderboard
-                    leaderboard={leaderboard?.[currentQuestionIndex + 1]}
-                  />
-                </div>
-              </IonContent>
+                  <div style={{ margin: "20px", height: "300px" }}>
+                    <Leaderboard
+                      leaderboard={leaderboard?.[currentQuestionIndex + 1]}
+                    />
+                  </div>
+                </IonContent>
+              ) : (
+                <IonContent>
+                  <div
+                    style={{
+                      height: "200px",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <IonItem>
+                      Next Question Will start at
+                      <IonBadge
+                        style={{
+                          display: "flex",
+                          margin: "10px",
+                          gap: "0.2em",
+                        }}
+                      >
+                        <IonIcon icon={timeOutline}></IonIcon>
+                        {formatTime(breakTime)}
+                      </IonBadge>
+                    </IonItem>
+                  </div>
+
+                  <div style={{ margin: "20px", height: "300px" }}>
+                    <Leaderboard
+                      leaderboard={leaderboard?.[currentQuestionIndex + 1]}
+                    />
+                  </div>
+                </IonContent>
+              )}
             </IonPage>
           ) : (
             <>

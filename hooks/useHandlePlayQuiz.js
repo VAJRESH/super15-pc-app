@@ -156,7 +156,12 @@ export default function useHandlePlayQuiz() {
       if (currentQ !== currentQuestionIndex) return loadInitialTime();
 
       setCurrentQuestionIndex(currentQ);
-      setBreakTime((prev) => prev - 1000);
+      setBreakTime((prev) => {
+        const t = prev - 1000;
+        if (t < 0) return null;
+
+        return t;
+      });
     }, 1000);
 
     return () => clearTimeout(t);
