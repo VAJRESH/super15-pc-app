@@ -121,7 +121,7 @@ export default function Dashboard() {
             </div>
 
             <div className={styles.quizTime}>
-              Quiz Time | 11:45 am to 08:45 pm
+              Quiz Time | 12:00 pm to 08:35 pm
             </div>
 
             <div className={styles.dashboardEdits}>

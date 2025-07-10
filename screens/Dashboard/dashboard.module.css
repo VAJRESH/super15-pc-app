@@ -60,15 +60,16 @@
 
 .closed {
   margin: 5px auto;
-  background-color: brown;
+  background-color: #3880ff;
   color: white;
   padding: 5px 15px;
-  border-radius: 10px;
+  border-radius: 2px;
 }
 .quizTime {
   margin: auto;
-  background-color: white;
+  background-color: #3880ff;
+  color: white;
   font-weight: bold;
   padding: 5px 15px;
-  border-radius: 10px;
+  border-radius: 2px;
 }
