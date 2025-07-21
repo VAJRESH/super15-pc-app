@@ -131,7 +131,7 @@ export default function PlayQuiz() {
                       {!!winner ? (
                         <>
                           Congratulations 🎉{" "}
-                          {leaderboard?.[currentQuestionIndex + 1]?.[0]?.name}
+                          {leaderboard?.[currentQuestionIndex + 1]?.[0]?.name}{" "}
                           has won
                           <IonBadge
                             style={{
