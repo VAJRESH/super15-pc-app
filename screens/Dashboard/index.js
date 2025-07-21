@@ -132,6 +132,20 @@ export default function Dashboard() {
                 </button>
               </p>
             </div>
+            <a
+              href="https://www.youtube.com/@biru5365"
+              style={{
+                background: "white",
+                borderRadius: "2px",
+                padding: "5px 10px",
+                width: "fit-content",
+                margin: "auto",
+                color: "black",
+                textDecoration: "none",
+              }}
+            >
+              Notifications
+            </a>
 
             <Footer />
           </div>
